@@ -1,7 +1,14 @@
+import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Network/Service.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
+
+  isLoggedIn = false;
+  Service.instance.getExercises().then((value) {
+    print(value);
+  });
 }
 
 class MyApp extends StatelessWidget {
