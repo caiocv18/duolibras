@@ -24,13 +24,12 @@ dependencies:
   flutter:
     sdk: flutter
   # Check that you have this dependency (added in the previous step)
-  firebase_core: ^0.4.0+9
+  firebase_core: ^1.5.0
 
   # Add the dependencies for any other Firebase products you want to use in your app
   # For example, to use Firebase Authentication and Cloud Firestore
-  firebase_auth: ^0.14.0+5
-  cloud_firestore: ^0.12.9+5
-
+  firebase_auth: ^3.0.2
+  cloud_firestore: ^2.5.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -52,10 +51,12 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
-
+  assets:
+    - lib/Network/Mock/Json/Exercise.json
+    - lib/Network/Mock/Json/Module.json
+    - lib/Network/Mock/Json/Section.json
+    - lib/Network/Mock/Json/Trail.json
+    - lib/Network/Mock/Json/User.json
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
