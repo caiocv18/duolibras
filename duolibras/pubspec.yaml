@@ -30,8 +30,6 @@ dependencies:
   # For example, to use Firebase Authentication and Cloud Firestore
   firebase_auth: ^3.0.2
   cloud_firestore: ^2.5.0
-  uuid: 3.0.4
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -54,8 +52,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/Network/Mock/Json/Exercises.json
-    - lib/Network/Mock/Json/Modules.json
+    - lib/Network/Mock/Json/Exercise.json
+    - lib/Network/Mock/Json/Module.json
+    - lib/Network/Mock/Json/Section.json
     - lib/Network/Mock/Json/Trail.json
     - lib/Network/Mock/Json/User.json
   # An image asset can refer to one or more resolution-specific "variants", see

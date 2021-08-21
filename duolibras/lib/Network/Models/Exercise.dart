@@ -1,30 +1,29 @@
-import 'package:uuid/uuid.dart';
+import 'package:duolibras/Network/Models/ExercisesCategory.dart';
 
 class Exercise {
   final String question;
-  final String answer;
-  final double score;
-  final Uuid id;
+  final String correctAnswer;
+  final List<String> answers;
+  final int score;
+  final String id;
+  final ExercisesCategory category;
 
   const Exercise(
       {required this.question,
-      required this.answer,
+      required this.correctAnswer,
+      required this.answers,
       required this.score,
-      required this.id});
+      required this.id,
+      required this.category});
 
-  factory Exercise.fromMap(Map<String, dynamic> parsedJson) {
+  factory Exercise.fromMap(Map<String, dynamic> parsedJson, String docId) {
     return Exercise(
         question: parsedJson["question"],
-        answer: parsedJson["answer"],
+        correctAnswer: parsedJson["correctAnswer"],
+        answers: parsedJson["answers"].cast<String>(),
         score: parsedJson["score"],
-        id: parsedJson["id"]);
-  }
-
-  factory Exercise.fromDynamicMap(Map<dynamic, dynamic> parsedJson) {
-    return Exercise(
-        question: parsedJson["question"],
-        answer: parsedJson["answer"],
-        score: parsedJson["score"],
-        id: parsedJson["id"]);
+        id: docId,
+        category:
+            ExercisesCategoryExtension.createEnum(parsedJson["category"]));
   }
 }

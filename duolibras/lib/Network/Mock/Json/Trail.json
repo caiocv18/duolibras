@@ -1,24 +1,7 @@
 {
-    "name" : "Rangel Trail",
-    "progress" : "50%",
-    "modules" : [
-        {
-            "name": "Security",
-            "progress":  "50%",
-            "exercises": [
-                {
-                    "question" : "Question Security",
-                    "answer" : "Security",
-                    "score" : "Score 3",
-                    "id" : "c5f63d0f-fd40-43c0-b102-f006eb0ac7e8"                    
-                },
-                {
-                    "question" : "Question Security 2",
-                    "answer" : "Security 2",
-                    "score" : "Score 4",
-                    "id" : "bb8e7bad-1a80-4ad4-acde-46057ddbec5c"                    
-                }
-            ]
-        }
+    "title" : "Rangel Trail",
+    "id": "f454e61f-96ae-44a8-a672-d39de6c21df2",
+    "sections" : [
+        "6fee0e57-0df2-4f90-bb7e-a76d9b71646f"
     ]
 }

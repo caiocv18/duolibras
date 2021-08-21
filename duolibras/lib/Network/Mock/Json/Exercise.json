@@ -1,0 +1,9 @@
+
+{
+    "question" : "Question Test",
+    "correctAnswer": "A",
+    "answers" : ["A","B", "C", "D"],
+    "score" : 12,
+    "id" : "58f03e1c-3257-4ff9-8c53-7df07bf38a56",
+    "category": "multipleChoices"
+}

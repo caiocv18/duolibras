@@ -1,14 +1,26 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Network/Service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 
-  isLoggedIn = false;
-  Service.instance.getExercises().then((value) {
-    print(value);
-  });
+  isLoggedIn = true;
+  // Service.instance.getTrailFromId("RUyIPNDMszSHgnzQrn5r").then((value) {
+  //   print(value.title);
+  //   Service.instance.getSectionFromId(value.sections.first).then((value) {
+  //     print(value.title);
+  //     Service.instance.getModuleFromId(value.modules.first).then((value) {
+  //       print(value.name);
+  //       Service.instance.getExerciseFromId(value.exercises.first).then((value) {
+  //         print(value.category);
+  //       });
+  //     });
+  //   });
+  // });
 }
 
 class MyApp extends StatelessWidget {

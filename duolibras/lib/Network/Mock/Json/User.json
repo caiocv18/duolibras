@@ -1,4 +1,13 @@
 {
-    "name" : "Question Test",
-    "id" : "8312dd9e-01e5-11ec-9a03-0242ac130003"
+    "name" : "Rangel Dias",
+    "id" : "8312dd9e-01e5-11ec-9a03-0242ac130003",
+    "trailIds": [
+        "f454e61f-96ae-44a8-a672-d39de6c21df2"
+    ],
+    "progress": [
+        {
+            "moduleId": "eb761f50-1a13-47c1-9ae1-9b7d1c107b02",
+            "progress": 30
+        }
+    ]
 }

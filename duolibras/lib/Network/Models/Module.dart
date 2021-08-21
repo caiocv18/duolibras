@@ -1,18 +1,23 @@
-import 'package:duolibras/Network/Models/Exercise.dart';
-
 class Module {
-  double get score =>
-      exercises.map((e) => e.score).reduce((value, element) => value + element);
   final String name;
-  final double progress;
-  final List<Exercise> exercises;
+  final int minProgress;
+  final List<String> exercises;
+  final String id;
+  final String iconUrl;
 
-  Module({required this.name, required this.progress, required this.exercises});
+  const Module(
+      {required this.name,
+      required this.minProgress,
+      required this.exercises,
+      required this.id,
+      required this.iconUrl});
 
-  factory Module.fromMap(Map<String, dynamic> parsedJson) {
+  factory Module.fromMap(Map<String, dynamic> parsedJson, String docId) {
     return Module(
         name: parsedJson["name"],
-        progress: parsedJson["progress"],
-        exercises: parsedJson["exercises"]);
+        minProgress: parsedJson["minProgress"],
+        exercises: parsedJson["exercises"].cast<String>(),
+        id: docId,
+        iconUrl: parsedJson["iconUrl"]);
   }
 }

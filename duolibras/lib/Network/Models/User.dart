@@ -1,12 +1,14 @@
-import 'package:uuid/uuid.dart';
-
 class User {
   final String name;
-  final Uuid id;
+  final String id;
+  final List<String> trailIds;
 
-  const User({required this.name, required this.id});
+  const User({required this.name, required this.id, required this.trailIds});
 
-  factory User.fromMap(Map<String, dynamic> parsedJson) {
-    return User(name: parsedJson["name"], id: parsedJson["id"]);
+  factory User.fromMap(Map<String, dynamic> parsedJson, String docId) {
+    return User(
+        name: parsedJson["name"],
+        id: docId,
+        trailIds: parsedJson["trailIds"].cast<String>());
   }
 }
