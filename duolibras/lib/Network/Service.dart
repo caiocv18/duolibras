@@ -8,7 +8,7 @@ import 'package:duolibras/Network/Models/User.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
 
-class Service {
+class Service extends ServicesProtocol {
   late ServicesProtocol _service;
   static Service instance = Service._();
 
@@ -20,22 +20,28 @@ class Service {
     }
   }
 
-  Future<Exercise> getExerciseFromId(String exerciseId) {
-    return _service.getExerciseFromId(exerciseId);
+  @override
+  Future<List<Exercise>> getExercisesFromModuleId(
+      String? sectionId, String moduleId) {
+    return _service.getExercisesFromModuleId(sectionId, moduleId);
   }
 
-  Future<Module> getModuleFromId(String moduleId) {
-    return _service.getModuleFromId(moduleId);
+  @override
+  Future<List<Module>> getModulesFromSectionId(String sectionId) {
+    return _service.getModulesFromSectionId(sectionId);
   }
 
-  Future<Section> getSectionFromId(String sectionId) {
-    return _service.getSectionFromId(sectionId);
+  @override
+  Future<List<Section>> getSectionsFromTrail() {
+    return _service.getSectionsFromTrail();
   }
 
-  Future<Trail> getTrailFromId(String trailId) {
-    return _service.getTrailFromId(trailId);
+  @override
+  Future<Trail> getTrailFromUser() {
+    return _service.getTrailFromUser();
   }
 
+  @override
   Future<User> getUser() {
     return _service.getUser();
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Network/Firebase/FirebaseErrors.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/Trail.dart';
@@ -13,88 +14,97 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseService extends ServicesProtocol {
   final firestoreInstance = FirebaseFirestore.instance;
 
+//Internal Methods
+  DocumentReference<Map<String, dynamic>> _getUserFromFirebase() {
+    // var firebaseUser = FirebaseAuth.instance.currentUser;
+
+    // if (firebaseUser == null) {
+    //   throw FirebaseErrors.UserNotFound;
+    // }
+
+    return firestoreInstance
+        .collection(Constants.firebaseService.usersCollection)
+        .doc("FslPJMMzT7d3fwX71Q25");
+  }
+
+  DocumentReference<Map<String, dynamic>> _getTrailFromFirebase() {
+    return _getUserFromFirebase()
+        .collection(Constants.firebaseService.trailsCollection)
+        .doc("hNquZhKPhTNnPKo3eXsq");
+  }
+
+  Future<List<Section>> _getSectionsFromFirebase() async {
+    var completer = Completer<List<Section>>();
+
+    _getTrailFromFirebase()
+        .collection(Constants.firebaseService.sectionsCollection)
+        .get()
+        .then((value) => {
+              completer.complete(value.docs
+                  .map((e) => Section.fromMap(e.data(), e.id))
+                  .toList())
+            });
+
+    return completer.future;
+  }
+
+  Future<List<Module>> _getModulesFromFirebase(String sectionId) async {
+    var completer = Completer<List<Module>>();
+
+    _getTrailFromFirebase()
+        .collection(Constants.firebaseService.sectionsCollection)
+        .doc(sectionId)
+        .collection(Constants.firebaseService.modulesCollecion)
+        .get()
+        .then((value) => {
+              completer.complete(value.docs
+                  .map((e) => Module.fromMap(e.data(), e.id))
+                  .toList())
+            });
+
+    return completer.future;
+  }
+
+  Future<List<Exercise>> _getExercisesFromFirebase(
+      String sectionId, String moduleId) async {
+    var completer = Completer<List<Exercise>>();
+
+    _getTrailFromFirebase()
+        .collection(Constants.firebaseService.sectionsCollection)
+        .doc(sectionId)
+        .collection(Constants.firebaseService.modulesCollecion)
+        .doc(moduleId)
+        .collection(Constants.firebaseService.exercisesCollection)
+        .get()
+        .then((value) => {
+              completer.complete(value.docs
+                  .map((e) => Exercise.fromMap(e.data(), e.id))
+                  .toList())
+            });
+
+    return completer.future;
+  }
+
+//Public methods
   @override
   Future<myUser.User> getUser() async {
     var completer = Completer<myUser.User>();
-    var firebaseUser = FirebaseAuth.instance.currentUser;
 
-    if (firebaseUser == null) {
-      completer.completeError(FirebaseErrors.UserNotFound);
-    }
-
-    firestoreInstance
-        .collection("users")
-        .doc(firebaseUser!.uid)
-        .get()
-        .then((response) {
+    _getUserFromFirebase().get().then((response) {
       if (response.data() == null) {
         completer.completeError(FirebaseErrors.UserNotFound);
       }
-      completer.complete(myUser.User.fromMap(response.data()!, response.id));
+      return myUser.User.fromMap(response.data()!, response.id);
     });
 
     return completer.future;
   }
 
   @override
-  Future<Exercise> getExerciseFromId(String exerciseId) async {
-    var completer = Completer<Exercise>();
-
-    firestoreInstance
-        .collection("exercises")
-        .doc(exerciseId)
-        .get()
-        .then((response) {
-      if (response.data() == null) {
-        completer.completeError(FirebaseErrors.ExerciseNotFound);
-      }
-      completer.complete(Exercise.fromMap(response.data()!, response.id));
-    });
-
-    return completer.future;
-  }
-
-  @override
-  Future<Module> getModuleFromId(String moduleId) {
-    var completer = Completer<Module>();
-
-    firestoreInstance
-        .collection("modules")
-        .doc(moduleId)
-        .get()
-        .then((response) {
-      if (response.data() == null) {
-        completer.completeError(FirebaseErrors.ModuleNotFound);
-      }
-      completer.complete(Module.fromMap(response.data()!, response.id));
-    });
-
-    return completer.future;
-  }
-
-  @override
-  Future<Section> getSectionFromId(String sectionId) {
-    var completer = Completer<Section>();
-
-    firestoreInstance
-        .collection("sections")
-        .doc(sectionId)
-        .get()
-        .then((response) {
-      if (response.data() == null) {
-        completer.completeError(FirebaseErrors.SectionNotFound);
-      }
-      completer.complete(Section.fromMap(response.data()!, response.id));
-    });
-
-    return completer.future;
-  }
-
-  @override
-  Future<Trail> getTrailFromId(String trailId) {
+  Future<Trail> getTrailFromUser() async {
     var completer = Completer<Trail>();
 
-    firestoreInstance.collection("trails").doc(trailId).get().then((response) {
+    _getTrailFromFirebase().get().then((response) {
       if (response.data() == null) {
         completer.completeError(FirebaseErrors.TrailNotFound);
       }
@@ -102,5 +112,25 @@ class FirebaseService extends ServicesProtocol {
     });
 
     return completer.future;
+  }
+
+  @override
+  Future<List<Section>> getSectionsFromTrail() {
+    return _getSectionsFromFirebase();
+  }
+
+  @override
+  Future<List<Module>> getModulesFromSectionId(String sectionId) {
+    return _getModulesFromFirebase(sectionId);
+  }
+
+  @override
+  Future<List<Exercise>> getExercisesFromModuleId(
+      String? sectionId, String moduleId) {
+    if (sectionId == null) {
+      throw FirebaseErrors.SectionNotFound;
+    }
+
+    return _getExercisesFromFirebase(sectionId, moduleId);
   }
 }

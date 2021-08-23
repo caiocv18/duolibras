@@ -23,46 +23,50 @@ class MockService extends ServicesProtocol {
   }
 
   @override
-  Future<Exercise> getExerciseFromId(String exerciseId) async {
-    var completer = Completer<Exercise>();
+  Future<List<Exercise>> getExercisesFromModuleId(
+      String? sectionId, String moduleId) async {
+    var completer = Completer<List<Exercise>>();
 
     // Nao apague -> caso precise utilizar novamente
-    // List<dynamic> parsedListJson = json.decode(jsonString);
-    // List<Exercise> exercisesList =
-    //     List<Exercise>.from(parsedListJson.map((i) => Exercise.fromMap(i)));
-
     String jsonString = await Utils.loadJSON("Exercise");
-    final jsonResponse = json.decode(jsonString);
+    List<dynamic> parsedListJson = json.decode(jsonString);
+    List<Exercise> exercisesList =
+        List<Exercise>.from(parsedListJson.map((i) => Exercise.fromMap(i, "")));
 
-    completer.complete(Exercise.fromMap(jsonResponse, jsonResponse["id"]));
+    completer.complete(exercisesList);
     return completer.future;
   }
 
   @override
-  Future<Module> getModuleFromId(String moduleId) async {
-    var completer = Completer<Module>();
+  Future<List<Module>> getModulesFromSectionId(String sectionId) async {
+    var completer = Completer<List<Module>>();
 
+    // Nao apague -> caso precise utilizar novamente
     String jsonString = await Utils.loadJSON("Module");
-    final jsonResponse = json.decode(jsonString);
+    List<dynamic> parsedListJson = json.decode(jsonString);
+    List<Module> modulesList =
+        List<Module>.from(parsedListJson.map((i) => Module.fromMap(i, "")));
 
-    completer.complete(Module.fromMap(jsonResponse, jsonResponse["id"]));
-
+    completer.complete(modulesList);
     return completer.future;
   }
 
   @override
-  Future<Section> getSectionFromId(String sectionId) async {
-    var completer = Completer<Section>();
+  Future<List<Section>> getSectionsFromTrail() async {
+    var completer = Completer<List<Section>>();
 
-    String jsonString = await Utils.loadJSON("Section");
-    final jsonResponse = json.decode(jsonString);
-    completer.complete(Section.fromMap(jsonResponse, jsonResponse["id"]));
+    // Nao apague -> caso precise utilizar novamente
+    String jsonString = await Utils.loadJSON("Module");
+    List<dynamic> parsedListJson = json.decode(jsonString);
+    List<Section> sectionsList =
+        List<Section>.from(parsedListJson.map((i) => Section.fromMap(i, "")));
 
+    completer.complete(sectionsList);
     return completer.future;
   }
 
   @override
-  Future<Trail> getTrailFromId(String trailId) async {
+  Future<Trail> getTrailFromUser() async {
     var completer = Completer<Trail>();
 
     String jsonString = await Utils.loadJSON("Trail");

@@ -1,5 +1,6 @@
 import 'package:duolibras/Network/Models/Exercise.dart';
 
 abstract class APIExerciseProtocol {
-  Future<Exercise> getExerciseFromId(String exerciseId);
+  Future<List<Exercise>> getExercisesFromModuleId(
+      String? sectionId, String moduleId);
 }

@@ -1,7 +1,9 @@
-{
-    "title": "Profissões",
-    "id": "6fee0e57-0df2-4f90-bb7e-a76d9b71646f",
-    "modules": [
-        "eb761f50-1a13-47c1-9ae1-9b7d1c107b02"
-    ]
-}
+[
+    {
+        "title": "Profissões",
+        "id": "6fee0e57-0df2-4f90-bb7e-a76d9b71646f",
+        "modules": [
+            "eb761f50-1a13-47c1-9ae1-9b7d1c107b02"
+        ]
+    }
+]

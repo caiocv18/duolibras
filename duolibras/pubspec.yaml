@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  sqflite:
+  path:
   # Check that you have this dependency (added in the previous step)
   firebase_core: ^1.5.0
 

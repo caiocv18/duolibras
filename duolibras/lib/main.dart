@@ -1,4 +1,6 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Database/Database.dart';
+import 'package:duolibras/Network/Models/User.dart';
 import 'package:duolibras/Network/Service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -8,19 +10,30 @@ Future<void> main() async {
   await Firebase.initializeApp();
   runApp(MyApp());
 
-  isLoggedIn = true;
-  // Service.instance.getTrailFromId("RUyIPNDMszSHgnzQrn5r").then((value) {
-  //   print(value.title);
-  //   Service.instance.getSectionFromId(value.sections.first).then((value) {
-  //     print(value.title);
-  //     Service.instance.getModuleFromId(value.modules.first).then((value) {
-  //       print(value.name);
-  //       Service.instance.getExerciseFromId(value.exercises.first).then((value) {
-  //         print(value.category);
+  isLoggedIn = false;
+  // Service.instance.getUser().then((user) {
+  //   print(user.name);
+  // Service.instance.getTrailFromUser().then((trail) {
+  //   print(trail.title);
+  //   Service.instance.getSectionsFromTrail().then((sections) {
+  //     print(sections.first.title);
+  //     Service.instance
+  //         .getModulesFromSectionId(sections.first.id)
+  //         .then((modules) {
+  //       print(modules.first.title);
+  //       Service.instance
+  //           .getExercisesFromModuleId(sections.first.id, modules.first.id)
+  //           .then((modules) {
+  //         print(modules.first.question);
   //       });
   //     });
   //   });
   // });
+  // });
+
+  Database.instance.saveUser(User(name: "Rangel", id: "123")).then((value) {
+    print(value);
+  });
 }
 
 class MyApp extends StatelessWidget {
