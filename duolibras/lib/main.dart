@@ -1,6 +1,5 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
-import 'package:duolibras/Database/Database.dart';
-import 'package:duolibras/Network/Models/User.dart';
+import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Network/Service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningWidget.dart';
@@ -9,30 +8,29 @@ import 'package:flutter/material.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
 
-  isLoggedIn = false;
   // Service.instance.getUser().then((user) {
   //   print(user.name);
   // });
+  SharedFeatures.instance.isLoggedIn = true;
+  // Service.instance.getTrail().then((trail) {
+  //   print(trail.title);
+  //   Service.instance.getSectionsFromTrail().then((sections) {
+  //     print(sections.first.title);
+  //     Service.instance
+  //         .getModulesFromSectionId(sections.first.id)
+  //         .then((modules) {
+  //       print(modules.first.title);
+  //       Service.instance
+  //           .getExercisesFromModuleId(sections.first.id, modules.first.id)
+  //           .then((modules) {
+  //         print(modules.first.question);
+  //       });
+  //     });
+  //   });
+  // });
 
-  Service.instance.getTrail().then((trail) {
-    print(trail.title);
-    Service.instance.getSectionsFromTrail().then((sections) {
-      print(sections.first.title);
-      Service.instance
-          .getModulesFromSectionId(sections.first.id)
-          .then((modules) {
-        print(modules.first.title);
-        Service.instance
-            .getExercisesFromModuleId(sections.first.id, modules.first.id)
-            .then((modules) {
-          print(modules.first.question);
-        });
-      });
-    });
-  });
-
+  runApp(MyApp());
   // Database.instance.saveUser(User(name: "Rangel", id: "123")).then((value) {
   //   print(value);
   // });
@@ -40,24 +38,20 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
+  LearningViewModelProtocol _createViewModel() {
+    final LearningViewModelProtocol viewModel = LearningViewModel();
+    return viewModel;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: LearningWidget() //MyHomePage(title: 'Flutter Demo Home Page'),
-        );
+        home: LearningWidget(_createViewModel()));
   }
 }
 
@@ -84,23 +78,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -111,20 +94,6 @@ class _MyHomePageState extends State<MyHomePage> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(

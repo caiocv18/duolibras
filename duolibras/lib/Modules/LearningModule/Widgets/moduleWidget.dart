@@ -1,9 +1,17 @@
+import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Network/Models/Module.dart';
 import 'package:flutter/material.dart';
 
-class MaduleWidget extends StatelessWidget {
-  // const MaduleWidget({Key? key}) : super(key: key);
-  final isLocked = false;
+class MaduleWidget extends StatefulWidget {
+  final Module _module;
 
+  MaduleWidget(this._module);
+
+  @override
+  _MaduleWidgetState createState() => _MaduleWidgetState();
+}
+
+class _MaduleWidgetState extends State<MaduleWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,7 +23,7 @@ class MaduleWidget extends StatelessWidget {
               CircularProgressIndicator(
                 backgroundColor: Colors.grey[600],
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.yellow),
-                value: 0.6,
+                value: 0.0,
                 strokeWidth: 60,
               ),
               CircleAvatar(
@@ -24,13 +32,12 @@ class MaduleWidget extends StatelessWidget {
               ),
               CircleAvatar(
                 child: Container(
-                    height: 50,
-                    child: Image.network(
-                        "https://firebasestorage.googleapis.com/v0/b/libras-tcc.appspot.com/o/ImagensTeste%2Fsaude.png?alt=media&token=b846521d-14f3-4b77-83e2-95c99fe8ad62")),
+                    height: 50, child: Image.network(widget._module.iconUrl)),
                 radius: 35,
                 backgroundColor: Colors.blue[400],
               ),
-              if (isLocked)
+              if (widget._module.minProgress >
+                  SharedFeatures.instance.userProgress)
                 Stack(alignment: Alignment.center, children: [
                   CircleAvatar(
                     backgroundColor: Colors.grey,
@@ -45,7 +52,7 @@ class MaduleWidget extends StatelessWidget {
             ],
           ),
           SizedBox(height: 15),
-          Text("verb to Be",
+          Text(widget._module.title,
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.normal))
         ],
       ),
