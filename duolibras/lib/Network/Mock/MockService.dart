@@ -66,7 +66,7 @@ class MockService extends ServicesProtocol {
   }
 
   @override
-  Future<Trail> getTrailFromUser() async {
+  Future<Trail> getTrail() async {
     var completer = Completer<Trail>();
 
     String jsonString = await Utils.loadJSON("Trail");

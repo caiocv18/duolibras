@@ -16,11 +16,11 @@ class FirebaseService extends ServicesProtocol {
 
 //Internal Methods
   DocumentReference<Map<String, dynamic>> _getUserFromFirebase() {
-    // var firebaseUser = FirebaseAuth.instance.currentUser;
+    var firebaseUser = FirebaseAuth.instance.currentUser;
 
-    // if (firebaseUser == null) {
-    //   throw FirebaseErrors.UserNotFound;
-    // }
+    if (firebaseUser == null) {
+      throw FirebaseErrors.UserNotFound;
+    }
 
     return firestoreInstance
         .collection(Constants.firebaseService.usersCollection)
@@ -28,9 +28,9 @@ class FirebaseService extends ServicesProtocol {
   }
 
   DocumentReference<Map<String, dynamic>> _getTrailFromFirebase() {
-    return _getUserFromFirebase()
+    return firestoreInstance
         .collection(Constants.firebaseService.trailsCollection)
-        .doc("hNquZhKPhTNnPKo3eXsq");
+        .doc("pwL7CCbNNThasG5tRASF");
   }
 
   Future<List<Section>> _getSectionsFromFirebase() async {
@@ -101,7 +101,7 @@ class FirebaseService extends ServicesProtocol {
   }
 
   @override
-  Future<Trail> getTrailFromUser() async {
+  Future<Trail> getTrail() async {
     var completer = Completer<Trail>();
 
     _getTrailFromFirebase().get().then((response) {

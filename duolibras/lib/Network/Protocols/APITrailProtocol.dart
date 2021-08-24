@@ -1,5 +1,5 @@
 import 'package:duolibras/Network/Models/Trail.dart';
 
 abstract class APITrailProtocol {
-  Future<Trail> getTrailFromUser();
+  Future<Trail> getTrail();
 }

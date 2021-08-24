@@ -13,27 +13,28 @@ Future<void> main() async {
   isLoggedIn = false;
   // Service.instance.getUser().then((user) {
   //   print(user.name);
-  // Service.instance.getTrailFromUser().then((trail) {
-  //   print(trail.title);
-  //   Service.instance.getSectionsFromTrail().then((sections) {
-  //     print(sections.first.title);
-  //     Service.instance
-  //         .getModulesFromSectionId(sections.first.id)
-  //         .then((modules) {
-  //       print(modules.first.title);
-  //       Service.instance
-  //           .getExercisesFromModuleId(sections.first.id, modules.first.id)
-  //           .then((modules) {
-  //         print(modules.first.question);
-  //       });
-  //     });
-  //   });
-  // });
   // });
 
-  Database.instance.saveUser(User(name: "Rangel", id: "123")).then((value) {
-    print(value);
+  Service.instance.getTrail().then((trail) {
+    print(trail.title);
+    Service.instance.getSectionsFromTrail().then((sections) {
+      print(sections.first.title);
+      Service.instance
+          .getModulesFromSectionId(sections.first.id)
+          .then((modules) {
+        print(modules.first.title);
+        Service.instance
+            .getExercisesFromModuleId(sections.first.id, modules.first.id)
+            .then((modules) {
+          print(modules.first.question);
+        });
+      });
+    });
   });
+
+  // Database.instance.saveUser(User(name: "Rangel", id: "123")).then((value) {
+  //   print(value);
+  // });
 }
 
 class MyApp extends StatelessWidget {

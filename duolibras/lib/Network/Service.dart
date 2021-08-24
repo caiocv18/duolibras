@@ -37,8 +37,8 @@ class Service extends ServicesProtocol {
   }
 
   @override
-  Future<Trail> getTrailFromUser() {
-    return _service.getTrailFromUser();
+  Future<Trail> getTrail() {
+    return _service.getTrail();
   }
 
   @override
