@@ -1,3 +1,11 @@
 library duolibras.globals;
 
-bool isLoggedIn = false;
+class SharedFeatures {
+  static SharedFeatures instance = SharedFeatures._();
+
+  bool isLoggedIn = false;
+
+  var userProgress = 20;
+
+  SharedFeatures._();
+}

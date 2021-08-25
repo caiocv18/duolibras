@@ -14,7 +14,7 @@ class Service extends ServicesProtocol {
   static Service instance = Service._();
 
   Service._() {
-    if (isLoggedIn) {
+    if (SharedFeatures.instance.isLoggedIn) {
       _service = FirebaseService();
     } else {
       _service = MockService();
