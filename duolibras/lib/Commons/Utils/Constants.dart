@@ -11,6 +11,7 @@ class DatabaseConstants {
   String get userTable => "users";
   String get trailTable => "trails";
   String get sectionTable => "sections";
+  String get moduleProgressTable => "moduleProgress";
 }
 
 class FirebaseServiceConstants {
@@ -21,4 +22,5 @@ class FirebaseServiceConstants {
   String get modulesCollecion => "modules";
   String get sectionsCollection => "sections";
   String get trailsCollection => "trails";
+  String get moduleProgressCollection => "moduleProgress";
 }

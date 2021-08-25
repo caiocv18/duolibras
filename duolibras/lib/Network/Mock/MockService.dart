@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:duolibras/Commons/Utils/Utils.dart';
+import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'package:duolibras/Network/Models/Trail.dart';
 import 'package:duolibras/Network/Models/Section.dart';
 import 'package:duolibras/Network/Models/Module.dart';
@@ -73,6 +74,20 @@ class MockService extends ServicesProtocol {
     final jsonResponse = json.decode(jsonString);
     completer.complete(Trail.fromMap(jsonResponse, jsonResponse["id"]));
 
+    return completer.future;
+  }
+
+  @override
+  Future<List<ModuleProgress>> getModuleProgress() async {
+    var completer = Completer<List<ModuleProgress>>();
+
+    // Nao apague -> caso precise utilizar novamente
+    String jsonString = await Utils.loadJSON("ModuleProgress");
+    List<dynamic> parsedListJson = json.decode(jsonString);
+    List<ModuleProgress> modulesList = List<ModuleProgress>.from(
+        parsedListJson.map((i) => ModuleProgress.fromMap(i, "")));
+
+    completer.complete(modulesList);
     return completer.future;
   }
 }

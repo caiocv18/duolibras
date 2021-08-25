@@ -1,7 +1,6 @@
 import 'package:duolibras/Database/DatabaseProtocol.dart';
 import 'package:duolibras/Database/SQLite/SQLiteDatabase.dart';
-import 'package:duolibras/Network/Models/Trail.dart';
-import 'package:duolibras/Network/Models/Section.dart';
+import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'package:duolibras/Network/Models/User.dart';
 
 class Database extends DatabaseProtocol {
@@ -18,27 +17,27 @@ class Database extends DatabaseProtocol {
   }
 
   @override
-  Future<User> getSection() {
-    return _database.getSection();
-  }
-
-  @override
-  Future<User> getTrail() {
-    return _database.getTrail();
-  }
-
-  @override
-  Future<bool> saveSection(Section section) {
-    return _database.saveSection(section);
-  }
-
-  @override
-  Future<bool> saveTrail(Trail trail) {
-    return _database.saveTrail(trail);
-  }
-
-  @override
   Future<bool> saveUser(User user) {
     return _database.saveUser(user);
+  }
+
+  @override
+  Future<bool> updateUser(User user) async {
+    return _database.updateUser(user);
+  }
+
+  @override
+  Future<List<ModuleProgress>> getModuleProgress() {
+    return _database.getModuleProgress();
+  }
+
+  @override
+  Future<bool> saveModuleProgress(ModuleProgress moduleProgress) {
+    return _database.saveModuleProgress(moduleProgress);
+  }
+
+  @override
+  Future<bool> updateModuleProgress(ModuleProgress moduleProgress) {
+    return _database.updateModuleProgress(moduleProgress);
   }
 }

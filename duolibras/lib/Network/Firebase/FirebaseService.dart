@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Network/Firebase/FirebaseErrors.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'package:duolibras/Network/Models/Trail.dart';
 import 'package:duolibras/Network/Models/Section.dart';
 import 'package:duolibras/Network/Models/Module.dart';
@@ -85,6 +86,21 @@ class FirebaseService extends ServicesProtocol {
     return completer.future;
   }
 
+  Future<List<ModuleProgress>> _getModuleProgressFromFirebase() {
+    var completer = Completer<List<ModuleProgress>>();
+
+    _getUserFromFirebase()
+        .collection(Constants.firebaseService.moduleProgressCollection)
+        .get()
+        .then((response) => {
+              completer.complete(response.docs
+                  .map((e) => ModuleProgress.fromMap(e.data(), e.id))
+                  .toList())
+            });
+
+    return completer.future;
+  }
+
 //Public methods
   @override
   Future<myUser.User> getUser() async {
@@ -132,5 +148,10 @@ class FirebaseService extends ServicesProtocol {
     }
 
     return _getExercisesFromFirebase(sectionId, moduleId);
+  }
+
+  @override
+  Future<List<ModuleProgress>> getModuleProgress() {
+    return _getModuleProgressFromFirebase();
   }
 }

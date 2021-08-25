@@ -15,26 +15,36 @@ Future<void> main() async {
   //   print(user.name);
   // });
 
-  Service.instance.getTrail().then((trail) {
-    print(trail.title);
-    Service.instance.getSectionsFromTrail().then((sections) {
-      print(sections.first.title);
-      Service.instance
-          .getModulesFromSectionId(sections.first.id)
-          .then((modules) {
-        print(modules.first.title);
-        Service.instance
-            .getExercisesFromModuleId(sections.first.id, modules.first.id)
-            .then((modules) {
-          print(modules.first.question);
-        });
+  // Service.instance.getTrail().then((trail) {
+  //   print(trail.title);
+  //   Service.instance.getSectionsFromTrail().then((sections) {
+  //     print(sections.first.title);
+  //     Service.instance
+  //         .getModulesFromSectionId(sections.first.id)
+  //         .then((modules) {
+  //       print(modules.first.title);
+  //       Service.instance
+  //           .getExercisesFromModuleId(sections.first.id, modules.first.id)
+  //           .then((modules) {
+  //         print(modules.first.question);
+  //       });
+  //     });
+  //   });
+  // });
+
+  Service.instance.getModuleProgress().then((value) => {
+        Database.instance.saveModuleProgress(value.first).then((value) => {
+              Database.instance
+                  .getModuleProgress()
+                  .then((value) => {print(value.first.id)})
+            })
       });
-    });
+
+  Database.instance.saveUser(User(name: "Rangel", id: "123")).then((value) {
+    print(value);
   });
 
-  // Database.instance.saveUser(User(name: "Rangel", id: "123")).then((value) {
-  //   print(value);
-  // });
+  Database.instance.getUser().then((user) => {print(user.name)});
 }
 
 class MyApp extends StatelessWidget {

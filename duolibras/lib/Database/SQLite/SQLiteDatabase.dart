@@ -1,7 +1,6 @@
 import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Database/DatabaseProtocol.dart';
-import 'package:duolibras/Network/Models/Trail.dart';
-import 'package:duolibras/Network/Models/Section.dart';
+import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'package:duolibras/Network/Models/User.dart';
 import 'dart:async';
 
@@ -12,24 +11,19 @@ class SQLiteDatabase extends DatabaseProtocol {
   late Future<Database> database;
 
   SQLiteDatabase() {
-    _open();
+    database = _open();
   }
 
-  void _open() async {
-    database = openDatabase(
+  Future<Database> _open() async {
+    return openDatabase(
       join(await getDatabasesPath(), Constants.database.databaseName),
       onCreate: (db, version) {
         return db
             .execute(
                 'CREATE TABLE ${Constants.database.userTable}(id TEXT PRIMARY KEY, name TEXT)')
-            .then((value) {
-          db
-              .execute(
-                  'CREATE TABLE ${Constants.database.trailTable}(id TEXT PRIMARY KEY, title TEXT, userId NOT NULL REFERENCES users(id))')
-              .then((value) {
-            db.execute(
-                'CREATE TABLE ${Constants.database.sectionTable}(id TEXT PRIMARY KEY, title TEXT, trailId NOT NULL REFERENCES trails(id))');
-          });
+            .then((_) {
+          db.execute(
+              'CREATE TABLE ${Constants.database.moduleProgressTable}(id TEXT PRIMARY KEY, moduleId TEXT, moduleProgress INTEGER)');
         });
       },
       version: 1,
@@ -37,53 +31,74 @@ class SQLiteDatabase extends DatabaseProtocol {
   }
 
   @override
-  Future<User> getUser() {
-    // TODO: implement getUser
-    throw UnimplementedError();
-  }
+  Future<User> getUser() async {
+    final db = await database;
 
-  @override
-  Future<User> getSection() {
-    // TODO: implement getSection
-    throw UnimplementedError();
-  }
+    final List<Map<String, dynamic>> maps =
+        await db.query(Constants.database.userTable);
 
-  @override
-  Future<User> getTrail() {
-    // TODO: implement getTrail
-    throw UnimplementedError();
+    final firstUserMap = maps.first;
+
+    return User.fromMap(firstUserMap, firstUserMap["id"]);
   }
 
   @override
   Future<bool> saveUser(User user) async {
-    var completer = Completer<bool>();
-
-    database.then((database) => {
-          completer.complete(database.insert(
-                  Constants.database.userTable, user.toMap(),
-                  conflictAlgorithm: ConflictAlgorithm.replace) !=
-              0)
-        });
-
-    return completer.future;
-  }
-
-  @override
-  Future<bool> saveSection(Section section) async {
     final db = await database;
 
-    final id = await db.insert(Constants.database.userTable, section.toMap(),
+    final id = await db.insert(Constants.database.userTable, user.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
 
     return id != 0;
   }
 
   @override
-  Future<bool> saveTrail(Trail trail) async {
+  Future<bool> updateUser(User user) async {
     final db = await database;
 
-    final id = await db.insert(Constants.database.userTable, trail.toMap(),
+    final id = await db.update(
+      Constants.database.userTable,
+      user.toMap(),
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
+
+    return id != 0;
+  }
+
+  @override
+  Future<List<ModuleProgress>> getModuleProgress() async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> maps =
+        await db.query(Constants.database.moduleProgressTable);
+
+    return List.generate(maps.length, (i) {
+      return ModuleProgress.fromMap(maps[i], maps[i]['id']);
+    });
+  }
+
+  @override
+  Future<bool> saveModuleProgress(ModuleProgress moduleProgress) async {
+    final db = await database;
+
+    final id = await db.insert(
+        Constants.database.moduleProgressTable, moduleProgress.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+
+    return id != 0;
+  }
+
+  @override
+  Future<bool> updateModuleProgress(ModuleProgress moduleProgress) async {
+    final db = await database;
+
+    final id = await db.update(
+      Constants.database.moduleProgressTable,
+      moduleProgress.toMap(),
+      where: 'id = ?',
+      whereArgs: [moduleProgress.id],
+    );
 
     return id != 0;
   }

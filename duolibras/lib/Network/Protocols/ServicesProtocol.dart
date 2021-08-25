@@ -1,4 +1,5 @@
 import 'package:duolibras/Network/Protocols/APIExerciseProtocol.dart';
+import 'package:duolibras/Network/Protocols/APIModuleProgressProtocol.dart';
 import 'package:duolibras/Network/Protocols/APIModuleProtocol.dart';
 import 'package:duolibras/Network/Protocols/APISectionProtocol.dart';
 import 'package:duolibras/Network/Protocols/APITrailProtocol.dart';
@@ -9,4 +10,5 @@ abstract class ServicesProtocol extends APIExerciseProtocol
         APIModuleProtocol,
         APISectionProtocol,
         APITrailProtocol,
-        APIUserProtocol {}
+        APIUserProtocol,
+        APIModuleProgressProtocol {}
