@@ -59,6 +59,7 @@ flutter:
     - lib/Network/Mock/Json/Section.json
     - lib/Network/Mock/Json/Trail.json
     - lib/Network/Mock/Json/User.json
+    - lib/Network/Mock/Json/ModuleProgress.json
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

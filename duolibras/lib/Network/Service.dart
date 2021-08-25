@@ -2,6 +2,7 @@ import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Network/Firebase/FirebaseService.dart';
 import 'package:duolibras/Network/Mock/MockService.dart';
 import 'package:duolibras/Network/Models/Module.dart';
+import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'package:duolibras/Network/Models/Section.dart';
 import 'package:duolibras/Network/Models/Trail.dart';
 import 'package:duolibras/Network/Models/User.dart';
@@ -44,5 +45,10 @@ class Service extends ServicesProtocol {
   @override
   Future<User> getUser() {
     return _service.getUser();
+  }
+
+  @override
+  Future<List<ModuleProgress>> getModuleProgress() {
+    return _service.getModuleProgress();
   }
 }

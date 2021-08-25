@@ -3,6 +3,7 @@
     {
         "title": "Saúde",
         "minProgress": 0,
+        "maxProgress": 3,
         "id": "eb761f50-1a13-47c1-9ae1-9b7d1c107b02",
         "exercises": [
             "58f03e1c-3257-4ff9-8c53-7df07bf38a56"
