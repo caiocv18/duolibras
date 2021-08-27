@@ -48,6 +48,11 @@ class Service extends ServicesProtocol {
   }
 
   @override
+  Future<User> postUser(User user) {
+    return _service.postUser(user);
+  }
+
+  @override
   Future<List<ModuleProgress>> getModuleProgress() {
     return _service.getModuleProgress();
   }

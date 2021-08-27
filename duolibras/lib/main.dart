@@ -1,6 +1,6 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
-import 'package:duolibras/Network/Service.dart';
+import 'package:duolibras/Modules/LoginModule/SignIn/SignInPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningWidget.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: LearningWidget(_createViewModel()));
+        home: SignInPage());
   }
 }
 

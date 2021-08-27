@@ -25,7 +25,7 @@ class FirebaseService extends ServicesProtocol {
 
     return firestoreInstance
         .collection(Constants.firebaseService.usersCollection)
-        .doc("FslPJMMzT7d3fwX71Q25");
+        .doc(firebaseUser.uid);
   }
 
   DocumentReference<Map<String, dynamic>> _getTrailFromFirebase() {
@@ -112,6 +112,21 @@ class FirebaseService extends ServicesProtocol {
       }
       return myUser.User.fromMap(response.data()!, response.id);
     });
+
+    return completer.future;
+  }
+
+  @override
+  Future<myUser.User> postUser(myUser.User user) {
+    var completer = Completer<myUser.User>();
+
+    firestoreInstance
+        .collection(Constants.firebaseService.usersCollection)
+        .doc(user.id)
+        .set(user.toMap(), SetOptions(merge: true))
+        .then((_) => {
+              this.getUser().then((user) => {completer.complete(user)})
+            });
 
     return completer.future;
   }
