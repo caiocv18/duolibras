@@ -110,7 +110,7 @@ class FirebaseService extends ServicesProtocol {
       if (response.data() == null) {
         completer.completeError(FirebaseErrors.UserNotFound);
       }
-      return myUser.User.fromMap(response.data()!, response.id);
+      completer.complete(myUser.User.fromMap(response.data()!, response.id));
     });
 
     return completer.future;
@@ -125,7 +125,9 @@ class FirebaseService extends ServicesProtocol {
         .doc(user.id)
         .set(user.toMap(), SetOptions(merge: true))
         .then((_) => {
-              this.getUser().then((user) => {completer.complete(user)})
+              this.getUser().then((user) {
+                completer.complete(user);
+              })
             });
 
     return completer.future;

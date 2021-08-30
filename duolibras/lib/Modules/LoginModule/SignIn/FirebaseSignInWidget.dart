@@ -1,5 +1,6 @@
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningWidget.dart';
+import 'package:duolibras/Modules/LoginModule/SignUp/SignUpPage.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/SignInViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,6 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(36.0),
           child: Column(
@@ -33,13 +33,10 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> {
               emailTextfield(),
               SizedBox(height: 25.0),
               passwordTextfield(),
-              SizedBox(
-                height: 35.0,
-              ),
+              SizedBox(height: 35.0),
               loginButton(),
-              SizedBox(
-                height: 15.0,
-              ),
+              SizedBox(height: 15.0),
+              registerButton()
             ],
           ),
         ),
@@ -64,6 +61,12 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> {
                     builder: (context) => LearningWidget(_createViewModel())),
               )
             });
+  }
+
+  void signUp() async {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => SignUpPage()),
+    );
   }
 
   LearningViewModelProtocol _createViewModel() {
@@ -109,6 +112,25 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> {
           signIn();
         },
         child: Text("Login",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  Widget registerButton() {
+    return Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(30.0),
+      color: Color(0xff01A0C7),
+      child: MaterialButton(
+        minWidth: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        onPressed: () {
+          signUp();
+        },
+        child: Text("Cadastrar",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.white, fontWeight: FontWeight.bold)),

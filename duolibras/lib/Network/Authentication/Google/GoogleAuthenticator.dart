@@ -1,17 +1,12 @@
+import 'package:duolibras/Network/Firebase/FirebaseErrors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuthenticator {
   static final _auth = FirebaseAuth.instance;
 
-  static Future<User?> signInWithGoogle() async {
-    User? user = _auth.currentUser;
-
-    if (user != null) {
-      return user;
-    }
-
+  static Future<User> signInWithGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     final GoogleSignInAccount? googleSignInAccount =
@@ -30,41 +25,22 @@ class GoogleAuthenticator {
         final UserCredential userCredential =
             await _auth.signInWithCredential(credential);
 
-        user = userCredential.user;
+        if (userCredential.user == null) {
+          throw FirebaseErrors.UserNotFound;
+        }
+
+        return userCredential.user!;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   GoogleAuthenticator.customSnackBar(
-          //     content:
-          //         'The account already exists with a different credential.',
-          //   ),
-          // );
+          throw e;
         } else if (e.code == 'invalid-credential') {
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   GoogleAuthenticator.customSnackBar(
-          //     content: 'Error occurred while accessing credentials. Try again.',
-          //   ),
-          // );
+          throw e;
         }
       } catch (e) {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   GoogleAuthenticator.customSnackBar(
-        //     content: 'Error occurred using Google Sign-In. Try again.',
-        //   ),
-        // );
+        throw e;
       }
-
-      return user;
     }
-  }
 
-  static SnackBar customSnackBar({required String content}) {
-    return SnackBar(
-      backgroundColor: Colors.black,
-      content: Text(
-        content,
-        style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
-      ),
-    );
+    throw PlatformException(code: "code");
   }
 }

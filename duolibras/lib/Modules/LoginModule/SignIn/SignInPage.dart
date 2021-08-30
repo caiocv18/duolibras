@@ -17,14 +17,16 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.green,
+        appBar: AppBar(title: Text("Login")),
+        backgroundColor: Colors.lightBlue,
         body: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FirebaseSignInWidget(signInViewModel),
-              AppleSignInWidget(signInViewModel),
-              GoogleSignInButton(signInViewModel)
+              Container(child: AppleSignInWidget(signInViewModel), width: 300),
+              SizedBox(height: 15.0),
+              Container(child: GoogleSignInButton(signInViewModel), width: 300)
             ],
           ),
         ));

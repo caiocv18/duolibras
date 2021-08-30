@@ -20,33 +20,46 @@ class _FirebaseSignUpWidgetState extends State<FirebaseSignUpWidget> {
     // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextFormField(
-            controller: emailTextfieldController,
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              return widget._viewModel.validateEmailInput(value);
-            },
-          ),
-          TextFormField(
-            controller: passwordTextfieldController,
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              return widget._viewModel.validatePasswordInput(value);
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                signUp();
+      child: Container(
+        margin: EdgeInsets.all(30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextFormField(
+              decoration: InputDecoration(labelText: "Email"),
+              keyboardType: TextInputType.emailAddress,
+              controller: emailTextfieldController,
+              // The validator receives the text that the user has entered.
+              validator: (value) {
+                return widget._viewModel.validateEmailInput(value);
               },
-              child: const Text('Submit'),
             ),
-          ),
-        ],
+            TextFormField(
+              decoration: InputDecoration(labelText: "Password"),
+              keyboardType: TextInputType.visiblePassword,
+              controller: passwordTextfieldController,
+              // The validator receives the text that the user has entered.
+              validator: (value) {
+                return widget._viewModel.validatePasswordInput(value);
+              },
+            ),
+            SizedBox(height: 15),
+            Row(
+              children: [
+                Expanded(
+                  // padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      signUp();
+                    },
+                    child: const Text('Submit'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

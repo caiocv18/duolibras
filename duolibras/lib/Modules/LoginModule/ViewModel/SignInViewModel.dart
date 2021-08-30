@@ -33,15 +33,15 @@ class SignInViewModel extends SignInViewModelProtocol {
     return _updateUserInDatabase(user);
   }
 
-  Future<bool> _updateUserInDatabase(fireUser.User? user) {
+  Future<bool> _updateUserInDatabase(fireUser.User? user) async {
     if (user != null) {
       final userModel =
           myUser.User(id: user.uid, name: user.displayName ?? user.email ?? "");
 
-      return Service.instance.postUser(userModel).then((userUpdated) {
-        UserSession.instance.user = userUpdated;
-        return true;
-      });
+      final userUpdated = await Service.instance.postUser(userModel);
+
+      UserSession.instance.user = userUpdated;
+      return true;
     } else {
       throw PlatformException(code: "code");
     }

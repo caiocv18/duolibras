@@ -14,7 +14,8 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.green,
+        appBar: AppBar(title: Text("Cadastro")),
+        backgroundColor: Colors.lightBlue,
         body: Container(child: FirebaseSignUpWidget(signUpViewModel)));
   }
 }
