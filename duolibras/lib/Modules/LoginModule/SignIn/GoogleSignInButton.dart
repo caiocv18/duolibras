@@ -68,7 +68,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     setState(() {
       _isSigningIn = true;
     });
-    widget._viewModel.signInWithGoogle().then((value) => {
+    widget._viewModel.signIn(null).then((value) => {
           if (value)
             {
               Navigator.of(context).pushReplacement(

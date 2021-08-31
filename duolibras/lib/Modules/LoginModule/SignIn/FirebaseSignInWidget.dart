@@ -2,6 +2,7 @@ import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dar
 import 'package:duolibras/Modules/LearningModule/Widgets/learningWidget.dart';
 import 'package:duolibras/Modules/LoginModule/SignUp/SignUpPage.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/SignInViewModel.dart';
+import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -53,8 +54,9 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> {
 
   void signIn() async {
     await widget._viewModel
-        .signInWithFirebase(
-            emailTextfieldController.text, passwordTextfieldController.text)
+        .signIn(AuthenticationModel(
+            email: emailTextfieldController.text,
+            password: passwordTextfieldController.text))
         .then((value) => {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
