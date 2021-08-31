@@ -18,13 +18,8 @@ class SQLiteDatabase extends DatabaseProtocol {
     return openDatabase(
       join(await getDatabasesPath(), Constants.database.databaseName),
       onCreate: (db, version) {
-        return db
-            .execute(
-                'CREATE TABLE ${Constants.database.userTable}(id TEXT PRIMARY KEY, name TEXT)')
-            .then((_) {
-          db.execute(
-              'CREATE TABLE ${Constants.database.moduleProgressTable}(id TEXT PRIMARY KEY, moduleId TEXT, moduleProgress INTEGER)');
-        });
+        return db.execute(
+            'CREATE TABLE ${Constants.database.moduleProgressTable}(id TEXT PRIMARY KEY, moduleId TEXT, moduleProgress INTEGER)');
       },
       version: 1,
     );
@@ -67,7 +62,7 @@ class SQLiteDatabase extends DatabaseProtocol {
   }
 
   @override
-  Future<List<ModuleProgress>> getModuleProgress() async {
+  Future<List<ModuleProgress>> getModulesProgress() async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps =
@@ -79,27 +74,21 @@ class SQLiteDatabase extends DatabaseProtocol {
   }
 
   @override
-  Future<bool> saveModuleProgress(ModuleProgress moduleProgress) async {
+  Future<bool> saveModulesProgress(List<ModuleProgress> modulesProgress) async {
+    var completer = Completer<bool>();
     final db = await database;
 
-    final id = await db.insert(
-        Constants.database.moduleProgressTable, moduleProgress.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    modulesProgress.forEach((moduleProgress) async {
+      await db
+          .insert(
+              Constants.database.moduleProgressTable, moduleProgress.toMap(),
+              conflictAlgorithm: ConflictAlgorithm.replace)
+          .then((value) => {
+                if (moduleProgress == modulesProgress.last)
+                  {completer.complete(true)}
+              });
+    });
 
-    return id != 0;
-  }
-
-  @override
-  Future<bool> updateModuleProgress(ModuleProgress moduleProgress) async {
-    final db = await database;
-
-    final id = await db.update(
-      Constants.database.moduleProgressTable,
-      moduleProgress.toMap(),
-      where: 'id = ?',
-      whereArgs: [moduleProgress.id],
-    );
-
-    return id != 0;
+    return completer.future;
   }
 }

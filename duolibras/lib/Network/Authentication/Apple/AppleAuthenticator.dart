@@ -1,11 +1,12 @@
+import 'package:duolibras/Network/Authentication/AuthenticatorProtocol.dart';
 import 'package:flutter/services.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class AppleAuthenticator {
+class AppleAuthenticator extends AuthenticatorProtocol {
   static final _auth = FirebaseAuth.instance;
 
-  static Future<User> signInWithApple() async {
+  static Future<User> _signInWithApple() async {
     final scopes = [
       AppleIDAuthorizationScopes.fullName,
       AppleIDAuthorizationScopes.email
@@ -58,5 +59,15 @@ class AppleAuthenticator {
           message: 'Sign in aborted by user',
         );
     }
+  }
+
+  @override
+  Future<User> signIn() async {
+    return AppleAuthenticator._signInWithApple();
+  }
+
+  @override
+  Future<User> signUp() {
+    return AppleAuthenticator._signInWithApple();
   }
 }

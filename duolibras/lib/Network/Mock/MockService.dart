@@ -90,7 +90,7 @@ class MockService extends ServicesProtocol {
   }
 
   @override
-  Future<List<ModuleProgress>> getModuleProgress() async {
+  Future<List<ModuleProgress>> getModulesProgress() async {
     var completer = Completer<List<ModuleProgress>>();
 
     // Nao apague -> caso precise utilizar novamente
@@ -100,6 +100,14 @@ class MockService extends ServicesProtocol {
         parsedListJson.map((i) => ModuleProgress.fromMap(i, "")));
 
     completer.complete(modulesList);
+    return completer.future;
+  }
+
+  @override
+  Future<bool> postModulesProgress(List<ModuleProgress> moduleProgress) {
+    var completer = Completer<bool>();
+    completer.complete(true);
+
     return completer.future;
   }
 }
