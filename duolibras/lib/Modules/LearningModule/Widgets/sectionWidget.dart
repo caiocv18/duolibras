@@ -61,30 +61,36 @@ class _SectionWidgetState extends State<SectionWidget> {
 
   Widget _createSectionsWidgets() {
     final numberOfModules = _modules!.length;
-
+    final viewModel = widget._viewModel as ModuleViewModel;
     switch (numberOfModules) {
       case 4:
         return Column(children: [
           _twoModulesWidget(
-              MaduleWidget(_modules![0]), MaduleWidget(_modules![1])),
+              MaduleWidget(_modules![0], widget._section.id, viewModel),
+              MaduleWidget(_modules![1], widget._section.id, viewModel)),
           SizedBox(height: 30),
           _twoModulesWidget(
-              MaduleWidget(_modules![2]), MaduleWidget(_modules![3]))
+              MaduleWidget(_modules![2], widget._section.id, viewModel),
+              MaduleWidget(_modules![3], widget._section.id, viewModel))
         ]);
       case 3:
         return Column(children: [
-          _oneModulesWidget(MaduleWidget(_modules![0])),
+          _oneModulesWidget(
+              MaduleWidget(_modules![0], widget._section.id, viewModel)),
           SizedBox(height: 30),
           _twoModulesWidget(
-              MaduleWidget(_modules![1]), MaduleWidget(_modules![2]))
+              MaduleWidget(_modules![1], widget._section.id, viewModel),
+              MaduleWidget(_modules![2], widget._section.id, viewModel))
         ]);
       case 2:
         return Column(children: [
           _twoModulesWidget(
-              MaduleWidget(_modules![0]), MaduleWidget(_modules![1])),
+              MaduleWidget(_modules![0], widget._section.id, viewModel),
+              MaduleWidget(_modules![1], widget._section.id, viewModel)),
         ]);
       default:
-        return _oneModulesWidget(MaduleWidget(_modules![0]));
+        return _oneModulesWidget(
+            MaduleWidget(_modules![0], widget._section.id, viewModel));
     }
   }
 

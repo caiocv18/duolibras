@@ -7,6 +7,7 @@ class Exercise {
   final int score;
   final String id;
   final ExercisesCategory category;
+  final String mediaUrl;
 
   const Exercise(
       {required this.question,
@@ -14,7 +15,8 @@ class Exercise {
       required this.answers,
       required this.score,
       required this.id,
-      required this.category});
+      required this.category,
+      required this.mediaUrl});
 
   factory Exercise.fromMap(Map<String, dynamic> parsedJson, String docId) {
     return Exercise(
@@ -23,6 +25,7 @@ class Exercise {
         answers: parsedJson["answers"].cast<String>(),
         score: parsedJson["score"],
         id: docId,
+        mediaUrl: parsedJson["mediaUrl"],
         category:
             ExercisesCategoryExtension.createEnum(parsedJson["category"]));
   }

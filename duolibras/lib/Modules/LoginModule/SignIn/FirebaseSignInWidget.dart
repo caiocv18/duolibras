@@ -1,5 +1,5 @@
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
-import 'package:duolibras/Modules/LearningModule/Widgets/learningWidget.dart';
+import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LoginModule/SignUp/SignUpPage.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/SignInViewModel.dart';
 import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
@@ -60,7 +60,7 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> {
         .then((value) => {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                    builder: (context) => LearningWidget(_createViewModel())),
+                    builder: (context) => LearningScreen(_createViewModel())),
               )
             });
   }

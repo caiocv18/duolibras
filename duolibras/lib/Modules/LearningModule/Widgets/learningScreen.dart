@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/sectionWidget.dart';
 import 'package:duolibras/Network/Models/Section.dart';
 import 'package:flutter/material.dart';
@@ -17,16 +18,18 @@ abstract class LearningViewModelProtocol {
   Future<void> fetchSections();
 }
 
-class LearningWidget extends StatefulWidget {
+class LearningScreen extends StatefulWidget {
+  static String routeName = "/LearningScreen";
+
   final LearningViewModelProtocol _viewModel;
 
-  LearningWidget(this._viewModel);
+  LearningScreen(this._viewModel);
 
   @override
-  _LearningWidgetState createState() => _LearningWidgetState();
+  _LearningScreenState createState() => _LearningScreenState();
 }
 
-class _LearningWidgetState extends State<LearningWidget> {
+class _LearningScreenState extends State<LearningScreen> {
   final bottomNavigationBar = BottomNavigationBar(
     items: [
       BottomNavigationBarItem(icon: Icon(Icons.home), title: Container()),
@@ -34,14 +37,9 @@ class _LearningWidgetState extends State<LearningWidget> {
     ],
   );
 
-  final appBar = AppBar(
-    title: Text("Duolibras"),
-    actions: [IconButton(icon: Icon(Icons.person), onPressed: () => {})],
-  );
+  final PreferredSizeWidget appBar = AppBarWidget();
 
   List<Section> sections = [];
-
-  var firstTime = true;
 
   @override
   initState() {
@@ -53,17 +51,6 @@ class _LearningWidgetState extends State<LearningWidget> {
   }
 
   Widget _buildBody() {
-    if (firstTime) {
-      // widget._viewModel.sections!.listen((newSections) {
-      //   if (!newSections.isEmpty) {
-      //     setState(() {
-      //       this.sections = newSections;
-      //     });
-      //   }
-      // });
-      firstTime = false;
-    }
-
     final _mediaQuery = MediaQuery.of(context);
 
     if (sections.isEmpty) {

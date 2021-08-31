@@ -1,7 +1,7 @@
+import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/SignInViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:duolibras/Modules/LearningModule/Widgets/learningWidget.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 
 class GoogleSignInButton extends StatefulWidget {
@@ -73,7 +73,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                    builder: (context) => LearningWidget(_createViewModel())),
+                    builder: (context) => LearningScreen(_createViewModel())),
               )
             }
         });
