@@ -1,3 +1,4 @@
+import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
 import 'package:duolibras/Network/Authentication/AuthenticatorProtocol.dart';
 import 'package:flutter/services.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -62,12 +63,12 @@ class AppleAuthenticator extends AuthenticatorProtocol {
   }
 
   @override
-  Future<User> signIn() async {
-    return AppleAuthenticator._signInWithApple();
+  Future<User> signIn(AuthenticationModel? model) {
+    return _signInWithApple();
   }
 
   @override
-  Future<User> signUp() {
-    return AppleAuthenticator._signInWithApple();
+  Future<User> signUp(AuthenticationModel? model) {
+    return _signInWithApple();
   }
 }

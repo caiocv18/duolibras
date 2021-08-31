@@ -1,12 +1,14 @@
+import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
+import 'package:duolibras/Network/Authentication/AuthenticatorProtocol.dart';
 import 'package:duolibras/Network/Firebase/FirebaseErrors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class GoogleAuthenticator {
+class GoogleAuthenticator extends AuthenticatorProtocol {
   static final _auth = FirebaseAuth.instance;
 
-  static Future<User> signInWithGoogle() async {
+  Future<User> _signInWithGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     final GoogleSignInAccount? googleSignInAccount =
@@ -42,5 +44,15 @@ class GoogleAuthenticator {
     }
 
     throw PlatformException(code: "code");
+  }
+
+  @override
+  Future<User> signIn(AuthenticationModel? model) {
+    return _signInWithGoogle();
+  }
+
+  @override
+  Future<User> signUp(AuthenticationModel? model) {
+    return _signInWithGoogle();
   }
 }

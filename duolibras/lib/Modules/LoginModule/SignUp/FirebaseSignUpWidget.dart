@@ -1,4 +1,5 @@
 import 'package:duolibras/Modules/LoginModule/ViewModel/SignUpViewModel.dart';
+import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -69,8 +70,9 @@ class _FirebaseSignUpWidgetState extends State<FirebaseSignUpWidget> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Processing Data')),
       );
-      widget._viewModel.signUpInFirebase(
-          emailTextfieldController.text, passwordTextfieldController.text);
+      widget._viewModel.signUp(AuthenticationModel(
+          email: emailTextfieldController.text,
+          password: passwordTextfieldController.text));
     }
   }
 }

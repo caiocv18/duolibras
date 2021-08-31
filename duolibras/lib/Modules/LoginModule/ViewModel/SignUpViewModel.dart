@@ -1,3 +1,4 @@
+import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
 import 'package:duolibras/Network/Authentication/AuthenticatorProtocol.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
@@ -45,6 +46,7 @@ class SignUpViewModel extends SignUpViewModelProtocol {
       final userUpdated = await Service.instance.postUser(userModel);
 
       UserSession.instance.user = userUpdated;
+      SharedFeatures.instance.isLoggedIn = true;
       return true;
     } else {
       throw PlatformException(code: "code");
