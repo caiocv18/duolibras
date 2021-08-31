@@ -30,7 +30,7 @@ class _AppleSignInWidgetState extends State<AppleSignInWidget> {
     setState(() {
       _isSigningIn = true;
     });
-    widget._viewModel.signInWithApple().then((value) => {
+    widget._viewModel.signIn(null).then((value) => {
           if (value)
             {
               Navigator.of(context).pushReplacement(

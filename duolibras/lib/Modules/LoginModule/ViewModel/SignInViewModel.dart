@@ -1,6 +1,6 @@
-import 'package:duolibras/Network/Authentication/Apple/AppleAuthenticator.dart';
-import 'package:duolibras/Network/Authentication/Firebase/FirebaseAuthenticator.dart';
-import 'package:duolibras/Network/Authentication/Google/GoogleAuthenticator.dart';
+import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
+import 'package:duolibras/Network/Authentication/AuthenticatorProtocol.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:duolibras/Network/Models/User.dart' as myUser;
 import 'package:duolibras/Network/Service.dart';
@@ -8,28 +8,16 @@ import 'package:firebase_auth/firebase_auth.dart' as fireUser;
 import 'package:flutter/services.dart';
 
 abstract class SignInViewModelProtocol {
-  Future<bool> signInWithGoogle();
-  Future<bool> signInWithApple();
-  Future<bool> signInWithFirebase(String email, String password);
+  Future<bool> signIn(AuthenticationModel? model);
 }
 
 class SignInViewModel extends SignInViewModelProtocol {
-  @override
-  Future<bool> signInWithApple() async {
-    fireUser.User? user = await AppleAuthenticator.signInWithApple();
-    return _updateUserInDatabase(user);
-  }
+  final AuthenticatorProtocol authenticator;
+  SignInViewModel(this.authenticator);
 
   @override
-  Future<bool> signInWithFirebase(String email, String password) async {
-    fireUser.User user =
-        await FirebaseAuthenticator.handleSignInEmail(email, password);
-    return _updateUserInDatabase(user);
-  }
-
-  @override
-  Future<bool> signInWithGoogle() async {
-    fireUser.User? user = await GoogleAuthenticator.signInWithGoogle();
+  Future<bool> signIn(AuthenticationModel? model) async {
+    fireUser.User? user = await authenticator.signIn(model);
     return _updateUserInDatabase(user);
   }
 
@@ -41,6 +29,7 @@ class SignInViewModel extends SignInViewModelProtocol {
       final userUpdated = await Service.instance.postUser(userModel);
 
       UserSession.instance.user = userUpdated;
+      SharedFeatures.instance.isLoggedIn = true;
       return true;
     } else {
       throw PlatformException(code: "code");

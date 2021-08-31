@@ -5,7 +5,6 @@ abstract class DatabaseProtocol {
   Future<User> getUser();
   Future<bool> saveUser(User user);
   Future<bool> updateUser(User user);
-  Future<List<ModuleProgress>> getModuleProgress();
-  Future<bool> saveModuleProgress(ModuleProgress moduleProgress);
-  Future<bool> updateModuleProgress(ModuleProgress moduleProgress);
+  Future<List<ModuleProgress>> getModulesProgress();
+  Future<bool> saveModulesProgress(List<ModuleProgress> modulesProgress);
 }

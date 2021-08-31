@@ -1,4 +1,6 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Database/DatabaseProtocol.dart';
+import 'package:duolibras/Database/SQLite/SQLiteDatabase.dart';
 import 'package:duolibras/Network/Firebase/FirebaseService.dart';
 import 'package:duolibras/Network/Mock/MockService.dart';
 import 'package:duolibras/Network/Models/Module.dart';
@@ -11,14 +13,16 @@ import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
 
 class Service extends ServicesProtocol {
   late ServicesProtocol _service;
+  late DatabaseProtocol _database;
   static Service instance = Service._();
 
   Service._() {
-    if (SharedFeatures.instance.isLoggedIn) {
-      _service = FirebaseService();
-    } else {
+    if (SharedFeatures.instance.isMocked) {
       _service = MockService();
+    } else {
+      _service = FirebaseService();
     }
+    _database = SQLiteDatabase();
   }
 
   @override
@@ -53,7 +57,20 @@ class Service extends ServicesProtocol {
   }
 
   @override
-  Future<List<ModuleProgress>> getModuleProgress() {
-    return _service.getModuleProgress();
+  Future<List<ModuleProgress>> getModulesProgress() {
+    if (SharedFeatures.instance.isLoggedIn) {
+      return _service.getModulesProgress();
+    } else {
+      return _database.getModulesProgress();
+    }
+  }
+
+  @override
+  Future<bool> postModulesProgress(List<ModuleProgress> modulesProgress) {
+    if (SharedFeatures.instance.isLoggedIn) {
+      return _service.postModulesProgress(modulesProgress);
+    } else {
+      return _database.saveModulesProgress(modulesProgress);
+    }
   }
 }

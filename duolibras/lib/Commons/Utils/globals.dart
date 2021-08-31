@@ -4,6 +4,7 @@ class SharedFeatures {
   static SharedFeatures instance = SharedFeatures._();
 
   bool isLoggedIn = false;
+  bool isMocked = false;
 
   var userProgress = 20;
 

@@ -101,6 +101,39 @@ class FirebaseService extends ServicesProtocol {
     return completer.future;
   }
 
+  Future<bool> _postModuleProgressInFirebase(
+      List<ModuleProgress> moduleProgress) {
+    var completer = Completer<bool>();
+    final userDocument = _getUserFromFirebase();
+
+    moduleProgress.forEach((progress) {
+      userDocument
+          .collection(Constants.firebaseService.moduleProgressCollection)
+          .add(progress.toMap())
+          .then((_) => {
+                if (progress == moduleProgress.last) {completer.complete(true)}
+              });
+    });
+
+    return completer.future;
+  }
+
+  Future<myUser.User> _postUserInFirebase(myUser.User user) {
+    var completer = Completer<myUser.User>();
+
+    firestoreInstance
+        .collection(Constants.firebaseService.usersCollection)
+        .doc(user.id)
+        .set(user.toMap(), SetOptions(merge: true))
+        .then((_) => {
+              this.getUser().then((user) {
+                completer.complete(user);
+              })
+            });
+
+    return completer.future;
+  }
+
 //Public methods
   @override
   Future<myUser.User> getUser() async {
@@ -117,20 +150,8 @@ class FirebaseService extends ServicesProtocol {
   }
 
   @override
-  Future<myUser.User> postUser(myUser.User user) {
-    var completer = Completer<myUser.User>();
-
-    firestoreInstance
-        .collection(Constants.firebaseService.usersCollection)
-        .doc(user.id)
-        .set(user.toMap(), SetOptions(merge: true))
-        .then((_) => {
-              this.getUser().then((user) {
-                completer.complete(user);
-              })
-            });
-
-    return completer.future;
+  Future<myUser.User> postUser(myUser.User user) async {
+    return _postUserInFirebase(user);
   }
 
   @override
@@ -148,18 +169,18 @@ class FirebaseService extends ServicesProtocol {
   }
 
   @override
-  Future<List<Section>> getSectionsFromTrail() {
+  Future<List<Section>> getSectionsFromTrail() async {
     return _getSectionsFromFirebase();
   }
 
   @override
-  Future<List<Module>> getModulesFromSectionId(String sectionId) {
+  Future<List<Module>> getModulesFromSectionId(String sectionId) async {
     return _getModulesFromFirebase(sectionId);
   }
 
   @override
   Future<List<Exercise>> getExercisesFromModuleId(
-      String? sectionId, String moduleId) {
+      String? sectionId, String moduleId) async {
     if (sectionId == null) {
       throw FirebaseErrors.SectionNotFound;
     }
@@ -168,7 +189,12 @@ class FirebaseService extends ServicesProtocol {
   }
 
   @override
-  Future<List<ModuleProgress>> getModuleProgress() {
+  Future<List<ModuleProgress>> getModulesProgress() async {
     return _getModuleProgressFromFirebase();
+  }
+
+  @override
+  Future<bool> postModulesProgress(List<ModuleProgress> moduleProgress) async {
+    return _postModuleProgressInFirebase(moduleProgress);
   }
 }
