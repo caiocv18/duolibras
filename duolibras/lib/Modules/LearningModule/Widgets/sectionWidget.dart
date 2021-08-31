@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Network/Models/Module.dart';
 import 'package:duolibras/Network/Models/Section.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +71,6 @@ class _SectionWidgetState extends State<SectionWidget> {
           _twoModulesWidget(
               MaduleWidget(_modules![2]), MaduleWidget(_modules![3]))
         ]);
-        break;
       case 3:
         return Column(children: [
           _oneModulesWidget(MaduleWidget(_modules![0])),
@@ -81,13 +78,11 @@ class _SectionWidgetState extends State<SectionWidget> {
           _twoModulesWidget(
               MaduleWidget(_modules![1]), MaduleWidget(_modules![2]))
         ]);
-        break;
       case 2:
         return Column(children: [
           _twoModulesWidget(
               MaduleWidget(_modules![0]), MaduleWidget(_modules![1])),
         ]);
-        break;
       default:
         return _oneModulesWidget(MaduleWidget(_modules![0]));
     }

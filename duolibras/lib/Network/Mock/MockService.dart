@@ -24,6 +24,18 @@ class MockService extends ServicesProtocol {
   }
 
   @override
+  Future<User> postUser(User user) async {
+    var completer = Completer<User>();
+
+    String jsonString = await Utils.loadJSON("User");
+    final jsonResponse = json.decode(jsonString);
+    var user = User.fromMap(jsonResponse, jsonResponse["id"]);
+
+    completer.complete(user);
+    return completer.future;
+  }
+
+  @override
   Future<List<Exercise>> getExercisesFromModuleId(
       String? sectionId, String moduleId) async {
     var completer = Completer<List<Exercise>>();
