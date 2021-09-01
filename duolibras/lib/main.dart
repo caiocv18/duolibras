@@ -1,19 +1,13 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
-import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
-import 'package:duolibras/Modules/ExercisesModule/exerciseWritingScreen.dart';
-import 'package:duolibras/Modules/ExercisesModule/MLExerciseWidget.dart';
+
+import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
-import 'package:duolibras/Network/Service.dart';
-import 'package:duolibras/Modules/LoginModule/SignIn/SignInPage.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
 
-import 'Commons/router.dart';
-import 'Modules/ExercisesModule/exerciseMultiChoiceScreen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,21 +35,21 @@ Future<void> main() async {
   // });
 
   // Obtain a list of the available cameras on the device.
-  final cameras = await availableCameras();
-  // Get a specific camera from the list of available cameras.
-  final firstCamera = cameras.first;
+  // final cameras = await availableCameras();
+  // // Get a specific camera from the list of available cameras.
+  // final firstCamera = cameras.first;
 
-  runApp(MyApp(camera: firstCamera));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  const MyApp({
-    Key? key,
-    required this.camera,
-  }) : super(key: key);
+  // const MyApp({
+  //   Key? key,
+  //   required this.camera,
+  // }) : super(key: key);
 
-  final CameraDescription camera;
+  // final CameraDescription camera;
 
   LearningViewModelProtocol _createViewModel() {
     final LearningViewModelProtocol viewModel = LearningViewModel();
@@ -72,7 +66,9 @@ class MyApp extends StatelessWidget {
         // routes: _routes,
         onGenerateRoute: (settings) =>
             MainRouter.instance.onGenerateRoute(settings),
-        home: LearningScreen(
-            LearningViewModel())); //ExerciseMultiChoiceWidget(Exercise())); //
+        navigatorKey: MainRouter.instance.navigatorKey,
+        home: LaunchScreen(
+            MainRouter.instance.initialLoadCompleted)); //LearningScreen(
+    // LearningViewModel())) //ExerciseMultiChoiceWidget(Exercise())); //
   }
 }

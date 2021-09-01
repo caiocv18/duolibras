@@ -2,10 +2,12 @@ import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/multiChoicesWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
+import 'package:duolibras/Modules/ExercisesModule/exerciseScreen.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
-class ExerciseMultiChoiceScreen extends StatelessWidget {
+class ExerciseMultiChoiceScreen extends ExerciseScreen {
   static String routeName = "/ExerciseMultiChoiceScreen";
 
   final PreferredSizeWidget appBar = AppBarWidget();
@@ -65,17 +67,21 @@ class ExerciseMultiChoiceScreen extends StatelessWidget {
               Container(
                   height: containerHeight * 0.40,
                   child: MultiChoicesWidget(exercise.answers, (answer) {
-                    final title = exercise.correctAnswer == answer
-                        ? "Congrats, you are not stupid"
-                        : "You are a such idiot";
-
-                    viewModel.didSubmitTextAnswer(answer, exercise.id, ctx);
+                    handleSubmitAnswer(answer, exercise.id, ctx);
                   })),
             ],
           ),
         ],
       ),
     ));
+  }
+
+  void handleSubmitAnswer(String answer, String exerciseID, BuildContext ctx) {
+    final isCorrect = _viewModel.isAnswerCorrect(answer, exerciseID);
+
+    showFinishExerciseBottomSheet(isCorrect, ctx, () {
+      _viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
+    });
   }
 
   @override

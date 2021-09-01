@@ -1,8 +1,11 @@
+import 'package:duolibras/Network/Models/ModuleProgress.dart';
+
 class User {
   final String name;
   final String id;
+  List<ModuleProgress>? modulesProgress = null;
 
-  const User({required this.name, required this.id});
+  User({required this.name, required this.id});
 
   factory User.fromMap(Map<String, dynamic> parsedJson, String docId) {
     return User(name: parsedJson["name"], id: docId);

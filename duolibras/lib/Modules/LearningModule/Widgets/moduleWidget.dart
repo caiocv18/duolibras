@@ -1,4 +1,5 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:duolibras/Network/Models/Module.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,21 @@ class MaduleWidget extends StatelessWidget {
   final String sectionID;
 
   MaduleWidget(this._module, this.sectionID, this._viewModel);
+
+  double _getModulerProgress() {
+    if (UserSession.instance.user == null) return 0;
+
+    if (UserSession.instance.user!.modulesProgress == null) return 0;
+
+    print("User ${UserSession.instance.user}");
+    var progresses = UserSession.instance.user!.modulesProgress!;
+
+    final moduleProgress = progresses.where((p) => p.moduleId == _module.id);
+
+    if (moduleProgress == null || moduleProgress.isEmpty) return 0;
+
+    return moduleProgress.first.progress / _module.maxProgress;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +45,7 @@ class MaduleWidget extends StatelessWidget {
                 CircularProgressIndicator(
                   backgroundColor: Colors.grey[600],
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.yellow),
-                  value: 0.0,
+                  value: _getModulerProgress(),
                   strokeWidth: 60,
                 ),
                 CircleAvatar(

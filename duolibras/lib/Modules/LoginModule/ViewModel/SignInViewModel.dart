@@ -26,7 +26,8 @@ class SignInViewModel extends SignInViewModelProtocol {
       final userModel =
           myUser.User(id: user.uid, name: user.displayName ?? user.email ?? "");
 
-      final userUpdated = await Service.instance.postUser(userModel);
+      var userUpdated = await Service.instance.postUser(userModel);
+      userUpdated.modulesProgress = await Service.instance.getModulesProgress();
 
       UserSession.instance.user = userUpdated;
       SharedFeatures.instance.isLoggedIn = true;

@@ -66,7 +66,7 @@ class LearningViewModel
       // : ExerciseMultiChoiceScreen.routeName;
 
       Navigator.of(context).pushNamed(ExerciseFlow.routeStartExerciseFlow,
-          arguments: {"exercises": excersies});
+          arguments: {"exercises": excersies, "moduleID": moduleID});
     });
   }
 }

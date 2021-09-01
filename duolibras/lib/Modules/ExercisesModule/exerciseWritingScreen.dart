@@ -2,15 +2,18 @@ import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/inputAnswerWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
+import 'package:duolibras/Modules/ExercisesModule/exerciseScreen.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
 
 abstract class ExerciseWritingViewModel {
   void didSubmitTextAnswer(
       String answer, String exerciseID, BuildContext context);
+
+  bool isAnswerCorrect(String answer, String exerciseID);
 }
 
-class ExerciseWritingScreen extends StatelessWidget {
+class ExerciseWritingScreen extends ExerciseScreen {
   static String routeName = "/ExerciseWritingScreen";
 
   final PreferredSizeWidget appBar = AppBarWidget();
@@ -50,6 +53,14 @@ class ExerciseWritingScreen extends StatelessWidget {
     );
   }
 
+  void handleSubmitAnswer(String answer, String exerciseID, BuildContext ctx) {
+    final isCorrect = _viewModel.isAnswerCorrect(answer, exerciseID);
+
+    showFinishExerciseBottomSheet(isCorrect, ctx, () {
+      _viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
+    });
+  }
+
   Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel,
       Size containerSize, BuildContext ctx) {
     return SafeArea(
@@ -78,7 +89,7 @@ class ExerciseWritingScreen extends StatelessWidget {
                   child: ElevatedButton(
                     child: Text("Submit"),
                     onPressed: () {
-                      viewModel.didSubmitTextAnswer(
+                      handleSubmitAnswer(
                           inputController.text, exercise.id, ctx);
                     },
                     style: ButtonStyle(
