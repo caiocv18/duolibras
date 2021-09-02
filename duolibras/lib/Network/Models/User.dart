@@ -3,7 +3,7 @@ import 'package:duolibras/Network/Models/ModuleProgress.dart';
 class User {
   final String name;
   final String id;
-  List<ModuleProgress>? modulesProgress = null;
+  List<ModuleProgress> modulesProgress = [];
 
   User({required this.name, required this.id});
 

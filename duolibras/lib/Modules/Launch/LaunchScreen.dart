@@ -28,7 +28,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
     Service.instance.getUser().then((user) {
       UserSession.instance.user = user;
       Service.instance.getModulesProgress().then((progresses) {
-        UserSession.instance.user!.modulesProgress = progresses;
+        UserSession.instance.user.modulesProgress = progresses;
         widget._loadCompleted();
       }).onError((error, stackTrace) {
         widget._loadCompleted();

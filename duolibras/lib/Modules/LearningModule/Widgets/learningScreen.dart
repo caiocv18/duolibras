@@ -145,6 +145,14 @@ class _LearningScreenState extends State<LearningScreen> {
     return Container();
   }
 
+  void _handleCompletedLogin(bool? shouldUpdateView) {
+    if (shouldUpdateView == null) return;
+
+    if (shouldUpdateView) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,8 +161,13 @@ class _LearningScreenState extends State<LearningScreen> {
           actions: [
             IconButton(
                 icon: Icon(Icons.person),
-                onPressed: () =>
-                    {Navigator.of(context).pushNamed(MainRouter.routeSignIn)})
+                onPressed: () => {
+                      Navigator.of(context)
+                          .pushNamed(MainRouter.routeSignIn)
+                          .then((value) {
+                        _handleCompletedLogin(value as bool?);
+                      })
+                    })
           ],
         ),
         bottomNavigationBar: bottomNavigationBar,

@@ -1,10 +1,10 @@
-import 'package:duolibras/Modules/LoginModule/ViewModel/SignUpViewModel.dart';
+import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
 import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FirebaseSignUpWidget extends StatefulWidget {
-  final SignUpViewModelProtocol _viewModel;
+  final FirebaseAuthenticatorProtocol _viewModel;
   FirebaseSignUpWidget(this._viewModel);
 
   @override
@@ -70,9 +70,8 @@ class _FirebaseSignUpWidgetState extends State<FirebaseSignUpWidget> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Processing Data')),
       );
-      widget._viewModel.signUp(AuthenticationModel(
-          email: emailTextfieldController.text,
-          password: passwordTextfieldController.text));
+      widget._viewModel.firebaseSignUp(
+          emailTextfieldController.text, passwordTextfieldController.text);
     }
   }
 }

@@ -1,13 +1,13 @@
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LoginModule/SignUp/SignUpPage.dart';
-import 'package:duolibras/Modules/LoginModule/ViewModel/SignInViewModel.dart';
+import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
 import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FirebaseSignInWidget extends StatefulWidget {
-  final SignInViewModelProtocol _viewModel;
+  final FirebaseAuthenticatorProtocol _viewModel;
 
   FirebaseSignInWidget(this._viewModel);
 
@@ -54,15 +54,9 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> {
 
   void signIn() async {
     await widget._viewModel
-        .signIn(AuthenticationModel(
-            email: emailTextfieldController.text,
-            password: passwordTextfieldController.text))
-        .then((value) => {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                    builder: (context) => LearningScreen(_createViewModel())),
-              )
-            });
+        .firebaseSignIn(
+            emailTextfieldController.text, passwordTextfieldController.text)
+        .then((value) => {Navigator.of(context).pop(true)});
   }
 
   void signUp() async {

@@ -4,30 +4,41 @@ import 'package:duolibras/Network/Models/Module.dart';
 import 'package:flutter/material.dart';
 
 abstract class ModuleViewModel {
-  Future<void> didSelectModule(
-      String sectionID, String moduleID, BuildContext context);
+  Future<void> didSelectModule(String sectionID, String moduleID,
+      BuildContext context, Function? handler);
 }
 
-class MaduleWidget extends StatelessWidget {
+class MaduleWidget extends StatefulWidget {
   final Module _module;
   final ModuleViewModel _viewModel;
   final String sectionID;
 
   MaduleWidget(this._module, this.sectionID, this._viewModel);
 
+  @override
+  _MaduleWidgetState createState() => _MaduleWidgetState();
+}
+
+class _MaduleWidgetState extends State<MaduleWidget> {
   double _getModulerProgress() {
-    if (UserSession.instance.user == null) return 0;
+    if (UserSession.instance.user.modulesProgress.isEmpty) return 0;
 
-    if (UserSession.instance.user!.modulesProgress == null) return 0;
+    var progresses = UserSession.instance.user.modulesProgress;
 
-    print("User ${UserSession.instance.user}");
-    var progresses = UserSession.instance.user!.modulesProgress!;
-
-    final moduleProgress = progresses.where((p) => p.moduleId == _module.id);
+    final moduleProgress =
+        progresses.where((p) => p.moduleId == widget._module.id);
 
     if (moduleProgress == null || moduleProgress.isEmpty) return 0;
 
-    return moduleProgress.first.progress / _module.maxProgress;
+    return moduleProgress.first.progress / widget._module.maxProgress;
+  }
+
+  void _handleCompleModule(bool? completed) {
+    if (completed == null) return;
+
+    if (completed) {
+      setState(() {});
+    }
   }
 
   @override
@@ -37,14 +48,16 @@ class MaduleWidget extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              _viewModel.didSelectModule(sectionID, _module.id, context);
+              widget._viewModel.didSelectModule(widget.sectionID,
+                  widget._module.id, context, _handleCompleModule);
             },
             child: Stack(
               alignment: Alignment.center,
               children: [
                 CircularProgressIndicator(
                   backgroundColor: Colors.grey[600],
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.yellow),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      Color.fromRGBO(255, 215, 0, 1)),
                   value: _getModulerProgress(),
                   strokeWidth: 60,
                 ),
@@ -54,11 +67,14 @@ class MaduleWidget extends StatelessWidget {
                 ),
                 CircleAvatar(
                   child: Container(
-                      height: 50, child: Image.network(_module.iconUrl)),
+                      height: 50, child: Image.network(widget._module.iconUrl)),
                   radius: 35,
-                  backgroundColor: Colors.blue[400],
+                  backgroundColor: 1 == _getModulerProgress()
+                      ? Color.fromRGBO(255, 215, 0, 1)
+                      : Colors.blue[400],
                 ),
-                if (_module.minProgress > SharedFeatures.instance.userProgress)
+                if (widget._module.minProgress >
+                    SharedFeatures.instance.userProgress)
                   Stack(alignment: Alignment.center, children: [
                     CircleAvatar(
                       backgroundColor: Colors.grey,
@@ -74,7 +90,7 @@ class MaduleWidget extends StatelessWidget {
             ),
           ),
           SizedBox(height: 15),
-          Text(_module.title,
+          Text(widget._module.title,
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.normal))
         ],
       ),

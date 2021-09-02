@@ -1,11 +1,10 @@
+import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Modules/LoginModule/SignIn/AppleSignInWidget.dart';
 import 'package:duolibras/Modules/LoginModule/SignIn/FirebaseSignInWidget.dart';
 import 'package:duolibras/Modules/LoginModule/SignIn/GoogleSignInButton.dart';
-import 'package:duolibras/Modules/LoginModule/ViewModel/SignInViewModel.dart';
-import 'package:duolibras/Network/Authentication/Apple/AppleAuthenticator.dart';
-import 'package:duolibras/Network/Authentication/Firebase/FirebaseAuthenticator.dart';
-import 'package:duolibras/Network/Authentication/Google/GoogleAuthenticator.dart';
+import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
+import 'package:duolibras/Network/Service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,8 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  final _viewModel = AutheticationViewModel();
+
   Widget _buildLoggedProfile() {
     return Container(
         alignment: Alignment.center,
@@ -30,10 +31,8 @@ class _SignInPageState extends State<SignInPage> {
             ElevatedButton(
               child: Text("Log out"),
               onPressed: () {
-                FirebaseAuth.instance.signOut().then((value) {
-                  setState(() {
-                    UserSession.instance.user = null;
-                  });
+                _viewModel.signOut().then((_) {
+                  setState(() {});
                 });
               },
               style: ButtonStyle(
@@ -51,14 +50,10 @@ class _SignInPageState extends State<SignInPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FirebaseSignInWidget(SignInViewModel(FirebaseAuthenticator())),
-          Container(
-              child: AppleSignInWidget(SignInViewModel(AppleAuthenticator())),
-              width: 300),
+          FirebaseSignInWidget(_viewModel),
+          Container(child: AppleSignInWidget(_viewModel), width: 300),
           SizedBox(height: 15.0),
-          Container(
-              child: GoogleSignInButton(SignInViewModel(GoogleAuthenticator())),
-              width: 300)
+          Container(child: GoogleSignInButton(_viewModel), width: 300)
         ],
       ),
     );
@@ -66,11 +61,12 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("ISLOGGED: ${SharedFeatures.instance.isLoggedIn}");
     return Scaffold(
         appBar: AppBar(title: Text("Login")),
         backgroundColor: Colors.lightBlue,
-        body: UserSession.instance.user == null
-            ? _buildUnllogedBody()
-            : _buildLoggedProfile());
+        body: SharedFeatures.instance.isLoggedIn
+            ? _buildLoggedProfile()
+            : _buildUnllogedBody());
   }
 }

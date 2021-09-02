@@ -1,7 +1,11 @@
+import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
 import 'package:duolibras/Network/Authentication/AuthenticatorProtocol.dart';
+import 'package:duolibras/Network/Service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+
+import '../UserSession.dart';
 
 class FirebaseAuthenticator extends AuthenticatorProtocol {
   static final _auth = FirebaseAuth.instance;
@@ -46,5 +50,13 @@ class FirebaseAuthenticator extends AuthenticatorProtocol {
       throw PlatformException(code: "code");
     }
     return _handleSignUp(model.email, model.password);
+  }
+
+  @override
+  Future<void> signOut() {
+    return _auth.signOut().then((value) async {
+      SharedFeatures.instance.isLoggedIn = false;
+      UserSession.instance.user = await Service.instance.getUser();
+    });
   }
 }

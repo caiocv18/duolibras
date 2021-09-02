@@ -74,21 +74,13 @@ class SQLiteDatabase extends DatabaseProtocol {
   }
 
   @override
-  Future<bool> saveModulesProgress(List<ModuleProgress> modulesProgress) async {
+  Future<bool> saveModuleProgress(ModuleProgress moduleProgress) async {
     var completer = Completer<bool>();
     final db = await database;
-
-    modulesProgress.forEach((moduleProgress) async {
-      await db
-          .insert(
-              Constants.database.moduleProgressTable, moduleProgress.toMap(),
-              conflictAlgorithm: ConflictAlgorithm.replace)
-          .then((value) => {
-                if (moduleProgress == modulesProgress.last)
-                  {completer.complete(true)}
-              });
-    });
-
+    await db
+        .insert(Constants.database.moduleProgressTable, moduleProgress.toMap(),
+            conflictAlgorithm: ConflictAlgorithm.replace)
+        .then((value) => {completer.complete(true)});
     return completer.future;
   }
 }

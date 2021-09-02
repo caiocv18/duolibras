@@ -101,19 +101,33 @@ class FirebaseService extends ServicesProtocol {
     return completer.future;
   }
 
+  // Future<bool> _postModuleProgressInFirebase(
+  //     List<ModuleProgress> moduleProgress) {
+  //   var completer = Completer<bool>();
+  //   final userDocument = _getUserFromFirebase();
+
+  //   moduleProgress.forEach((progress) {
+  //     userDocument
+  //         .collection(Constants.firebaseService.moduleProgressCollection).
+  //         .set(progress.toMap(), SetOptions(merge: true))
+  //         .then((_) => {
+  //               if (progress == moduleProgress.last) {completer.complete(true)}
+  //             });
+  //   });
+
+  //   return completer.future;
+  // }
+
   Future<bool> _postModuleProgressInFirebase(
-      List<ModuleProgress> moduleProgress) {
+      ModuleProgress moduleProgress) async {
     var completer = Completer<bool>();
     final userDocument = _getUserFromFirebase();
 
-    moduleProgress.forEach((progress) {
-      userDocument
-          .collection(Constants.firebaseService.moduleProgressCollection)
-          .add(progress.toMap())
-          .then((_) => {
-                if (progress == moduleProgress.last) {completer.complete(true)}
-              });
-    });
+    userDocument
+        .collection(Constants.firebaseService.moduleProgressCollection)
+        .doc(moduleProgress.id)
+        .set(moduleProgress.toMap(), SetOptions(merge: true))
+        .then((_) => {completer.complete(true)});
 
     return completer.future;
   }
@@ -194,7 +208,7 @@ class FirebaseService extends ServicesProtocol {
   }
 
   @override
-  Future<bool> postModulesProgress(List<ModuleProgress> moduleProgress) async {
+  Future<bool> postModuleProgress(ModuleProgress moduleProgress) async {
     return _postModuleProgressInFirebase(moduleProgress);
   }
 }

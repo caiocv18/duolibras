@@ -1,6 +1,5 @@
 import 'package:duolibras/Modules/LoginModule/SignUp/FirebaseSignUpWidget.dart';
-import 'package:duolibras/Modules/LoginModule/ViewModel/SignUpViewModel.dart';
-import 'package:duolibras/Network/Authentication/Firebase/FirebaseAuthenticator.dart';
+import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +9,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final signUpViewModel = SignUpViewModel(FirebaseAuthenticator());
+  final signUpViewModel = AutheticationViewModel();
 
   @override
   Widget build(BuildContext context) {

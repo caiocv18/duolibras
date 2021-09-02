@@ -32,7 +32,7 @@ class Database extends DatabaseProtocol {
   }
 
   @override
-  Future<bool> saveModulesProgress(List<ModuleProgress> modulesProgress) {
-    return _database.saveModulesProgress(modulesProgress);
+  Future<bool> saveModuleProgress(ModuleProgress moduleProgress) {
+    return _database.saveModuleProgress(moduleProgress);
   }
 }

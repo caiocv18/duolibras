@@ -1,11 +1,11 @@
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
-import 'package:duolibras/Modules/LoginModule/ViewModel/SignInViewModel.dart';
+import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  final SignInViewModelProtocol _viewModel;
+  final GoogleSignInProtocol _viewModel;
   GoogleSignInButton(this._viewModel);
 
   @override
@@ -68,15 +68,9 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     setState(() {
       _isSigningIn = true;
     });
-    widget._viewModel.signIn(null).then((value) => {
-          if (value)
-            {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                    builder: (context) => LearningScreen(_createViewModel())),
-              )
-            }
-        });
+    widget._viewModel
+        .googleSignIn()
+        .then((value) => Navigator.of(context).pop(true));
 
     setState(() {
       _isSigningIn = false;

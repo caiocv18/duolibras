@@ -104,7 +104,7 @@ class MockService extends ServicesProtocol {
   }
 
   @override
-  Future<bool> postModulesProgress(List<ModuleProgress> moduleProgress) {
+  Future<bool> postModuleProgress(ModuleProgress moduleProgress) {
     var completer = Completer<bool>();
     completer.complete(true);
 

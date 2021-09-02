@@ -8,7 +8,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:flutter/material.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -16,7 +15,7 @@ Future<void> main() async {
   // Service.instance.getUser().then((user) {
   //   print(user.name);
   // });
-  SharedFeatures.instance.isLoggedIn = true;
+  SharedFeatures.instance.isLoggedIn = false;
   // Service.instance.getTrail().then((trail) {
   //   print(trail.title);
   //   Service.instance.getSectionsFromTrail().then((sections) {

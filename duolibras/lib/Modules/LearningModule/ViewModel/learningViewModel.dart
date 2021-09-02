@@ -57,8 +57,8 @@ class LearningViewModel
   }
 
   @override
-  Future<void> didSelectModule(
-      String sectionID, String moduleID, BuildContext context) async {
+  Future<void> didSelectModule(String sectionID, String moduleID,
+      BuildContext context, Function? handler) async {
     _getExerciseFromModule(sectionID, moduleID).then((excersies) {
       // final viewModel = ExerciseViewModel(excersies);
       // final routeName = excersies.first.category == ExercisesCategory.writing
@@ -66,7 +66,14 @@ class LearningViewModel
       // : ExerciseMultiChoiceScreen.routeName;
 
       Navigator.of(context).pushNamed(ExerciseFlow.routeStartExerciseFlow,
-          arguments: {"exercises": excersies, "moduleID": moduleID});
+          arguments: {
+            "exercises": excersies,
+            "moduleID": moduleID
+          }).then((value) {
+        if (handler != null) {
+          handler(value);
+        }
+      });
     });
   }
 }

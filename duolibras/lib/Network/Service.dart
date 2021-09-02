@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Database/DatabaseProtocol.dart';
 import 'package:duolibras/Database/SQLite/SQLiteDatabase.dart';
@@ -10,6 +12,8 @@ import 'package:duolibras/Network/Models/Trail.dart';
 import 'package:duolibras/Network/Models/User.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
+
+import 'Authentication/UserSession.dart';
 
 class Service extends ServicesProtocol {
   late ServicesProtocol _service;
@@ -47,8 +51,16 @@ class Service extends ServicesProtocol {
   }
 
   @override
-  Future<User> getUser() {
-    return _service.getUser();
+  Future<User> getUser() async {
+    return _service.getUser().onError((error, stackTrace) async {
+      User user = User(name: "", id: "");
+      user.modulesProgress = await Service.instance
+          .getModulesProgress()
+          .onError((error, stackTrace) {
+        return [];
+      });
+      return user;
+    });
   }
 
   @override
@@ -66,11 +78,11 @@ class Service extends ServicesProtocol {
   }
 
   @override
-  Future<bool> postModulesProgress(List<ModuleProgress> modulesProgress) {
+  Future<bool> postModuleProgress(ModuleProgress moduleProgress) async {
     if (SharedFeatures.instance.isLoggedIn) {
-      return _service.postModulesProgress(modulesProgress);
+      return _service.postModuleProgress(moduleProgress);
     } else {
-      return _database.saveModulesProgress(modulesProgress);
+      return _database.saveModuleProgress(moduleProgress);
     }
   }
 }

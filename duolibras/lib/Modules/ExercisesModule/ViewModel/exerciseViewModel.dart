@@ -1,8 +1,8 @@
 import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/ModuleProgress.dart';
+import 'package:duolibras/Network/Service.dart';
 import 'package:flutter/material.dart';
-
 import '../exerciseWritingScreen.dart';
 
 class ExerciseViewModel with ExerciseWritingViewModel {
@@ -35,17 +35,23 @@ class ExerciseViewModel with ExerciseWritingViewModel {
   }
 
   Future<void> _saveProgress() async {
-    if (UserSession.instance.user == null) {
-      return;
+    final index = UserSession.instance.user.modulesProgress
+        .indexWhere((prog) => prog.moduleId == _moduleID);
+    ModuleProgress moduleProgress;
+    if (index != -1) {
+      final progress =
+          UserSession.instance.user.modulesProgress[index].progress + 1;
+      final id = UserSession.instance.user.modulesProgress[index].id;
+
+      moduleProgress =
+          ModuleProgress(id: id, moduleId: _moduleID, progress: progress);
+      UserSession.instance.user.modulesProgress[index] = moduleProgress;
+    } else {
+      moduleProgress = ModuleProgress(
+          id: UniqueKey().toString(), moduleId: _moduleID, progress: 1);
+      UserSession.instance.user.modulesProgress.add(moduleProgress);
     }
-
-    List<ModuleProgress> modulesProgress =
-        UserSession.instance.user!.modulesProgress ?? [];
-
-    modulesProgress.add(ModuleProgress(
-        id: "moduleProgress${_moduleID}", moduleId: _moduleID, progress: 1));
-    UserSession.instance.user!.modulesProgress = modulesProgress;
-    // await Service.instance.postModulesProgress(modulesProgress);
+    await Service.instance.postModuleProgress(moduleProgress);
   }
 
   Future<void> _handleMoveToNextExercise(

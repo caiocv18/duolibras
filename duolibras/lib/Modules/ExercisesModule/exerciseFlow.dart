@@ -53,7 +53,7 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
     });
 
     if (exercise == null) {
-      _exitSetup();
+      _exitSetup(true);
       return;
     }
 
@@ -98,12 +98,12 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
     final isConfirmed = await _isExitDesired();
 
     if (isConfirmed && mounted) {
-      _exitSetup();
+      _exitSetup(null);
     }
   }
 
-  void _exitSetup() {
-    Navigator.of(context).pop();
+  void _exitSetup(bool? completed) {
+    Navigator.of(context).pop(completed);
   }
 
   @override
