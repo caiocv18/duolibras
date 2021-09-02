@@ -468,6 +468,8 @@ PODS:
     - Flutter
     - FMDB (>= 2.7.5)
   - TensorFlowLiteC (2.2.0)
+  - TensorFlowLiteSwift (2.2.0):
+    - TensorFlowLiteC (= 2.2.0)
   - tflite (1.1.2):
     - Flutter
     - TensorFlowLiteC
@@ -481,6 +483,7 @@ DEPENDENCIES:
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - TensorFlowLiteSwift (= 2.2.0)
   - tflite (from `.symlinks/plugins/tflite/ios`)
 
 SPEC REPOS:
@@ -505,6 +508,7 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - TensorFlowLiteC
+    - TensorFlowLiteSwift
 
 EXTERNAL SOURCES:
   camera:
@@ -555,8 +559,9 @@ SPEC CHECKSUMS:
   sign_in_with_apple: 34f3f5456a45fd7ac5fb42905e2ad31dae061b4a
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   TensorFlowLiteC: b3ab9e867b0b71052ca102a32a786555b330b02e
+  TensorFlowLiteSwift: 2dd5e9c895e1819501f0fba3d8b69a536bda6c65
   tflite: 7acd11db0915e2d90ab90474413068568eb605f0
 
-PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
+PODFILE CHECKSUM: 0250b4d9448804c34e36a7ee3bdec06c57206bdc
 
 COCOAPODS: 1.10.0
