@@ -73,6 +73,8 @@ class AutheticationViewModel
 
   Future<void> _updateUserInDatabase(fireUser.User? user) async {
     if (user != null) {
+      SharedFeatures.instance.isLoggedIn = true;
+
       final userModel =
           myUser.User(id: user.uid, name: user.displayName ?? user.email ?? "");
 
@@ -80,7 +82,6 @@ class AutheticationViewModel
       userUpdated.modulesProgress = await Service.instance.getModulesProgress();
 
       UserSession.instance.user = userUpdated;
-      SharedFeatures.instance.isLoggedIn = true;
       return;
     } else {
       throw PlatformException(code: "code");

@@ -67,7 +67,8 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
               Container(
                   height: containerHeight * 0.40,
                   child: MultiChoicesWidget(exercise.answers, (answer) {
-                    handleSubmitAnswer(answer, exercise.id, ctx);
+                    handleSubmitAnswer(
+                        answer, exercise.correctAnswer, exercise.id, ctx);
                   })),
             ],
           ),
@@ -76,10 +77,11 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
     ));
   }
 
-  void handleSubmitAnswer(String answer, String exerciseID, BuildContext ctx) {
+  void handleSubmitAnswer(String answer, String correctAnswer,
+      String exerciseID, BuildContext ctx) {
     final isCorrect = _viewModel.isAnswerCorrect(answer, exerciseID);
 
-    showFinishExerciseBottomSheet(isCorrect, ctx, () {
+    showFinishExerciseBottomSheet(isCorrect, correctAnswer, ctx, () {
       _viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
     });
   }
@@ -98,7 +100,7 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
             _mediaQuery.padding.bottom +
             appBar.preferredSize.height +
             _mediaQuery.padding.top +
-            60);
+            67);
 
     return Scaffold(
         // appBar: AppBarWidget(),

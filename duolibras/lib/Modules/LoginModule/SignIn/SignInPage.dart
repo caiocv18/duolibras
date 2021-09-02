@@ -16,6 +16,7 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final _viewModel = AutheticationViewModel();
+  var _userHasChanged = false;
 
   Widget _buildLoggedProfile() {
     return Container(
@@ -25,14 +26,16 @@ class _SignInPageState extends State<SignInPage> {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Current User: ${UserSession.instance.user!.name}",
+            Text("Current User: ${UserSession.instance.user.name}",
                 style: TextStyle(fontSize: 22)),
             SizedBox(height: 20),
             ElevatedButton(
               child: Text("Log out"),
               onPressed: () {
                 _viewModel.signOut().then((_) {
-                  setState(() {});
+                  setState(() {
+                    _userHasChanged = true;
+                  });
                 });
               },
               style: ButtonStyle(
@@ -61,12 +64,17 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("ISLOGGED: ${SharedFeatures.instance.isLoggedIn}");
-    return Scaffold(
-        appBar: AppBar(title: Text("Login")),
-        backgroundColor: Colors.lightBlue,
-        body: SharedFeatures.instance.isLoggedIn
-            ? _buildLoggedProfile()
-            : _buildUnllogedBody());
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pop(_userHasChanged);
+        return true;
+      },
+      child: Scaffold(
+          appBar: AppBar(title: Text("Login")),
+          backgroundColor: Colors.lightBlue,
+          body: SharedFeatures.instance.isLoggedIn
+              ? _buildLoggedProfile()
+              : _buildUnllogedBody()),
+    );
   }
 }

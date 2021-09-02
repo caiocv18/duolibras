@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:duolibras/Commons/Utils/Constants.dart';
+import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Network/Firebase/FirebaseErrors.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/ModuleProgress.dart';
@@ -22,7 +23,7 @@ class FirebaseService extends ServicesProtocol {
     if (firebaseUser == null) {
       throw FirebaseErrors.UserNotFound;
     }
-
+    SharedFeatures.instance.isLoggedIn = true;
     return firestoreInstance
         .collection(Constants.firebaseService.usersCollection)
         .doc(firebaseUser.uid);

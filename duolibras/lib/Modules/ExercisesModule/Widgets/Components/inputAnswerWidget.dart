@@ -12,7 +12,7 @@ class InputAnswerWidget extends StatelessWidget {
         width: constraint.maxWidth * 0.85,
         child: TextField(
             cursorColor: Colors.blue,
-            decoration: InputDecoration(labelText: "Your Answer"),
+            decoration: InputDecoration(labelText: "Sua Resposta"),
             keyboardType: TextInputType.text,
             controller: inputController),
       );

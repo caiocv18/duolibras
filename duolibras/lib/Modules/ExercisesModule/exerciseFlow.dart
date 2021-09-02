@@ -72,21 +72,21 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text('Are you sure?'),
+                title: const Text('Tem certeza?'),
                 content: const Text(
-                    'If you exit the exercise, your progress will be lost.'),
+                    'Si você sair todo seu progesso vai ser perdido.'),
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop(true);
                     },
-                    child: const Text('Leave'),
+                    child: const Text('Sair'),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop(false);
                     },
-                    child: const Text('Stay'),
+                    child: const Text('Continuar'),
                   ),
                 ],
               );
@@ -157,13 +157,13 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
           onPressed: _onExitPressed,
           icon: const Icon(Icons.chevron_left),
         ),
-        title: const Text('Exercise'),
+        title: const Text('Hora de Aprender'),
         actions: [
-          FlatButton(
-            textColor: Colors.white,
-            onPressed: () {},
-            child: Text("$_totalPoints"),
-            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("$_totalPoints", style: TextStyle(fontSize: 15)),
+            ),
           ),
         ],
         bottom: MyLinearProgressIndicator(
@@ -176,7 +176,7 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
 
 class MyLinearProgressIndicator extends LinearProgressIndicator
     implements PreferredSizeWidget {
-  final double _kMyLinearProgressIndicatorHeight = 12.0;
+  final double _kMyLinearProgressIndicatorHeight = 20.0;
 
   @override
   // TODO: implement preferredSize

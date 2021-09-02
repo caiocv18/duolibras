@@ -31,32 +31,11 @@ class ExerciseWritingScreen extends ExerciseScreen {
 
   ExerciseWritingScreen(this._exercise, this._viewModel);
 
-  Widget _buildPopupDialog(BuildContext context, String title) {
-    return new AlertDialog(
-      title: Text(title),
-      content: new Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text("Hello"),
-        ],
-      ),
-      actions: <Widget>[
-        new FlatButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          textColor: Theme.of(context).primaryColor,
-          child: const Text('Close'),
-        ),
-      ],
-    );
-  }
-
-  void handleSubmitAnswer(String answer, String exerciseID, BuildContext ctx) {
+  void handleSubmitAnswer(String answer, String correctAnswer,
+      String exerciseID, BuildContext ctx) {
     final isCorrect = _viewModel.isAnswerCorrect(answer, exerciseID);
 
-    showFinishExerciseBottomSheet(isCorrect, ctx, () {
+    showFinishExerciseBottomSheet(isCorrect, correctAnswer, ctx, () {
       _viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
     });
   }
@@ -84,13 +63,13 @@ class ExerciseWritingScreen extends ExerciseScreen {
                     child: InputAnswerWidget(inputController)),
                 SizedBox(height: containerSize.height * 0.03),
                 Container(
-                  height: containerSize.height * 0.1,
+                  height: containerSize.height * 0.08,
                   width: containerSize.width * 0.7,
                   child: ElevatedButton(
-                    child: Text("Submit"),
+                    child: Text("Verificar"),
                     onPressed: () {
-                      handleSubmitAnswer(
-                          inputController.text, exercise.id, ctx);
+                      handleSubmitAnswer(inputController.text,
+                          exercise.correctAnswer, exercise.id, ctx);
                     },
                     style: ButtonStyle(
                         shape:

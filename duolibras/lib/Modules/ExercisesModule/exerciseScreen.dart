@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class ExerciseScreen extends StatelessWidget {
   const ExerciseScreen({Key? key}) : super(key: key);
 
-  void showFinishExerciseBottomSheet(
-      bool isAnswerCorrect, BuildContext context, Function handler) {
+  void showFinishExerciseBottomSheet(bool isAnswerCorrect, String correctAnswer,
+      BuildContext context, Function handler) {
     final button = ElevatedButton(
       child: Text("Continuar"),
       onPressed: () {
@@ -18,8 +18,8 @@ class ExerciseScreen extends StatelessWidget {
     );
 
     final msg = isAnswerCorrect
-        ? "Congrats Bro, you did it correct!"
-        : "Wrong, You´re a son of bitch!";
+        ? "Incrível!"
+        : "A resposta correta é ${correctAnswer}!";
 
     final backgroundColor =
         isAnswerCorrect ? Colors.green[400] : Colors.red[300];
