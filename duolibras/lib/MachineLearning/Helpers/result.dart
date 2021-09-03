@@ -5,4 +5,3 @@ class Result {
 
   Result(this.confidence, this.id, this.label);
 }
-// 

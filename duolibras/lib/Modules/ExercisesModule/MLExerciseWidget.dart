@@ -1,4 +1,4 @@
-import 'package:duolibras/MachineLearning/TFLite/CameraWidget.dart';
+import 'package:duolibras/MachineLearning/CameraWidget.dart';
 import 'package:flutter/material.dart';
 
 class MLExerciseWidget extends StatefulWidget {

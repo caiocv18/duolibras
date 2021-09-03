@@ -4,19 +4,23 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'AppHelper.dart';
-import 'TFLiteHelper.dart';
+import 'MLModelProtocol.dart';
+import 'app_helper.dart';
 
 class CameraHelper {
-  bool isDetecting = false;
-  final _direction;
-  final _completion = Completer<void>();
-  late CameraController camera;
-  late Future<void> initializeControllerFuture;
+  late CameraController _camera;
+  CameraController get camera => _camera;
 
-  CameraHelper(this._direction) {
-    initializeControllerFuture = _completion.future;
-    _initializeCamera();
+  bool isDetecting = false;
+  CameraLensDirection _direction;
+  Completer<void> completer = Completer();
+  MLModelProtocol mlModel;
+
+  CameraHelper(this.mlModel, this._direction) {
+    initializeCamera();
+
+    //Load TFLite Model
+    mlModel.loadModel();
   }
 
   Future<CameraDescription> _getCamera(CameraLensDirection dir) async {
@@ -27,10 +31,10 @@ class CameraHelper {
     );
   }
 
-  void _initializeCamera() async {
+  void initializeCamera() async {
     AppHelper.log("_initializeCamera", "Initializing camera..");
 
-    camera = CameraController(
+    _camera = CameraController(
         await _getCamera(_direction),
         defaultTargetPlatform == TargetPlatform.iOS
             ? ResolutionPreset.low
@@ -38,22 +42,25 @@ class CameraHelper {
         enableAudio: false,
         imageFormatGroup: ImageFormatGroup.bgra8888);
 
-    camera.initialize().then((value) {
+    await _camera.initialize().then((value) {
       AppHelper.log(
           "_initializeCamera", "Camera initialized, starting camera stream..");
+      completer.complete();
 
-      camera.startImageStream((CameraImage image) {
-        if (!TFLiteHelper.modelLoaded) return;
-        if (isDetecting) return;
-        isDetecting = true;
+      _camera.startImageStream((CameraImage image) {
+        if (!mlModel.modelsIsLoaded) return;
+        // if (isDetecting) return;
+        // isDetecting = true;
         try {
-          TFLiteHelper.classifyImage(image);
+          mlModel.predict(image);
         } catch (e) {
           print(e);
         }
       });
-
-      _completion.complete();
     });
+  }
+
+  void dispose() {
+    _camera.dispose();
   }
 }
