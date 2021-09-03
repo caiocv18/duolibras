@@ -4,8 +4,6 @@ import 'package:duolibras/Modules/LoginModule/SignIn/FirebaseSignInWidget.dart';
 import 'package:duolibras/Modules/LoginModule/SignIn/GoogleSignInButton.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
-import 'package:duolibras/Network/Service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

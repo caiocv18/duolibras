@@ -8,6 +8,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:flutter/material.dart';
 
+import 'Modules/ExercisesModule/MLExerciseWidget.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -53,5 +55,12 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: MLExerciseWidget());
+    // routes: _routes,
+    // onGenerateRoute: (settings) =>
+    //     MainRouter.instance.onGenerateRoute(settings),
+    // navigatorKey: MainRouter.instance.navigatorKey,
+    // home: LaunchScreen(
+    //     MainRouter.instance.initialLoadCompleted)); //LearningScreen(
+    // LearningViewModel())) //ExerciseMultiChoiceWidget(Exercise())); //
   }
 }

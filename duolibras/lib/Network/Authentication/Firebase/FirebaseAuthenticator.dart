@@ -10,23 +10,14 @@ import '../UserSession.dart';
 class FirebaseAuthenticator extends AuthenticatorProtocol {
   static final _auth = FirebaseAuth.instance;
 
-  Future<User> _handleSignInEmail(String email, String password) async {
+  Future<User> _signInWithEmailAndLink(String userEmail) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      final User user = result.user!;
+      if (!_auth.isSignInWithEmailLink("https://duolibras.page.link/")) {
+        throw PlatformException(code: "url error");
+      }
 
-      return user;
-    } on FirebaseAuthException catch (e) {
-      print(e);
-      throw e;
-    }
-  }
-
-  Future<User> _handleSignUp(email, password) async {
-    try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential result = await _auth.signInWithEmailLink(
+          email: userEmail, emailLink: "https://duolibras.page.link/");
       final User user = result.user!;
 
       return user;
@@ -41,15 +32,12 @@ class FirebaseAuthenticator extends AuthenticatorProtocol {
     if (model == null) {
       throw PlatformException(code: "code");
     }
-    return _handleSignInEmail(model.email, model.password);
+    return _signInWithEmailAndLink(model.email);
   }
 
   @override
   Future<User> signUp(AuthenticationModel? model) {
-    if (model == null) {
-      throw PlatformException(code: "code");
-    }
-    return _handleSignUp(model.email, model.password);
+    throw UnimplementedError();
   }
 
   @override

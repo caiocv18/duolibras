@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:duolibras/MachineLearning/TFlite/tflite_helper.dart';
+import 'package:duolibras/MachineLearning/TextStream.dart';
 import 'package:flutter/material.dart';
 
 import 'Helpers/app_helper.dart';
@@ -24,21 +25,6 @@ class CameraWidgetState extends State<CameraWidget> {
     super.initState();
 
     cameraHelper = CameraHelper(mlModel, CameraLensDirection.front);
-
-    //Subscribe to TFLite's Classify events
-    mlModel.tfLiteResultsController.stream.listen(
-        (value) {
-          //Update results on screen
-          // setState(() {
-          //   //Set bit to false to allow detection again
-          //   cameraHelper.isDetecting = false;
-          // });
-        },
-        onDone: () {},
-        onError: (error) {
-          AppHelper.log("listen", error);
-        });
-
     cameraHelper.completer.future.then((_) => {completer.complete()});
   }
 
@@ -57,8 +43,13 @@ class CameraWidgetState extends State<CameraWidget> {
         future: completer.future,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Stack(
-              children: <Widget>[CameraPreview(cameraHelper.camera)],
+            return Column(
+              children: <Widget>[
+                CameraPreview(cameraHelper.camera),
+                SizedBox(height: 15),
+                TextStream(
+                    tfLiteResultsController: mlModel.tfLiteResultsController)
+              ],
             );
           } else {
             return Center(child: CircularProgressIndicator());

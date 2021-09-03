@@ -28,8 +28,7 @@ abstract class InputValidator {
 
 abstract class FirebaseAuthenticatorProtocol
     with SignOutProtocol, InputValidator {
-  Future<void> firebaseSignIn(String email, String password);
-  Future<void> firebaseSignUp(String email, String password);
+  Future<void> firebaseSignIn(String email);
 }
 
 class AutheticationViewModel
@@ -53,16 +52,9 @@ class AutheticationViewModel
   }
 
   @override
-  Future<void> firebaseSignIn(String email, String password) async {
-    fireUser.User? user = await _firebaseAuthenticator
-        .signIn(AuthenticationModel(email: email, password: password));
-    return _updateUserInDatabase(user);
-  }
-
-  @override
-  Future<void> firebaseSignUp(String email, String password) async {
-    final user = await _firebaseAuthenticator
-        .signUp(AuthenticationModel(email: email, password: password));
+  Future<void> firebaseSignIn(String email) async {
+    fireUser.User? user =
+        await _firebaseAuthenticator.signIn(AuthenticationModel(email: email));
     return _updateUserInDatabase(user);
   }
 

@@ -59,11 +59,6 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     );
   }
 
-  LearningViewModelProtocol _createViewModel() {
-    final LearningViewModelProtocol viewModel = LearningViewModel();
-    return viewModel;
-  }
-
   void loginWithGoogle() async {
     setState(() {
       _isSigningIn = true;
