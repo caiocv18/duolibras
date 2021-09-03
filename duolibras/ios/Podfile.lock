@@ -351,31 +351,31 @@ PODS:
   - BoringSSL-GRPC/Interface (0.0.7)
   - camera (0.0.1):
     - Flutter
-  - cloud_firestore (2.5.0):
-    - Firebase/Firestore (= 8.5.0)
+  - cloud_firestore (2.5.1):
+    - Firebase/Firestore (= 8.6.0)
     - firebase_core
     - Flutter
-  - Firebase/Auth (8.5.0):
+  - Firebase/Auth (8.6.0):
     - Firebase/CoreOnly
-    - FirebaseAuth (~> 8.5.0)
-  - Firebase/CoreOnly (8.5.0):
-    - FirebaseCore (= 8.5.0)
-  - Firebase/Firestore (8.5.0):
+    - FirebaseAuth (~> 8.6.0)
+  - Firebase/CoreOnly (8.6.0):
+    - FirebaseCore (= 8.6.0)
+  - Firebase/Firestore (8.6.0):
     - Firebase/CoreOnly
-    - FirebaseFirestore (~> 8.5.0)
-  - firebase_auth (3.0.2):
-    - Firebase/Auth (= 8.5.0)
+    - FirebaseFirestore (~> 8.6.0)
+  - firebase_auth (3.1.0):
+    - Firebase/Auth (= 8.6.0)
     - firebase_core
     - Flutter
-  - firebase_core (1.5.0):
-    - Firebase/CoreOnly (= 8.5.0)
+  - firebase_core (1.6.0):
+    - Firebase/CoreOnly (= 8.6.0)
     - Flutter
-  - FirebaseAuth (8.5.0):
+  - FirebaseAuth (8.6.0):
     - FirebaseCore (~> 8.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
     - GoogleUtilities/Environment (~> 7.4)
     - GTMSessionFetcher/Core (~> 1.5)
-  - FirebaseCore (8.5.0):
+  - FirebaseCore (8.6.0):
     - FirebaseCoreDiagnostics (~> 8.0)
     - GoogleUtilities/Environment (~> 7.4)
     - GoogleUtilities/Logger (~> 7.4)
@@ -384,7 +384,7 @@ PODS:
     - GoogleUtilities/Environment (~> 7.4)
     - GoogleUtilities/Logger (~> 7.4)
     - nanopb (~> 2.30908.0)
-  - FirebaseFirestore (8.5.0):
+  - FirebaseFirestore (8.6.0):
     - abseil/algorithm (= 0.20200225.0)
     - abseil/base (= 0.20200225.0)
     - abseil/container/flat_hash_map (= 0.20200225.0)
@@ -467,7 +467,9 @@ PODS:
   - sqflite (0.0.2):
     - Flutter
     - FMDB (>= 2.7.5)
-  - TensorFlowLiteC (2.2.0)
+  - TensorFlowLiteC (2.6.0):
+    - TensorFlowLiteC/Core (= 2.6.0)
+  - TensorFlowLiteC/Core (2.6.0)
   - tflite (1.1.2):
     - Flutter
     - TensorFlowLiteC
@@ -481,6 +483,7 @@ DEPENDENCIES:
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - TensorFlowLiteC (~> 2.6.0)
   - tflite (from `.symlinks/plugins/tflite/ios`)
 
 SPEC REPOS:
@@ -531,14 +534,14 @@ SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   camera: 3164201dc344383e62282964016528c4f5a9ad50
-  cloud_firestore: e0516b69697b348db9a4d65f3b610dfd5ba3ac1e
-  Firebase: ff8c73105b90e33e1dc6c8e5445d7adc2ccdc7c1
-  firebase_auth: 214ff86facd807bbb0ccff32f4b2d3865e3bc4f3
-  firebase_core: 82d486a6231b636aea229bd471bceca82cbe00a6
-  FirebaseAuth: b152ea261b60eeb9419ae7e5bf34761382b33277
-  FirebaseCore: 1c1ca72483b59b17050f5b4cec4fb748425a3901
+  cloud_firestore: 3280837bd2fdec18489ef93699527df4af4f177d
+  Firebase: 21ac9f28b09a8bdfc005f34c984fca84e7e8786d
+  firebase_auth: 2dfa8e886191c24ddcf4da34463d47b72e6d19dc
+  firebase_core: c21ac09a8d23afd3594b56ed786bad12e5266bba
+  FirebaseAuth: 223adeeb2262b417532e89bf06a960e3a0a1e9e4
+  FirebaseCore: 620b677f70f5470a8e59cb77f3ddc666f6f09785
   FirebaseCoreDiagnostics: 3721920bde3a9a6d5aa093c1d25e9d3e47f694af
-  FirebaseFirestore: 9aa10de35bb76a5fe40fdf5c858669f0eac88a99
+  FirebaseFirestore: 7b8bd72aff4d3ad91498343e81fdbaa994ce8abe
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_sign_in: de494e5e993986afae63e22a32441e30c35c9823
@@ -554,9 +557,9 @@ SPEC CHECKSUMS:
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   sign_in_with_apple: 34f3f5456a45fd7ac5fb42905e2ad31dae061b4a
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
-  TensorFlowLiteC: b3ab9e867b0b71052ca102a32a786555b330b02e
+  TensorFlowLiteC: 869f93708210ed939fc40f40c772a120b7f964d1
   tflite: 7acd11db0915e2d90ab90474413068568eb605f0
 
-PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
+PODFILE CHECKSUM: a858a88352334dc733c65a0089af60343df7f765
 
 COCOAPODS: 1.10.1
