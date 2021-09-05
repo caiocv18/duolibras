@@ -54,13 +54,13 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: MLExerciseWidget());
-    // routes: _routes,
-    // onGenerateRoute: (settings) =>
-    //     MainRouter.instance.onGenerateRoute(settings),
-    // navigatorKey: MainRouter.instance.navigatorKey,
-    // home: LaunchScreen(
-    //     MainRouter.instance.initialLoadCompleted)); //LearningScreen(
-    // LearningViewModel())) //ExerciseMultiChoiceWidget(Exercise())); //
+        // home: MLExerciseWidget());
+        //routes: _routes,
+        onGenerateRoute: (settings) =>
+            MainRouter.instance.onGenerateRoute(settings),
+        navigatorKey: MainRouter.instance.navigatorKey,
+        home: LaunchScreen(
+            MainRouter.instance.initialLoadCompleted)); //LearningScreen(
+    //LearningViewModel())) //ExerciseMultiChoiceWidget(Exercise())); //
   }
 }

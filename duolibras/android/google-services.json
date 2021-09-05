@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "306607468782",
+    "project_id": "libras-tcc",
+    "storage_bucket": "libras-tcc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:306607468782:android:fe194666eee9626fc743ff",
+        "android_client_info": {
+          "package_name": "com.example.duolibras"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "306607468782-levcjrr50mjkog2754g78oa8a41tudda.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.duolibras",
+            "certificate_hash": "cdfb5f865a65f3e744c0b0a94c02c1780642ba1c"
+          }
+        },
+        {
+          "client_id": "306607468782-l8ompfov2pcnlhddvpoe0a5k53ierq03.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATsFIrjEzktqM6uU0ZalTkeU_dg7IUssI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "306607468782-l8ompfov2pcnlhddvpoe0a5k53ierq03.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "306607468782-rpoihho8jd6mghv4a9uts19cr24flmei.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.duolibras"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
