@@ -13,7 +13,7 @@ class FirebaseAuthenticator extends AuthenticatorProtocol {
 
   Future<void> signInWithEmail(String userEmail) async {
     final settings = ActionCodeSettings(
-        url: "https://duolibras.page.link/",
+        url: "https://duolibras.page.link/naxz",
         handleCodeInApp: true,
         iOSBundleId: "com.example.duolibras",
         androidPackageName: "com.example.duolibras",

@@ -24,3 +24,11 @@ class FirebaseServiceConstants {
   String get trailsCollection => "trails";
   String get moduleProgressCollection => "moduleProgress";
 }
+
+class FirebaseAuthenticatorConstants {
+  const FirebaseAuthenticatorConstants();
+  String get url => "https://duolibras.page.link/naxz";
+  String get iosBundleId => "com.example.duolibras";
+  String get androidPackageName => "com.example.duolibras";
+  String get androidMinimumVersion => "12";
+}

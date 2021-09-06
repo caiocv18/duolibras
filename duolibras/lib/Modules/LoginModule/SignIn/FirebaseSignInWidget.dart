@@ -58,7 +58,8 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
           await FirebaseDynamicLinks.instance.getInitialLink();
       if (data != null) {
         widget._viewModel
-            .handleFirebaseLink(data.link, emailTextfieldController.text);
+            .handleFirebaseLink(data.link, emailTextfieldController.text)
+            .then((value) => {Navigator.of(context).pop(true)});
       }
 
       FirebaseDynamicLinks.instance.onLink(
@@ -66,7 +67,8 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
         if (dynamicLink != null) {
           final Uri deepLink = dynamicLink.link;
           widget._viewModel
-              .handleFirebaseLink(deepLink, emailTextfieldController.text);
+              .handleFirebaseLink(deepLink, emailTextfieldController.text)
+              .then((value) => {Navigator.of(context).pop(true)});
         }
       }, onError: (OnLinkErrorException e) async {
         print('onLinkError');
@@ -76,9 +78,7 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
   }
 
   void signIn() async {
-    await widget._viewModel
-        .firebaseSignIn(emailTextfieldController.text)
-        .then((value) => {Navigator.of(context).pop(true)});
+    await widget._viewModel.firebaseSignIn(emailTextfieldController.text);
   }
 
   Widget emailTextfield() {

@@ -360,6 +360,9 @@ PODS:
     - FirebaseAuth (~> 8.6.0)
   - Firebase/CoreOnly (8.6.0):
     - FirebaseCore (= 8.6.0)
+  - Firebase/DynamicLinks (8.6.0):
+    - Firebase/CoreOnly
+    - FirebaseDynamicLinks (~> 8.6.0)
   - Firebase/Firestore (8.6.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 8.6.0)
@@ -369,6 +372,10 @@ PODS:
     - Flutter
   - firebase_core (1.6.0):
     - Firebase/CoreOnly (= 8.6.0)
+    - Flutter
+  - firebase_dynamic_links (2.0.9):
+    - Firebase/DynamicLinks (= 8.6.0)
+    - firebase_core
     - Flutter
   - FirebaseAuth (8.6.0):
     - FirebaseCore (~> 8.0)
@@ -384,6 +391,8 @@ PODS:
     - GoogleUtilities/Environment (~> 7.4)
     - GoogleUtilities/Logger (~> 7.4)
     - nanopb (~> 2.30908.0)
+  - FirebaseDynamicLinks (8.6.0):
+    - FirebaseCore (~> 8.0)
   - FirebaseFirestore (8.6.0):
     - abseil/algorithm (= 0.20200225.0)
     - abseil/base (= 0.20200225.0)
@@ -479,6 +488,7 @@ DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
   - Flutter (from `Flutter`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
@@ -495,6 +505,7 @@ SPEC REPOS:
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreDiagnostics
+    - FirebaseDynamicLinks
     - FirebaseFirestore
     - FMDB
     - GoogleDataTransport
@@ -518,6 +529,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
+  firebase_dynamic_links:
+    :path: ".symlinks/plugins/firebase_dynamic_links/ios"
   Flutter:
     :path: Flutter
   google_sign_in:
@@ -538,9 +551,11 @@ SPEC CHECKSUMS:
   Firebase: 21ac9f28b09a8bdfc005f34c984fca84e7e8786d
   firebase_auth: 2dfa8e886191c24ddcf4da34463d47b72e6d19dc
   firebase_core: c21ac09a8d23afd3594b56ed786bad12e5266bba
+  firebase_dynamic_links: ef0989cdc7e7d2aaed5814a81f7ca0ec7a6028ee
   FirebaseAuth: 223adeeb2262b417532e89bf06a960e3a0a1e9e4
   FirebaseCore: 620b677f70f5470a8e59cb77f3ddc666f6f09785
   FirebaseCoreDiagnostics: 3721920bde3a9a6d5aa093c1d25e9d3e47f694af
+  FirebaseDynamicLinks: 406d67290fd123e133641f93a333b4957af22c09
   FirebaseFirestore: 7b8bd72aff4d3ad91498343e81fdbaa994ce8abe
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a

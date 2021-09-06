@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/sectionWidget.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
-import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:duolibras/Network/Models/Section.dart';
-import 'package:duolibras/main.dart';
 import 'package:flutter/material.dart';
 
 abstract class LearningViewModelProtocol {
