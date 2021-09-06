@@ -20,50 +20,24 @@ class AppleAuthenticator extends AuthenticatorProtocol {
     final appleIdCredential =
         await SignInWithApple.getAppleIDCredential(scopes: scopes);
 
-    if (appleIdCredential.state == null) {
+    final oAuthProvider = OAuthProvider('apple.com');
+
+    final credential = oAuthProvider.credential(
+        idToken: appleIdCredential.identityToken,
+        accessToken: appleIdCredential.authorizationCode);
+
+    final firebaseUser = (await _auth.signInWithCredential(credential)).user;
+
+    if (firebaseUser == null) {
       throw PlatformException(code: "code");
     }
 
-    final state =
-        await SignInWithApple.getCredentialState(appleIdCredential.state!);
-
-    switch (state) {
-      case CredentialState.authorized:
-        {
-          final oAuthProvider = OAuthProvider('apple.com');
-
-          final credential = oAuthProvider.credential(
-              idToken: appleIdCredential.identityToken,
-              accessToken: appleIdCredential.authorizationCode);
-
-          final firebaseUser =
-              (await _auth.signInWithCredential(credential)).user;
-
-          if (firebaseUser == null) {
-            throw PlatformException(code: "code");
-          }
-
-          if (scopes.contains(AppleIDAuthorizationScopes.fullName)) {
-            final displayName =
-                '${appleIdCredential.givenName} ${appleIdCredential.familyName}';
-            await firebaseUser.updateDisplayName(displayName);
-          }
-          return firebaseUser;
-        }
-      case CredentialState.revoked:
-        {
-          throw PlatformException(
-            code: 'ERROR_AUTHORIZATION_DENIED',
-            message: 'Sign in aborted by user',
-          );
-        }
-
-      case CredentialState.notFound:
-        throw PlatformException(
-          code: 'ERROR_ABORTED_BY_USER',
-          message: 'Sign in aborted by user',
-        );
+    if (scopes.contains(AppleIDAuthorizationScopes.fullName)) {
+      final displayName =
+          '${appleIdCredential.givenName} ${appleIdCredential.familyName}';
+      await firebaseUser.updateDisplayName(displayName);
     }
+    return firebaseUser;
   }
 
   @override

@@ -4,8 +4,6 @@ import 'package:duolibras/Modules/LoginModule/SignIn/FirebaseSignInWidget.dart';
 import 'package:duolibras/Modules/LoginModule/SignIn/GoogleSignInButton.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
-import 'package:duolibras/Network/Service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -49,15 +47,17 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Widget _buildUnllogedBody() {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FirebaseSignInWidget(_viewModel),
-          Container(child: AppleSignInWidget(_viewModel), width: 300),
-          SizedBox(height: 15.0),
-          Container(child: GoogleSignInButton(_viewModel), width: 300)
-        ],
+    return SingleChildScrollView(
+      child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FirebaseSignInWidget(_viewModel),
+            Container(child: AppleSignInWidget(_viewModel), width: 300),
+            SizedBox(height: 15.0),
+            Container(child: GoogleSignInButton(_viewModel), width: 300)
+          ],
+        ),
       ),
     );
   }
