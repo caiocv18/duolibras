@@ -1,10 +1,10 @@
+import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
 import 'package:duolibras/Network/Authentication/AuthenticatorProtocol.dart';
 import 'package:duolibras/Network/Firebase/FirebaseErrors.dart';
 import 'package:duolibras/Network/Service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 
 import '../UserSession.dart';
 
@@ -13,11 +13,11 @@ class FirebaseAuthenticator extends AuthenticatorProtocol {
 
   Future<void> signInWithEmail(String userEmail) async {
     final settings = ActionCodeSettings(
-        url: "https://duolibras.page.link/naxz",
+        url: FirebaseAuthenticatorConstants().url,
         handleCodeInApp: true,
-        iOSBundleId: "com.example.duolibras",
-        androidPackageName: "com.example.duolibras",
-        androidMinimumVersion: "12",
+        iOSBundleId: FirebaseAuthenticatorConstants().iosBundleId,
+        androidPackageName: FirebaseAuthenticatorConstants().androidPackageName,
+        androidMinimumVersion: FirebaseAuthenticatorConstants().androidMinimumVersion,
         androidInstallApp: true);
 
     return await _auth.sendSignInLinkToEmail(

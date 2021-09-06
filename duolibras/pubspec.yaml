@@ -37,7 +37,6 @@ dependencies:
   camera: ^0.9.2+2
   tflite: ^1.1.2
   firebase_dynamic_links: ^2.0.9
-  camera: ^0.9.2+1
   custom_navigator:
     git:
       url: https://github.com/kjawadDeveloper/Custom-navigator.git

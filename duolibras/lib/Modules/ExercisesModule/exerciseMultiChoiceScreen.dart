@@ -5,7 +5,6 @@ import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWid
 import 'package:duolibras/Modules/ExercisesModule/exerciseScreen.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 
 class ExerciseMultiChoiceScreen extends ExerciseScreen {
   static String routeName = "/ExerciseMultiChoiceScreen";
@@ -103,6 +102,9 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
             67);
 
     return Scaffold(
+        // appBar: AppBarWidget(),
+        // drawer: AppBarWidget(),
+        bottomNavigationBar: bottomNavigationBar,
         body: _buildBody(_exercise, _viewModel, containerHeight, context));
   }
 }

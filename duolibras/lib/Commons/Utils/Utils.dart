@@ -7,6 +7,7 @@ class Utils {
       return (x as T);
     } on TypeError catch (e) {
       print('CastError when trying to cast $x to $T!');
+      print(e);
       return fallback;
     }
   }

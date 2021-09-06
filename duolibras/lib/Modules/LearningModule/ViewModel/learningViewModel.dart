@@ -1,19 +1,14 @@
 import 'dart:async';
 
-import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
-import 'package:duolibras/Modules/ExercisesModule/exerciseMultiChoiceScreen.dart';
-import 'package:duolibras/Modules/ExercisesModule/exerciseWritingScreen.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/sectionWidget.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
-import 'package:duolibras/Network/Models/ExercisesCategory.dart';
 import 'package:duolibras/Network/Models/Module.dart';
 import 'package:duolibras/Network/Models/Section.dart';
 import 'package:duolibras/Network/Service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rxdart/streams.dart';
 import 'package:rxdart/subjects.dart';

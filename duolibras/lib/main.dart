@@ -8,7 +8,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:flutter/material.dart';
 
-import 'Modules/ExercisesModule/MLExerciseWidget.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,11 +40,6 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   const MyApp({Key? key}) : super(key: key);
-
-  LearningViewModelProtocol _createViewModel() {
-    final LearningViewModelProtocol viewModel = LearningViewModel();
-    return viewModel;
-  }
 
   @override
   Widget build(BuildContext context) {
