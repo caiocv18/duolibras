@@ -49,7 +49,7 @@ class Service extends ServicesProtocol {
   @override
   Future<User> getUser() async {
     return _service.getUser().onError((error, stackTrace) async {
-      User user = User(name: "", id: "");
+      User user = User(name: "", id: "", currentProgress: 0);
       user.modulesProgress = await Service.instance
           .getModulesProgress()
           .onError((error, stackTrace) {
@@ -80,5 +80,10 @@ class Service extends ServicesProtocol {
     } else {
       return _database.saveModuleProgress(moduleProgress);
     }
+  }
+
+  @override
+  Future<List<User>> getUsersRanking() {
+    return _service.getUsersRanking();
   }
 }
