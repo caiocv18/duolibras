@@ -1,11 +1,9 @@
 import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
+import 'package:duolibras/Modules/HomeModule/homeScreen.dart';
 import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
 import 'package:duolibras/Modules/LoginModule/SignIn/SignInPage.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
-
-import 'ViewModel/learningViewModel.dart';
-import 'Widgets/learningScreen.dart';
 
 class MainRouter {
   static const routeHome = '/learningScreen';
@@ -26,7 +24,7 @@ class MainRouter {
   Route onGenerateRoute(RouteSettings settings) {
     late Widget page;
     if (settings.name == routeHome) {
-      page = LearningScreen(LearningViewModel());
+      page = HomeScreen();
     } else if (settings.name == routeSignIn) {
       page = SignInPage();
     } else if (settings.name == routeSignIn) {

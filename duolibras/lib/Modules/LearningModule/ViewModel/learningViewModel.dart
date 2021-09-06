@@ -15,6 +15,10 @@ import 'package:duolibras/Network/Service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rxdart/streams.dart';
+import 'package:rxdart/subjects.dart';
+
+import '../mainRouter.dart';
 
 class LearningViewModel
     with SectionsViewModel, ModuleViewModel, LearningViewModelProtocol {
@@ -29,8 +33,7 @@ class LearningViewModel
   }
 
   List<String> allSectionsID = [];
-  StreamController<List<Section>> _controller =
-      StreamController<List<Section>>();
+  BehaviorSubject<List<Section>> _controller = BehaviorSubject<List<Section>>();
 
   List<Section> allSections = [];
   LearningViewModel() {
@@ -75,5 +78,10 @@ class LearningViewModel
         }
       });
     });
+  }
+
+  @override
+  void disposeStreams() {
+    _controller.close();
   }
 }

@@ -106,8 +106,6 @@ class ExerciseWritingScreen extends ExerciseScreen {
     final containerSize = Size(_containerWidth, _containerHeight);
 
     return Scaffold(
-        // appBar: AppBarWidget(),
-        bottomNavigationBar: bottomNavigationBar,
         body: _buildBody(_exercise, _viewModel, containerSize, context));
   }
 }

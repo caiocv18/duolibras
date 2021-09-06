@@ -9,6 +9,7 @@ import 'package:duolibras/Network/Models/Module.dart';
 import 'package:duolibras/Network/Models/User.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
+import 'package:flutter/material.dart';
 
 class MockService extends ServicesProtocol {
   @override
@@ -108,6 +109,17 @@ class MockService extends ServicesProtocol {
     var completer = Completer<bool>();
     completer.complete(true);
 
+    return completer.future;
+  }
+
+  @override
+  Future<List<User>> getUsersRanking() async {
+    var completer = Completer<List<User>>();
+    String jsonString = await Utils.loadJSON("UsersRanking");
+    List<dynamic> parsedListJson = json.decode(jsonString);
+    List<User> usersRanking = List<User>.from(
+        parsedListJson.map((i) => User.fromMap(i, UniqueKey().toString())));
+    completer.complete(usersRanking);
     return completer.future;
   }
 }

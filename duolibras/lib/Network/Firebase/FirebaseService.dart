@@ -102,6 +102,21 @@ class FirebaseService extends ServicesProtocol {
     return completer.future;
   }
 
+  Future<List<myUser.User>> _getUsersRanking() {
+    final completer = Completer<List<myUser.User>>();
+    firestoreInstance
+        .collection(Constants.firebaseService.usersCollection)
+        .orderBy("currentProgress")
+        .limit(20)
+        .get()
+        .then((response) => {
+              completer.complete(response.docs
+                  .map((e) => myUser.User.fromMap(e.data(), e.id))
+                  .toList())
+            });
+    return completer.future;
+  }
+
   // Future<bool> _postModuleProgressInFirebase(
   //     List<ModuleProgress> moduleProgress) {
   //   var completer = Completer<bool>();
@@ -211,5 +226,10 @@ class FirebaseService extends ServicesProtocol {
   @override
   Future<bool> postModuleProgress(ModuleProgress moduleProgress) async {
     return _postModuleProgressInFirebase(moduleProgress);
+  }
+
+  @override
+  Future<List<myUser.User>> getUsersRanking() {
+    return _getUsersRanking();
   }
 }
