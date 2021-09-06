@@ -17,7 +17,8 @@ class FirebaseAuthenticator extends AuthenticatorProtocol {
         handleCodeInApp: true,
         iOSBundleId: FirebaseAuthenticatorConstants().iosBundleId,
         androidPackageName: FirebaseAuthenticatorConstants().androidPackageName,
-        androidMinimumVersion: FirebaseAuthenticatorConstants().androidMinimumVersion,
+        androidMinimumVersion:
+            FirebaseAuthenticatorConstants().androidMinimumVersion,
         androidInstallApp: true);
 
     return await _auth.sendSignInLinkToEmail(

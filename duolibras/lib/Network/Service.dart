@@ -49,7 +49,8 @@ class Service extends ServicesProtocol {
   @override
   Future<User> getUser() async {
     return _service.getUser().onError((error, stackTrace) async {
-      User user = User(name: "", id: "", currentProgress: 0);
+      User user =
+          User(name: "", id: "", email: "", currentProgress: 0, imageUrl: null);
       user.modulesProgress = await Service.instance
           .getModulesProgress()
           .onError((error, stackTrace) {

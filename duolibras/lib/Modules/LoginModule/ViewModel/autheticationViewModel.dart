@@ -65,11 +65,20 @@ class AutheticationViewModel
   Future<void> _updateUserInDatabase(fireUser.User? user) async {
     if (user != null) {
       SharedFeatures.instance.isLoggedIn = true;
+      final oldUser = await Service.instance.getUser();
 
-      final userModel = myUser.User(
-          id: user.uid,
-          name: user.displayName ?? user.email ?? "",
-          currentProgress: 0);
+      myUser.User userModel;
+      if (oldUser.id.isEmpty) {
+        userModel = myUser.User(
+            id: user.uid,
+            name: user.displayName ?? user.email ?? "",
+            currentProgress: 0,
+            email: user.email ?? "",
+            imageUrl: null);
+        print("Tratar campos para enviar");
+      } else {
+        userModel = oldUser;
+      }
 
       var userUpdated = await Service.instance.postUser(userModel);
       userUpdated.modulesProgress = await Service.instance.getModulesProgress();
