@@ -47,15 +47,17 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Widget _buildUnllogedBody() {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FirebaseSignInWidget(_viewModel),
-          Container(child: AppleSignInWidget(_viewModel), width: 300),
-          SizedBox(height: 15.0),
-          Container(child: GoogleSignInButton(_viewModel), width: 300)
-        ],
+    return SingleChildScrollView(
+      child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FirebaseSignInWidget(_viewModel),
+            Container(child: AppleSignInWidget(_viewModel), width: 300),
+            SizedBox(height: 15.0),
+            Container(child: GoogleSignInButton(_viewModel), width: 300)
+          ],
+        ),
       ),
     );
   }

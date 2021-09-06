@@ -1,9 +1,9 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Network/Authentication/Apple/AppleAuthenticator.dart';
-import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
 import 'package:duolibras/Network/Authentication/Firebase/FirebaseAuthenticator.dart';
 import 'package:duolibras/Network/Authentication/Google/GoogleAuthenticator.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
+import 'package:duolibras/Network/Firebase/FirebaseErrors.dart';
 import 'package:duolibras/Network/Models/User.dart' as myUser;
 import 'package:duolibras/Network/Service.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fireUser;
@@ -29,6 +29,7 @@ abstract class InputValidator {
 abstract class FirebaseAuthenticatorProtocol
     with SignOutProtocol, InputValidator {
   Future<void> firebaseSignIn(String email);
+  Future<void> handleFirebaseLink(Uri link, String email);
 }
 
 class AutheticationViewModel
@@ -53,9 +54,7 @@ class AutheticationViewModel
 
   @override
   Future<void> firebaseSignIn(String email) async {
-    fireUser.User? user =
-        await _firebaseAuthenticator.signIn(AuthenticationModel(email: email));
-    return _updateUserInDatabase(user);
+    return _firebaseAuthenticator.signInWithEmail(email);
   }
 
   @override
@@ -93,5 +92,15 @@ class AutheticationViewModel
       return 'Please enter some text';
     }
     return null;
+  }
+
+  Future<void> handleFirebaseLink(Uri link, String email) async {
+    try {
+      final user = await _firebaseAuthenticator.signInWithEmailLink(
+          email, link.toString());
+      return _updateUserInDatabase(user);
+    } on FirebaseErrors catch (e) {
+      print(e);
+    }
   }
 }

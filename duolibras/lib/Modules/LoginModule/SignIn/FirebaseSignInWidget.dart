@@ -1,4 +1,5 @@
 import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,9 +12,16 @@ class FirebaseSignInWidget extends StatefulWidget {
   _FirebaseSignInWidget createState() => _FirebaseSignInWidget();
 }
 
-class _FirebaseSignInWidget extends State<FirebaseSignInWidget> {
+class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
+    with WidgetsBindingObserver {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   final emailTextfieldController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,32 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> {
   @override
   void dispose() {
     emailTextfieldController.dispose();
+    WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      final PendingDynamicLinkData? data =
+          await FirebaseDynamicLinks.instance.getInitialLink();
+      if (data != null) {
+        widget._viewModel
+            .handleFirebaseLink(data.link, emailTextfieldController.text);
+      }
+
+      FirebaseDynamicLinks.instance.onLink(
+          onSuccess: (PendingDynamicLinkData? dynamicLink) async {
+        if (dynamicLink != null) {
+          final Uri deepLink = dynamicLink.link;
+          widget._viewModel
+              .handleFirebaseLink(deepLink, emailTextfieldController.text);
+        }
+      }, onError: (OnLinkErrorException e) async {
+        print('onLinkError');
+        print(e.message);
+      });
+    }
   }
 
   void signIn() async {
