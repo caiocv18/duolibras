@@ -19,6 +19,7 @@ abstract class LearningViewModelProtocol {
   bool firstFetch = true;
 
   Future<void> fetchSections();
+  void disposeStreams();
 }
 
 class LearningScreen extends StatefulWidget {
@@ -46,11 +47,17 @@ class _LearningScreenState extends State<LearningScreen> {
 
   @override
   initState() {
-    widget._viewModel.sections!.listen((newSections) {
+    widget._viewModel.sections!.asBroadcastStream().listen((newSections) {
       setState(() {
         this.sections = newSections;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    widget._viewModel.disposeStreams();
+    super.dispose();
   }
 
   Widget _buildBody() {
@@ -94,7 +101,8 @@ class _LearningScreenState extends State<LearningScreen> {
                     (kBottomNavigationBarHeight +
                         _mediaQuery.padding.bottom +
                         appBar.preferredSize.height +
-                        _mediaQuery.padding.top),
+                        _mediaQuery.padding.top +
+                        25),
                 child: ListView.builder(
                     padding: EdgeInsets.only(bottom: 10),
                     itemCount:
@@ -156,21 +164,21 @@ class _LearningScreenState extends State<LearningScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Duolibras"),
-          actions: [
-            IconButton(
-                icon: Icon(Icons.person),
-                onPressed: () => {
-                      Navigator.of(context)
-                          .pushNamed(MainRouter.routeSignIn)
-                          .then((value) {
-                        _handleCompletedLogin(value as bool?);
-                      })
-                    })
-          ],
-        ),
-        bottomNavigationBar: bottomNavigationBar,
+        // appBar: AppBar(
+        //   title: Text("Duolibras"),
+        //   actions: [
+        //     IconButton(
+        //         icon: Icon(Icons.person),
+        //         onPressed: () => {
+        //               Navigator.of(context)
+        //                   .pushNamed(MainRouter.routeSignIn)
+        //                   .then((value) {
+        //                 _handleCompletedLogin(value as bool?);
+        //               })
+        //             })
+        //   ],
+        // ),
+        // bottomNavigationBar: bottomNavigationBar,
         body: _buildBody());
   }
 }

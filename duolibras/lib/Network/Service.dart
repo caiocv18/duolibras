@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Database/DatabaseProtocol.dart';
 import 'package:duolibras/Database/SQLite/SQLiteDatabase.dart';
@@ -12,8 +10,6 @@ import 'package:duolibras/Network/Models/Trail.dart';
 import 'package:duolibras/Network/Models/User.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
-
-import 'Authentication/UserSession.dart';
 
 class Service extends ServicesProtocol {
   late ServicesProtocol _service;
@@ -53,7 +49,7 @@ class Service extends ServicesProtocol {
   @override
   Future<User> getUser() async {
     return _service.getUser().onError((error, stackTrace) async {
-      User user = User(name: "", id: "");
+      User user = User(name: "", id: "", currentProgress: 0);
       user.modulesProgress = await Service.instance
           .getModulesProgress()
           .onError((error, stackTrace) {
@@ -84,5 +80,10 @@ class Service extends ServicesProtocol {
     } else {
       return _database.saveModuleProgress(moduleProgress);
     }
+  }
+
+  @override
+  Future<List<User>> getUsersRanking() {
+    return _service.getUsersRanking();
   }
 }

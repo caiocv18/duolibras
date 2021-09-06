@@ -75,8 +75,10 @@ class AutheticationViewModel
     if (user != null) {
       SharedFeatures.instance.isLoggedIn = true;
 
-      final userModel =
-          myUser.User(id: user.uid, name: user.displayName ?? user.email ?? "");
+      final userModel = myUser.User(
+          id: user.uid,
+          name: user.displayName ?? user.email ?? "",
+          currentProgress: 0);
 
       var userUpdated = await Service.instance.postUser(userModel);
       userUpdated.modulesProgress = await Service.instance.getModulesProgress();

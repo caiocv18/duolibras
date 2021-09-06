@@ -103,9 +103,6 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
             67);
 
     return Scaffold(
-        // appBar: AppBarWidget(),
-        // drawer: AppBarWidget(),
-        bottomNavigationBar: bottomNavigationBar,
         body: _buildBody(_exercise, _viewModel, containerHeight, context));
   }
 }

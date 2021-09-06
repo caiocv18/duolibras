@@ -92,6 +92,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  custom_navigator:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "84bc85880abaa0d4a0f37098c9e6f4bd58b19b0a"
+      url: "https://github.com/kjawadDeveloper/Custom-navigator.git"
+    source: git
+    version: "0.2.0"
   fake_async:
     dependency: transitive
     description:
@@ -247,6 +256,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  rxdart:
+    dependency: "direct main"
+    description:
+      name: rxdart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.27.2"
   sign_in_with_apple:
     dependency: "direct main"
     description:
@@ -351,5 +367,5 @@ packages:
     source: hosted
     version: "2.1.0"
 sdks:
-  dart: ">=2.12.0 <3.0.0"
+  dart: ">=2.13.0 <3.0.0"
   flutter: ">=2.0.0"
