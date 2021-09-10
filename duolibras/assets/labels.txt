@@ -1,2 +1,5 @@
-up
-down
+A
+E
+I
+O
+U

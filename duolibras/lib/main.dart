@@ -1,4 +1,5 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Modules/ExercisesModule/MLExerciseWidget.dart';
 
 import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
@@ -7,7 +8,6 @@ import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:flutter/material.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,8 +53,9 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: (settings) =>
             MainRouter.instance.onGenerateRoute(settings),
         navigatorKey: MainRouter.instance.navigatorKey,
-        home: LaunchScreen(
-            MainRouter.instance.initialLoadCompleted)); //LearningScreen(
+        home: MLExerciseWidget());
+    // home: LaunchScreen(
+    // MainRouter.instance.initialLoadCompleted)); //LearningScreen(
     //LearningViewModel())) //ExerciseMultiChoiceWidget(Exercise())); //
   }
 }

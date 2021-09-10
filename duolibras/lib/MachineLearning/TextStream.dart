@@ -27,10 +27,12 @@ class TextStreamState extends State<TextStream> {
     widget.tfLiteResultsController.stream.listen(
         (value) {
           //Update results on screen
-          setState(() {
-            resultText = value.first.label;
-            confidenceText = "${value.first.confidence}";
-          });
+          if (value.first.confidence > 0.70) {
+            setState(() {
+              resultText = value.first.label;
+              confidenceText = "${value.first.confidence}";
+            });
+          }
         },
         onDone: () {},
         onError: (error) {
