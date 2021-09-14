@@ -18,7 +18,7 @@ class TFLiteHelper extends MLModelProtocol {
     return Tflite.loadModel(
             model: "assets/model.tflite",
             labels: "assets/labels.txt",
-            useGpuDelegate: true)
+            useGpuDelegate: false)
         .then((value) {
       modelsIsLoaded = true;
     });

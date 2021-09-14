@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'Helpers/app_helper.dart';
 import 'Helpers/camera_helper.dart';
 
-// A screen that allows users to take a picture using a given camera.
 class CameraWidget extends StatefulWidget {
   const CameraWidget({Key? key}) : super(key: key);
 
