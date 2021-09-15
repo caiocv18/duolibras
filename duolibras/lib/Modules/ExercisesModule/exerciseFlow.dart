@@ -74,7 +74,7 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
               return AlertDialog(
                 title: const Text('Tem certeza?'),
                 content: const Text(
-                    'Si você sair todo seu progesso vai ser perdido.'),
+                    'Se você sair todo seu progesso vai ser perdido.'),
                 actions: [
                   TextButton(
                     onPressed: () {

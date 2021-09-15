@@ -1,6 +1,7 @@
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
+import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 import 'package:duolibras/Modules/RankingModule/rankingScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,17 +13,18 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  final _pages = [LearningScreen(LearningViewModel()), RankingScreen()];
+  final _pages = [RankingScreen(), LearningScreen(LearningViewModel()), ProfileFlow(setupPageRoute: ProfileFlow.routeProfile)];
   late Widget _page = _pages[0];
 
   BottomNavigationBar get bottomNavigationBar {
     return BottomNavigationBar(
       items: [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
         BottomNavigationBarItem(
             icon: Icon(Icons.score),
             label: "Ranking",
-            backgroundColor: _currentIndex == 1 ? Colors.blue : Colors.white)
+            backgroundColor: _currentIndex == 1 ? Colors.blue : Colors.white),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Perfil"),
       ],
       type: BottomNavigationBarType.fixed,
       onTap: (index) {
@@ -52,17 +54,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Duolibras"),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.person),
-              onPressed: () => {
-                    Navigator.of(context)
-                        .pushNamed(MainRouter.routeSignIn)
-                        .then((value) {
-                      _handleCompletedLogin(value as bool?);
-                    })
-                  })
-        ],
+        // actions: [
+        //   IconButton(
+        //       icon: Icon(Icons.person),
+        //       onPressed: () => {
+        //             Navigator.of(context)
+        //                 .pushNamed(MainRouter.routeSignIn)
+        //                 .then((value) {
+        //               _handleCompletedLogin(value as bool?);
+        //             })
+        //           })
+        // ],
       ),
       bottomNavigationBar: bottomNavigationBar,
       body: _page,

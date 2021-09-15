@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:duolibras/MachineLearning/TFlite/tflite_helper.dart';
-import 'package:duolibras/MachineLearning/TextStream.dart';
+import 'package:duolibras/MachineLearning/textStream.dart';
 import 'package:flutter/material.dart';
 
 import 'Helpers/app_helper.dart';

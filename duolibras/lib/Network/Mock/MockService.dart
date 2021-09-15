@@ -122,4 +122,12 @@ class MockService extends ServicesProtocol {
     completer.complete(usersRanking);
     return completer.future;
   }
+
+  @override
+  Future uploadImage(FileImage image) {
+    var completer = Completer<void>();
+    return completer.future;
+  }
+
+  
 }

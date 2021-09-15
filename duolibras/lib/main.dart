@@ -1,5 +1,5 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
-import 'package:duolibras/Modules/ExercisesModule/MLExerciseWidget.dart';
+import 'package:duolibras/Modules/ExercisesModule/mlExerciseWidget.dart';
 
 import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
@@ -18,7 +18,7 @@ Future<void> main() async {
   // Service.instance.getUser().then((user) {
   //   print(user.name);
   // });
-  SharedFeatures.instance.isLoggedIn = true;
+  SharedFeatures.instance.isLoggedIn = false;
   // Service.instance.getTrail().then((trail) {
   //   print(trail.title);
   //   Service.instance.getSectionsFromTrail().then((sections) {
@@ -53,8 +53,9 @@ class MyApp extends StatelessWidget {
             MainRouter.instance.onGenerateRoute(settings),
         navigatorKey: MainRouter.instance.navigatorKey,
         home: 
-        // LaunchScreen(MainRouter.instance.initialLoadCompleted)
-        ProfilePage()
+        LaunchScreen(MainRouter.instance.initialLoadCompleted)
+        
+        // MLExerciseWidget()
         ); 
   }
 }

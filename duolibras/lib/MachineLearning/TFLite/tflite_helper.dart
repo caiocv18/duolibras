@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:camera/camera.dart';
-import 'package:duolibras/MachineLearning/Helpers/MLModelProtocol.dart';
+import 'package:duolibras/MachineLearning/Helpers/mlModelProtocol.dart';
 import 'package:tflite/tflite.dart';
 
 import '../Helpers/app_helper.dart';

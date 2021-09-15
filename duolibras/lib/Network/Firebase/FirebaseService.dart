@@ -12,6 +12,9 @@ import 'package:duolibras/Network/Models/Module.dart';
 import 'package:duolibras/Network/Models/User.dart' as myUser;
 import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/src/painting/image_provider.dart';
+import 'package:path/path.dart';
 
 class FirebaseService extends ServicesProtocol {
   final firestoreInstance = FirebaseFirestore.instance;
@@ -32,7 +35,7 @@ class FirebaseService extends ServicesProtocol {
   DocumentReference<Map<String, dynamic>> _getTrailFromFirebase() {
     return firestoreInstance
         .collection(Constants.firebaseService.trailsCollection)
-        .doc("pwL7CCbNNThasG5tRASF");
+        .doc("dimVnUtg6Solp3aJkk45");
   }
 
   Future<List<Section>> _getSectionsFromFirebase() async {
@@ -232,4 +235,16 @@ class FirebaseService extends ServicesProtocol {
   Future<List<myUser.User>> getUsersRanking() {
     return _getUsersRanking();
   }
+
+  @override
+  Future uploadImage(FileImage image) async {
+    String fileName = basename(image.file.path);
+    final firebaseStorageRef = FirebaseStorage.instance.ref().child('ImagensTeste/$fileName');
+    final uploadTask = firebaseStorageRef.putFile(image.file);
+    final taskSnapshot = await uploadTask;
+    taskSnapshot.ref.getDownloadURL().then(
+          (value) => print("Done: $value"),
+        );
+  }
+
 }
