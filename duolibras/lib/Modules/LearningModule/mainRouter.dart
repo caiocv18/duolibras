@@ -31,12 +31,12 @@ class MainRouter {
       page = LaunchScreen(initialLoadCompleted);
     } else if (settings.name!
         .startsWith(ExerciseFlow.routePrefixExerciseFlow)) {
-      final subRoute =
-          settings.name!.substring(ExerciseFlow.routePrefixExerciseFlow.length);
-
       final arg = settings.arguments as Map<String, Object>;
       final exercises = arg["exercises"] as List<Exercise>;
       final moduleID = arg["moduleID"] as String;
+
+      final subRoute = ExerciseFlow.getRouteNameBy(exercises.first.category);
+
       page = ExerciseFlow(
           exercises: exercises, moduleID: moduleID, setupPageRoute: subRoute);
     } else {

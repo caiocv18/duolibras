@@ -32,7 +32,7 @@ class FirebaseService extends ServicesProtocol {
   DocumentReference<Map<String, dynamic>> _getTrailFromFirebase() {
     return firestoreInstance
         .collection(Constants.firebaseService.trailsCollection)
-        .doc("pwL7CCbNNThasG5tRASF");
+        .doc("dimVnUtg6Solp3aJkk45");
   }
 
   Future<List<Section>> _getSectionsFromFirebase() async {

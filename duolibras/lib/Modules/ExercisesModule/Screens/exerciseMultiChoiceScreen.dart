@@ -2,7 +2,7 @@ import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/multiChoicesWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
-import 'package:duolibras/Modules/ExercisesModule/exerciseScreen.dart';
+import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseScreen.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
 

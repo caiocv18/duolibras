@@ -16,9 +16,9 @@ class TFLiteHelper extends MLModelProtocol {
     AppHelper.log("loadModel", "Loading model..");
 
     return Tflite.loadModel(
-            model: "assets/model.tflite",
+            model: "assets/model_fp16_quant.tflite",
             labels: "assets/labels.txt",
-            useGpuDelegate: true)
+            useGpuDelegate: false)
         .then((value) {
       modelsIsLoaded = true;
     });
@@ -58,7 +58,9 @@ class TFLiteHelper extends MLModelProtocol {
     _outputs.sort((a, b) => a.confidence.compareTo(b.confidence));
 
     // Send results
-    tfLiteResultsController.add(_outputs);
+    if (!tfLiteResultsController.isClosed) {
+      tfLiteResultsController.add(_outputs);
+    }
   }
 
   @override

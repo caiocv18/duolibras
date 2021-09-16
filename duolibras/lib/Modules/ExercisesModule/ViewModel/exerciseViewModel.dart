@@ -3,7 +3,7 @@ import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'package:duolibras/Network/Service.dart';
 import 'package:flutter/material.dart';
-import '../exerciseWritingScreen.dart';
+import '../Screens/exerciseWritingScreen.dart';
 
 class ExerciseViewModel with ExerciseWritingViewModel {
   List<Exercise> _exercises;
@@ -32,6 +32,17 @@ class ExerciseViewModel with ExerciseWritingViewModel {
     }
     final exercise = _exercises.where((exe) => exe.id == exerciseID).first;
     return exercise.correctAnswer == answer;
+  }
+
+  bool isGestureCorrect(String label, double confidence, Exercise exercise) {
+    return exercise.correctAnswer == label && confidence > 0.8;
+  }
+
+  void didSubmitGesture(String label, double confidence, Exercise exercise,
+      BuildContext context) {
+    if (exercise.correctAnswer == label && confidence > 0.6) {
+      didSubmitTextAnswer(label, exercise.id, context);
+    }
   }
 
   Future<void> _saveProgress() async {

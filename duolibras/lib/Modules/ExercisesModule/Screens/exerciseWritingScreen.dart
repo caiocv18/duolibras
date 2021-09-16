@@ -2,7 +2,7 @@ import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/inputAnswerWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
-import 'package:duolibras/Modules/ExercisesModule/exerciseScreen.dart';
+import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseScreen.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
 
@@ -89,11 +89,6 @@ class ExerciseWritingScreen extends ExerciseScreen {
 
   @override
   Widget build(BuildContext context) {
-    // final args =
-    //     ModalRoute.of(context)!.settings.arguments as Map<String, Object>;
-    // final ExerciseViewModel _viewModel = args["viewModel"] as ExerciseViewModel;
-    // final Exercise _exercise = args["exercise"] as Exercise;
-
     final _mediaQuery = MediaQuery.of(context);
 
     final _containerHeight = _mediaQuery.size.height -

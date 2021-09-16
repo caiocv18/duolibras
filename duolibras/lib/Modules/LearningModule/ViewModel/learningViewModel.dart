@@ -63,7 +63,7 @@ class LearningViewModel
       // ? ExerciseWritingScreen.routeName
       // : ExerciseMultiChoiceScreen.routeName;
 
-      Navigator.of(context).pushNamed(ExerciseFlow.routeStartExerciseFlow,
+      Navigator.of(context).pushNamed(ExerciseFlow.routePrefixExerciseFlow,
           arguments: {
             "exercises": excersies,
             "moduleID": moduleID

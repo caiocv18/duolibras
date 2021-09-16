@@ -1,6 +1,7 @@
+import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMLScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
-import 'package:duolibras/Modules/ExercisesModule/exerciseMultiChoiceScreen.dart';
-import 'package:duolibras/Modules/ExercisesModule/exerciseWritingScreen.dart';
+import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMultiChoiceScreen.dart';
+import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseWritingScreen.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/ExercisesCategory.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class ExerciseFlow extends StatefulWidget {
   static const routeStartExerciseFlow = "/exercise/multi_choice";
   static const routeExerciseMultiChoicePage = 'multi_choice';
   static const routeExerciseWritingPage = 'writing';
+  static const routeExerciseML = 'ml';
 
   late final List<Exercise> exercises;
 
@@ -31,6 +33,19 @@ class ExerciseFlow extends StatefulWidget {
   Exercise? _exercise;
   @override
   _ExerciseFlowState createState() => _ExerciseFlowState();
+
+  static String getRouteNameBy(ExercisesCategory exerciseCategory) {
+    switch (exerciseCategory) {
+      case ExercisesCategory.multipleChoices:
+        return ExerciseFlow.routeExerciseMultiChoicePage;
+      case ExercisesCategory.writing:
+        return ExerciseFlow.routeExerciseWritingPage;
+      case ExercisesCategory.ml:
+        return ExerciseFlow.routeExerciseML;
+      default:
+        return "";
+    }
+  }
 }
 
 class _ExerciseFlowState extends State<ExerciseFlow> {
@@ -59,10 +74,22 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
 
     widget._exercise = exercise;
 
-    String routeName =
-        widget._exercise!.category == ExercisesCategory.multipleChoices
-            ? ExerciseFlow.routeExerciseMultiChoicePage
-            : ExerciseFlow.routeExerciseWritingPage;
+    String routeName;
+
+    switch (widget._exercise!.category) {
+      case ExercisesCategory.multipleChoices:
+        routeName = ExerciseFlow.routeExerciseMultiChoicePage;
+        break;
+      case ExercisesCategory.writing:
+        routeName = ExerciseFlow.routeExerciseWritingPage;
+        break;
+      case ExercisesCategory.ml:
+        routeName = ExerciseFlow.routeExerciseML;
+        break;
+      default:
+        _didFinishExercise(null);
+        return;
+    }
 
     _navigatorKey.currentState!.pushNamed(routeName);
   }
@@ -130,6 +157,10 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
       case ExerciseFlow.routeExerciseWritingPage:
         page = ExerciseWritingScreen(widget._exercise!, _viewModel);
         break;
+      case ExerciseFlow.routeExerciseML:
+        page = ExerciseMLScreen(widget._exercise!, _viewModel);
+        break;
+
       // case routeDeviceSetupConnectingPage:
       //   page = WaitingPage(
       //     message: 'Connecting...',

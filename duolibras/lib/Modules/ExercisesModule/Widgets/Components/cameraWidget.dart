@@ -1,16 +1,19 @@
 import 'dart:async';
 
 import 'package:camera/camera.dart';
+import 'package:duolibras/MachineLearning/Helpers/app_helper.dart';
+import 'package:duolibras/MachineLearning/Helpers/camera_helper.dart';
 import 'package:duolibras/MachineLearning/TFlite/tflite_helper.dart';
-import 'package:duolibras/MachineLearning/TextStream.dart';
 import 'package:flutter/material.dart';
 
-import 'Helpers/app_helper.dart';
-import 'Helpers/camera_helper.dart';
+import 'TextStream.dart';
 
 // A screen that allows users to take a picture using a given camera.
 class CameraWidget extends StatefulWidget {
-  const CameraWidget({Key? key}) : super(key: key);
+  final Function _handlerPrediction;
+  final String label;
+
+  CameraWidget(this.label, this._handlerPrediction);
 
   @override
   CameraWidgetState createState() => CameraWidgetState();
@@ -48,7 +51,9 @@ class CameraWidgetState extends State<CameraWidget> {
                 CameraPreview(cameraHelper.camera),
                 SizedBox(height: 15),
                 TextStream(
-                    tfLiteResultsController: mlModel.tfLiteResultsController)
+                    label: widget.label,
+                    tfLiteResultsController: mlModel.tfLiteResultsController,
+                    handlerPrediction: widget._handlerPrediction)
               ],
             );
           } else {
