@@ -39,7 +39,8 @@ class _RankingScreenState extends State<RankingScreen> {
     final _containerHeight = _mediaQuery.size.height -
         (kBottomNavigationBarHeight +
             _mediaQuery.padding.bottom +
-            _mediaQuery.padding.top);
+            _mediaQuery.padding.top +
+            20);
 
     return widget._viewModel.loading
         ? Center(

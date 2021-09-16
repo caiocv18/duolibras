@@ -8,7 +8,7 @@ import 'package:duolibras/Modules/ProfileModule/takePictureScreen.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:flutter/material.dart';
 
-class ProfileImageButton extends StatefulWidget  {
+class ProfileImageButton extends StatefulWidget {
   final bool isEnabled;
   final ProfileViewModel viewModel;
 
@@ -23,34 +23,47 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
 
   @override
   Widget build(BuildContext context) {
-      return Container(
+    return Container(
         alignment: Alignment.center,
-        child: (
-          Stack(alignment: AlignmentDirectional.bottomCenter, fit: StackFit.loose, overflow: Overflow.visible, clipBehavior: Clip.hardEdge, children: [
-            CircleAvatar(radius: 70, 
-              child: imageUrl != null ? 
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 100,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: FileImage(File(imageUrl!)),
-                  ),
-                ),
-              ):
-              Container(child: Icon(
-                Icons.person_outline_rounded,
-                color: Colors.white,
-                size: 70,
-                semanticLabel: 'Text to announce in accessibility modes',
-              ))
-            )
-            , Positioned(child: cameraButton(), bottom: -15) 
-          ]
-          )
-        )
-      );
+        child: (Stack(
+            alignment: AlignmentDirectional.bottomCenter,
+            fit: StackFit.loose,
+            overflow: Overflow.visible,
+            clipBehavior: Clip.hardEdge,
+            children: [
+              CircleAvatar(
+                  radius: 70,
+                  child: imageUrl != null
+                      ?
+                      // Container(
+                      //   width: MediaQuery.of(context).size.width,
+                      //   height: 100,
+                      //   decoration: BoxDecoration(
+                      //     image: DecorationImage(
+                      //       fit: BoxFit.fill,
+                      //       image: FileImage(File(imageUrl!)),
+                      //     ),
+                      //   ),
+                      // )
+
+                      Container(
+                          width: 190.0,
+                          height: 190.0,
+                          decoration: new BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: FileImage(File(imageUrl!)))))
+                      : Container(
+                          child: Icon(
+                          Icons.person_outline_rounded,
+                          color: Colors.white,
+                          size: 70,
+                          semanticLabel:
+                              'Text to announce in accessibility modes',
+                        ))),
+              Positioned(child: cameraButton(), bottom: -15)
+            ])));
   }
 
   Widget cameraButton() {
@@ -79,14 +92,15 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
     final frontalCamera = await _getCamera(CameraLensDirection.front);
     Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>  TakePictureScreen(camera: frontalCamera),
-      )).then((value) {
-        var imagePath = value as String?;
-        setState(() {
-          imageUrl = imagePath;
-          _uploadImage();
-        });
+        MaterialPageRoute(
+          builder: (context) => TakePictureScreen(camera: frontalCamera),
+        )).then((value) {
+      var imagePath = value as String?;
+      setState(() {
+        imageUrl = imagePath;
+        _uploadImage();
       });
+    });
   }
 
   void _uploadImage() {

@@ -27,8 +27,8 @@ class ProfileFlow extends StatefulWidget {
 
 class _ProfileFlowState extends State<ProfileFlow> {
   final _navigatorKey = GlobalKey<NavigatorState>();
- 
-    Route _onGenerateRoute(RouteSettings settings) {
+
+  Route _onGenerateRoute(RouteSettings settings) {
     late Widget page;
     switch (settings.name) {
       case ProfileFlow.routeProfile:
@@ -38,7 +38,8 @@ class _ProfileFlowState extends State<ProfileFlow> {
         page = SignInPage();
         break;
       case ProfileFlow.routeSettings:
-        page = SignInPage();;
+        page = SignInPage();
+        ;
         break;
     }
 
@@ -82,11 +83,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
     nameTextfieldController.addListener(() {
       var user = User(
-        name: nameTextfieldController.value.text, 
-        email: UserSession.instance.user.email, 
-        id: UserSession.instance.user.id,
-        currentProgress: UserSession.instance.user.currentProgress,
-        imageUrl: UserSession.instance.user.imageUrl);
+          name: nameTextfieldController.value.text,
+          email: UserSession.instance.user.email,
+          id: UserSession.instance.user.id,
+          currentProgress: UserSession.instance.user.currentProgress,
+          imageUrl: UserSession.instance.user.imageUrl);
 
       _viewModel.updateUser(user);
     });
@@ -95,11 +96,11 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        Navigator.of(context).pop(_userHasChanged);
-        return true;
-      },
-      child: Container(
+        onWillPop: () async {
+          Navigator.of(context).pop(_userHasChanged);
+          return true;
+        },
+        child: Container(
             alignment: Alignment.center,
             color: Colors.white,
             child: Center(
@@ -110,9 +111,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: 20),
                 ProfileImageButton(isLogged, _viewModel),
                 SizedBox(height: 40),
-                Container(child: CustomTextfield(nameTextfieldController, "${UserSession.instance.user.name}", isLogged), width: 200),
+                Container(
+                    child: CustomTextfield(nameTextfieldController,
+                        "${UserSession.instance.user.name}", isLogged),
+                    width: 200),
                 SizedBox(height: 60),
-                Container(child: ProgressWidget(0.25)),
+                Container(
+                    child: ProgressWidget(
+                        UserSession.instance.user.currentProgress / 100)),
                 SizedBox(height: 200),
                 ElevatedButton(
                   child: Text(isLogged ? "Log out" : "Login"),
@@ -123,8 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           _userHasChanged = true;
                         });
                       });
-                    }
-                    else {
+                    } else {
                       Navigator.of(context).pushNamed(ProfileFlow.routeSignIn);
                     }
                   },
@@ -135,9 +140,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               side: BorderSide(color: Colors.blue)))),
                 ),
               ],
-            )))
-    );
+            ))));
   }
-
-  
 }

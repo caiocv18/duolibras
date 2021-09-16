@@ -11,10 +11,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
+  int _currentIndex = 1;
 
-  final _pages = [RankingScreen(), LearningScreen(LearningViewModel()), ProfileFlow(setupPageRoute: ProfileFlow.routeProfile)];
-  late Widget _page = _pages[0];
+  final _pages = [
+    RankingScreen(),
+    LearningScreen(LearningViewModel()),
+    ProfileFlow(setupPageRoute: ProfileFlow.routeProfile)
+  ];
+  late Widget _page = _pages[_currentIndex];
 
   BottomNavigationBar get bottomNavigationBar {
     return BottomNavigationBar(
@@ -24,7 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
             label: "Ranking",
             backgroundColor: _currentIndex == 1 ? Colors.blue : Colors.white),
         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Perfil"),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline), label: "Perfil"),
       ],
       type: BottomNavigationBarType.fixed,
       onTap: (index) {
@@ -53,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Duolibras"),
+        title: Text("Dibras"),
         // actions: [
         //   IconButton(
         //       icon: Icon(Icons.person),

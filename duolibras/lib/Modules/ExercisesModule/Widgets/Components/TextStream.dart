@@ -63,7 +63,7 @@ class TextStreamState extends State<TextStream> {
             valueColor: AlwaysStoppedAnimation<Color>(
                 widget.label != resultText ? Colors.red : Colors.green),
             minHeight: 20,
-            value: confidence),
+            value: resultText == "Neutro" ? 0.0 : confidence),
       ),
     ]));
   }

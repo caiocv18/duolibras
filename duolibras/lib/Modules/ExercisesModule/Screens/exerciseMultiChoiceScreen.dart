@@ -99,7 +99,7 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
             _mediaQuery.padding.bottom +
             appBar.preferredSize.height +
             _mediaQuery.padding.top +
-            67);
+            70);
 
     return Scaffold(
         // appBar: AppBarWidget(),

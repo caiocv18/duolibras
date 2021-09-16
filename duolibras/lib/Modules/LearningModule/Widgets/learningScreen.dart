@@ -100,7 +100,7 @@ class _LearningScreenState extends State<LearningScreen> {
                         _mediaQuery.padding.bottom +
                         appBar.preferredSize.height +
                         _mediaQuery.padding.top +
-                        25),
+                        85),
                 child: ListView.builder(
                     padding: EdgeInsets.only(bottom: 10),
                     itemCount:

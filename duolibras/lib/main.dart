@@ -8,7 +8,6 @@ import 'package:duolibras/Modules/ProfileModule/profileImageButton.dart';
 import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
@@ -52,10 +51,9 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: (settings) =>
             MainRouter.instance.onGenerateRoute(settings),
         navigatorKey: MainRouter.instance.navigatorKey,
-        home: 
-        LaunchScreen(MainRouter.instance.initialLoadCompleted)
-        
+        home: LaunchScreen(MainRouter.instance.initialLoadCompleted)
+
         // MLExerciseWidget()
-        ); 
+        );
   }
 }

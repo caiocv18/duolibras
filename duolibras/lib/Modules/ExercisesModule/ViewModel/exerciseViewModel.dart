@@ -35,7 +35,7 @@ class ExerciseViewModel with ExerciseWritingViewModel {
   }
 
   bool isGestureCorrect(String label, double confidence, Exercise exercise) {
-    return exercise.correctAnswer == label && confidence > 0.8;
+    return exercise.correctAnswer == label && confidence > 0.9;
   }
 
   void didSubmitGesture(String label, double confidence, Exercise exercise,
