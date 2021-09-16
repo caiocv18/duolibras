@@ -1,13 +1,15 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Modules/ExercisesModule/mlExerciseWidget.dart';
 
 import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
+import 'package:duolibras/Modules/ProfileModule/profileImageButton.dart';
+import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:flutter/material.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +40,6 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   const MyApp({Key? key}) : super(key: key);
 
   @override
@@ -48,13 +49,13 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        // home: MLExerciseWidget());
-        //routes: _routes,
         onGenerateRoute: (settings) =>
             MainRouter.instance.onGenerateRoute(settings),
         navigatorKey: MainRouter.instance.navigatorKey,
-        home: LaunchScreen(
-            MainRouter.instance.initialLoadCompleted)); //LearningScreen(
-    //LearningViewModel())) //ExerciseMultiChoiceWidget(Exercise())); //
+        home: 
+        LaunchScreen(MainRouter.instance.initialLoadCompleted)
+        
+        // MLExerciseWidget()
+        ); 
   }
 }

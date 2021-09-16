@@ -1,7 +1,7 @@
 import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
 import 'package:duolibras/Modules/HomeModule/homeScreen.dart';
 import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
-import 'package:duolibras/Modules/LoginModule/SignIn/SignInPage.dart';
+import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,7 @@ class MainRouter {
     if (settings.name == routeHome) {
       page = HomeScreen();
     } else if (settings.name == routeSignIn) {
-      page = SignInPage();
+      page = ProfilePage();
     } else if (settings.name == routeSignIn) {
       page = LaunchScreen(initialLoadCompleted);
     } else if (settings.name!

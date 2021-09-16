@@ -10,6 +10,8 @@ import 'package:duolibras/Network/Models/Trail.dart';
 import 'package:duolibras/Network/Models/User.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 class Service extends ServicesProtocol {
   late ServicesProtocol _service;
@@ -86,5 +88,10 @@ class Service extends ServicesProtocol {
   @override
   Future<List<User>> getUsersRanking() {
     return _service.getUsersRanking();
+  }
+
+  @override
+  Future uploadImage(FileImage image) {
+    return _service.uploadImage(image);
   }
 }

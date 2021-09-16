@@ -61,7 +61,7 @@ class TextStreamState extends State<TextStream> {
         child: LinearProgressIndicator(
             backgroundColor: Colors.grey[600],
             valueColor: AlwaysStoppedAnimation<Color>(
-                widget.label == resultText ? Colors.red : Colors.green),
+                widget.label != resultText ? Colors.red : Colors.green),
             minHeight: 20,
             value: confidence),
       ),
