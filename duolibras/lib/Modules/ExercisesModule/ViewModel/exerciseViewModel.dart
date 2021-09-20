@@ -46,21 +46,21 @@ class ExerciseViewModel with ExerciseWritingViewModel {
   }
 
   Future<void> _saveProgress() async {
-    final index = UserSession.instance.user.modulesProgress
-        .indexWhere((prog) => prog.moduleId == _moduleID);
+    final user = await UserSession.instance.userProvider.user;
+    final index =
+        user.modulesProgress.indexWhere((prog) => prog.moduleId == _moduleID);
     ModuleProgress moduleProgress;
     if (index != -1) {
-      final progress =
-          UserSession.instance.user.modulesProgress[index].progress + 1;
-      final id = UserSession.instance.user.modulesProgress[index].id;
+      final progress = user.modulesProgress[index].progress + 1;
+      final id = user.modulesProgress[index].id;
 
       moduleProgress =
           ModuleProgress(id: id, moduleId: _moduleID, progress: progress);
-      UserSession.instance.user.modulesProgress[index] = moduleProgress;
+      user.modulesProgress[index] = moduleProgress;
     } else {
       moduleProgress = ModuleProgress(
           id: UniqueKey().toString(), moduleId: _moduleID, progress: 1);
-      UserSession.instance.user.modulesProgress.add(moduleProgress);
+      user.modulesProgress.add(moduleProgress);
     }
     await Service.instance.postModuleProgress(moduleProgress);
   }

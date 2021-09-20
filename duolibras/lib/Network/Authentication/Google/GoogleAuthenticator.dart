@@ -64,7 +64,8 @@ class GoogleAuthenticator extends AuthenticatorProtocol {
   Future<void> signOut() {
     return _auth.signOut().then((value) async {
       SharedFeatures.instance.isLoggedIn = false;
-      UserSession.instance.user = await Service.instance.getUser();
+      UserSession.instance.userProvider
+          .setNewUser(await Service.instance.getUser());
     });
   }
 }

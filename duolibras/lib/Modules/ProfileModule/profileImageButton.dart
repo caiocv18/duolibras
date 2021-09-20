@@ -6,7 +6,9 @@ import 'package:camera/camera.dart';
 import 'package:duolibras/Modules/ProfileModule/profileViewModel.dart';
 import 'package:duolibras/Modules/ProfileModule/takePictureScreen.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
+import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfileImageButton extends StatefulWidget {
   final bool isEnabled;
@@ -19,7 +21,7 @@ class ProfileImageButton extends StatefulWidget {
 }
 
 class _ProfileImageButtonState extends State<ProfileImageButton> {
-  var imageUrl = UserSession.instance.user.imageUrl;
+  var imageUrl = UserSession.instance.userProvider.user.imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -89,18 +91,21 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
   }
 
   void _openCamera() async {
-    final frontalCamera = await _getCamera(CameraLensDirection.front);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TakePictureScreen(camera: frontalCamera),
-        )).then((value) {
-      var imagePath = value as String?;
-      setState(() {
-        imageUrl = imagePath;
-        _uploadImage();
-      });
-    });
+    final provider = Provider.of<UserProvider>(context, listen: false);
+    provider.setImageUrl(
+        "https://firebasestorage.googleapis.com/v0/b/libras-tcc.appspot.com/o/ImagensTeste%2FIMG_5464.JPG?alt=media&token=ec254d7e-45a9-4e28-b09d-838481304d89");
+    // final frontalCamera = await _getCamera(CameraLensDirection.front);
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => TakePictureScreen(camera: frontalCamera),
+    //     )).then((value) {
+    //   var imagePath = value as String?;
+    //   setState(() {
+    //     imageUrl = imagePath;
+    //     _uploadImage();
+    //   });
+    // });
   }
 
   void _uploadImage() {

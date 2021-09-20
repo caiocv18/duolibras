@@ -83,7 +83,7 @@ class AutheticationViewModel
       var userUpdated = await Service.instance.postUser(userModel);
       userUpdated.modulesProgress = await Service.instance.getModulesProgress();
 
-      UserSession.instance.user = userUpdated;
+      UserSession.instance.userProvider.setNewUser(userUpdated);
       return;
     } else {
       throw PlatformException(code: "code");

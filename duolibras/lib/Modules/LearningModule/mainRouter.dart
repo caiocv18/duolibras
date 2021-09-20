@@ -4,13 +4,14 @@ import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
 import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainRouter {
   static const routeHome = '/learningScreen';
   static const routeSignIn = '/singIn';
   static const routeLaunch = '/launchScreen';
 
-  MainRouter._();
+  MainRouter._() {}
 
   static final instance = MainRouter._();
 

@@ -1,5 +1,7 @@
 import 'package:camera/camera.dart';
+import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
@@ -53,7 +55,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           try {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
-
+            final provider = Provider.of<UserProvider>(context, listen: false);
+            provider.setImageUrl(image.path);
             Navigator.of(context).pop(image.path);
           } catch (e) {
             print(e);
@@ -64,4 +67,3 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     );
   }
 }
-
