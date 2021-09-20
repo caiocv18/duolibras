@@ -1,13 +1,12 @@
 import 'package:duolibras/Network/Models/ModuleProgress.dart';
-import 'package:path/path.dart';
 
 class User {
-  final String name;
+  String name;
   final String email;
   final String id;
   List<ModuleProgress> modulesProgress = [];
   final int currentProgress;
-  final String? imageUrl;
+  String? imageUrl;
 
   User(
       {required this.name,

@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:duolibras/Modules/RankingModule/ViewModel/rankingViewModel.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
+import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
 import 'package:duolibras/Network/Models/User.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RankingTile extends StatelessWidget {
   final int index;
@@ -13,10 +17,11 @@ class RankingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<UserProvider>(context, listen: true);
+    final userProvider = provider.user;
+    print("UserProviderName ${userProvider.name}");
     return Card(
-      color: UserSession.instance.user.id == user.id
-          ? Colors.yellow
-          : Colors.white,
+      color: userProvider.id == user.id ? Colors.yellow : Colors.white,
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 6),
       elevation: 6,
       child: ListTile(
@@ -27,19 +32,40 @@ class RankingTile extends StatelessWidget {
               Text("${index + 1}"),
               SizedBox(width: 5),
               CircleAvatar(
-                child: Container(height: 35, child: Icon(Icons.person)),
+                child: Consumer(builder: (_, UserProvider userProvider, __) {
+                  if (userProvider.user.id != user.id) {
+                    return Container(height: 35, child: Icon(Icons.person));
+                  }
+                  if (userProvider.user.imageUrl != null) {
+                    return Container(
+                        height: 55,
+                        decoration: new BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: new NetworkImage(
+                                    userProvider.user.imageUrl!))));
+                  }
+
+                  return Container(height: 55, child: Icon(Icons.person));
+                }),
                 radius: 25,
                 backgroundColor: Colors.grey[400],
               ),
             ],
           ),
         ),
-        title: Text(viewModel.formatUserName(user.name),
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                color: Theme.of(context).primaryColor),
-            textAlign: TextAlign.left),
+        title: Consumer(builder: (ctx, UserProvider userProvider, _) {
+          return Text(
+              viewModel.formatUserName(userProvider.user.id == user.id
+                  ? userProvider.user.name
+                  : user.name),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: Theme.of(context).primaryColor),
+              textAlign: TextAlign.left);
+        }),
         trailing: Container(
           width: 100,
           child: Text("${user.currentProgress} xp",

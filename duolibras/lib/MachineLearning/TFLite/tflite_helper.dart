@@ -16,7 +16,7 @@ class TFLiteHelper extends MLModelProtocol {
     AppHelper.log("loadModel", "Loading model..");
 
     return Tflite.loadModel(
-            model: "assets/model_fp16_quant.tflite",
+            model: "assets/model_fp16_quant-2.tflite",
             labels: "assets/labels.txt",
             useGpuDelegate: false)
         .then((value) {

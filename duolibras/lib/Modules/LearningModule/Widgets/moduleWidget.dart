@@ -20,10 +20,11 @@ class MaduleWidget extends StatefulWidget {
 }
 
 class _MaduleWidgetState extends State<MaduleWidget> {
+  final user = UserSession.instance.userProvider.user;
   double _getModulerProgress() {
-    if (UserSession.instance.user.modulesProgress.isEmpty) return 0;
+    if (user.modulesProgress.isEmpty) return 0;
 
-    var progresses = UserSession.instance.user.modulesProgress;
+    var progresses = user.modulesProgress;
 
     final moduleProgress =
         progresses.where((p) => p.moduleId == widget._module.id);

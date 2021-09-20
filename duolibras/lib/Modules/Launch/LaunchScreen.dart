@@ -1,7 +1,9 @@
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
+import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
 import 'package:duolibras/Network/Service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LaunchScreen extends StatefulWidget {
   final Function _loadCompleted;
@@ -24,16 +26,22 @@ class _LaunchScreenState extends State<LaunchScreen> {
     getUser();
   }
 
-  void getUser() async {
+  void getUser() {
+    // final provider = Provider.of<UserProvider>(context, listen: false);
     Service.instance.getUser().then((user) {
-      UserSession.instance.user = user;
+      print("Colocou o user");
+      // provider.setNewUser(user);
       Service.instance.getModulesProgress().then((progresses) {
-        UserSession.instance.user.modulesProgress = progresses;
+        //   user.modulesProgress = progresses;
+
+        print("Colocou o user2");
+        UserSession.instance.userProvider.setNewUser(user);
         widget._loadCompleted();
       }).onError((error, stackTrace) {
         widget._loadCompleted();
       });
     }).onError((error, stackTrace) {
+      print("error: ${error}: stackTrace ${stackTrace}");
       widget._loadCompleted();
     });
   }

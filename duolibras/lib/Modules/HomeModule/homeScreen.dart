@@ -3,7 +3,9 @@ import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
 import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 import 'package:duolibras/Modules/RankingModule/rankingScreen.dart';
+import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -56,23 +58,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Dibras"),
-        // actions: [
-        //   IconButton(
-        //       icon: Icon(Icons.person),
-        //       onPressed: () => {
-        //             Navigator.of(context)
-        //                 .pushNamed(MainRouter.routeSignIn)
-        //                 .then((value) {
-        //               _handleCompletedLogin(value as bool?);
-        //             })
-        //           })
-        // ],
+    return ChangeNotifierProvider(
+      create: (ctx) => UserSession.instance.userProvider,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Dibras"),
+        ),
+        bottomNavigationBar: bottomNavigationBar,
+        body: _page,
       ),
-      bottomNavigationBar: bottomNavigationBar,
-      body: _page,
     );
   }
 }

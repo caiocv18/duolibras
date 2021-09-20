@@ -2,10 +2,7 @@ import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Modules/ExercisesModule/mlExerciseWidget.dart';
 
 import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
-import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
-import 'package:duolibras/Modules/ProfileModule/profileImageButton.dart';
-import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

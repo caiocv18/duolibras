@@ -6,9 +6,11 @@ import 'package:duolibras/Modules/ProfileModule/profileImageButton.dart';
 import 'package:duolibras/Modules/ProfileModule/profileViewModel.dart';
 import 'package:duolibras/Modules/ProfileModule/progressWidget.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
+import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
 import 'package:duolibras/Network/Models/User.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfileFlow extends StatefulWidget {
   static const routeProfile = '/profile';
@@ -76,20 +78,27 @@ class _ProfilePageState extends State<ProfilePage> {
   final isLogged = SharedFeatures.instance.isLoggedIn;
   final _viewModel = ProfileViewModel();
   var _userHasChanged = false;
-
+  var _userName = UserSession.instance.userProvider.user.name;
   @override
   void initState() {
     super.initState();
+  }
 
-    nameTextfieldController.addListener(() {
-      var user = User(
-          name: nameTextfieldController.value.text,
-          email: UserSession.instance.user.email,
-          id: UserSession.instance.user.id,
-          currentProgress: UserSession.instance.user.currentProgress,
-          imageUrl: UserSession.instance.user.imageUrl);
+  void _handleSubmitNewName(String newName) {
+    var user = User(
+        name: nameTextfieldController.value.text,
+        email: UserSession.instance.userProvider.user.email,
+        id: UserSession.instance.userProvider.user.id,
+        currentProgress: UserSession.instance.userProvider.user.currentProgress,
+        imageUrl: UserSession.instance.userProvider.user.imageUrl);
 
-      _viewModel.updateUser(user);
+    _viewModel.updateUser(user);
+
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.setUserName(nameTextfieldController.value.text);
+
+    setState(() {
+      _userName = newName;
     });
   }
 
@@ -112,13 +121,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 ProfileImageButton(isLogged, _viewModel),
                 SizedBox(height: 40),
                 Container(
-                    child: CustomTextfield(nameTextfieldController,
-                        "${UserSession.instance.user.name}", isLogged),
+                    child: CustomTextfield(nameTextfieldController, _userName,
+                        isLogged, _handleSubmitNewName),
                     width: 200),
                 SizedBox(height: 60),
                 Container(
                     child: ProgressWidget(
-                        UserSession.instance.user.currentProgress / 100)),
+                        UserSession.instance.userProvider.user.currentProgress /
+                            100)),
                 SizedBox(height: 200),
                 ElevatedButton(
                   child: Text(isLogged ? "Log out" : "Login"),
