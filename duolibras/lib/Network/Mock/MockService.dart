@@ -25,7 +25,7 @@ class MockService extends ServicesProtocol {
   }
 
   @override
-  Future<User> postUser(User user) async {
+  Future<User> postUser(User user, bool isNewUser) async {
     var completer = Completer<User>();
 
     String jsonString = await Utils.loadJSON("User");

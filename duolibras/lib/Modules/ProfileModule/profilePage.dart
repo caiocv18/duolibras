@@ -31,7 +31,7 @@ class _ProfileFlowState extends State<ProfileFlow> {
   final _navigatorKey = GlobalKey<NavigatorState>();
 
   Route _onGenerateRoute(RouteSettings settings) {
-    late Widget page;
+    Widget page;
     switch (settings.name) {
       case ProfileFlow.routeProfile:
         page = ProfilePage();
@@ -41,8 +41,9 @@ class _ProfileFlowState extends State<ProfileFlow> {
         break;
       case ProfileFlow.routeSettings:
         page = SignInPage();
-        ;
         break;
+      default:
+        page = SignInPage();
     }
 
     return MaterialPageRoute<dynamic>(
