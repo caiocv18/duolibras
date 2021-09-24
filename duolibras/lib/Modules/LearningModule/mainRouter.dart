@@ -4,7 +4,6 @@ import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
 import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MainRouter {
   static const routeHome = '/learningScreen';

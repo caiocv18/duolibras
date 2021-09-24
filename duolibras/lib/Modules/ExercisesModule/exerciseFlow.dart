@@ -2,9 +2,11 @@ import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMLScreen.dart'
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMultiChoiceScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseWritingScreen.dart';
+import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/ExercisesCategory.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class ExerciseFlow extends StatefulWidget {
@@ -36,7 +38,9 @@ class ExerciseFlow extends StatefulWidget {
 
   static String getRouteNameBy(ExercisesCategory exerciseCategory) {
     switch (exerciseCategory) {
-      case ExercisesCategory.multipleChoices:
+      case ExercisesCategory.multipleChoicesText:
+        return ExerciseFlow.routeExerciseMultiChoicePage;
+      case ExercisesCategory.multipleChoicesImage:
         return ExerciseFlow.routeExerciseMultiChoicePage;
       case ExercisesCategory.writing:
         return ExerciseFlow.routeExerciseWritingPage;
@@ -77,7 +81,10 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
     String routeName;
 
     switch (widget._exercise!.category) {
-      case ExercisesCategory.multipleChoices:
+      case ExercisesCategory.multipleChoicesImage:
+        routeName = ExerciseFlow.routeExerciseMultiChoicePage;
+        break;
+      case ExercisesCategory.multipleChoicesText:
         routeName = ExerciseFlow.routeExerciseMultiChoicePage;
         break;
       case ExercisesCategory.writing:

@@ -1,4 +1,10 @@
-enum ExercisesCategory { multipleChoices, ml, writing, none }
+enum ExercisesCategory {
+  multipleChoicesImage,
+  multipleChoicesText,
+  ml,
+  writing,
+  none
+}
 
 extension ExercisesCategoryExtension on ExercisesCategory {
   static ExercisesCategory createEnum(String rawValue) {

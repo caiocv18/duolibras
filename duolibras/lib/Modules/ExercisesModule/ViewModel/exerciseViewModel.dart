@@ -1,8 +1,10 @@
 import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/ModuleProgress.dart';
+import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
 import 'package:duolibras/Network/Service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../Screens/exerciseWritingScreen.dart';
 
 class ExerciseViewModel with ExerciseWritingViewModel {
@@ -40,27 +42,28 @@ class ExerciseViewModel with ExerciseWritingViewModel {
 
   void didSubmitGesture(String label, double confidence, Exercise exercise,
       BuildContext context) {
-    if (exercise.correctAnswer == label && confidence > 0.6) {
+    if (exercise.correctAnswer == label && confidence > 0.9) {
       didSubmitTextAnswer(label, exercise.id, context);
     }
   }
 
-  Future<void> _saveProgress() async {
-    final user = await UserSession.instance.userProvider.user;
-    final index =
-        user.modulesProgress.indexWhere((prog) => prog.moduleId == _moduleID);
+  Future<void> _saveProgress(BuildContext context) async {
+    final userProvider = Provider.of<UserModel>(context, listen: false);
+    final index = userProvider.user.modulesProgress
+        .indexWhere((prog) => prog.moduleId == _moduleID);
     ModuleProgress moduleProgress;
     if (index != -1) {
-      final progress = user.modulesProgress[index].progress + 1;
-      final id = user.modulesProgress[index].id;
+      final progress = userProvider.user.modulesProgress[index].progress + 1;
+      final id = userProvider.user.modulesProgress[index].id;
 
       moduleProgress =
           ModuleProgress(id: id, moduleId: _moduleID, progress: progress);
-      user.modulesProgress[index] = moduleProgress;
+      // user.modulesProgress[index] = moduleProgress;
+      userProvider.setModulesProgress(moduleProgress);
     } else {
       moduleProgress = ModuleProgress(
           id: UniqueKey().toString(), moduleId: _moduleID, progress: 1);
-      user.modulesProgress.add(moduleProgress);
+      userProvider.setModulesProgress(moduleProgress);
     }
     await Service.instance.postModuleProgress(moduleProgress);
   }
@@ -70,7 +73,7 @@ class ExerciseViewModel with ExerciseWritingViewModel {
     final index = _exercises.indexWhere((m) => m.id == exerciseID);
 
     if (index + 1 == _exercises.length) {
-      await _saveProgress();
+      await _saveProgress(context);
       exerciseProgressValue = 1;
       _didFinishExercise(null);
       return;

@@ -55,7 +55,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           try {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
-            final provider = Provider.of<UserProvider>(context, listen: false);
+            final provider = Provider.of<UserModel>(context, listen: false);
             provider.setImageUrl(image.path);
             Navigator.of(context).pop(image.path);
           } catch (e) {

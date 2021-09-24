@@ -1,6 +1,6 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/LoginModule/SignIn/signInPage.dart';
-import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
 import 'package:duolibras/Commons/Components/customTextfield.dart';
 import 'package:duolibras/Modules/ProfileModule/profileImageButton.dart';
 import 'package:duolibras/Modules/ProfileModule/profileViewModel.dart';
@@ -78,23 +78,26 @@ class _ProfilePageState extends State<ProfilePage> {
   final isLogged = SharedFeatures.instance.isLoggedIn;
   final _viewModel = ProfileViewModel();
   var _userHasChanged = false;
-  var _userName = UserSession.instance.userProvider.user.name;
+  var _userName = locator<UserModel>().user.name;
   @override
   void initState() {
     super.initState();
   }
 
   void _handleSubmitNewName(String newName) {
+    final userModel = locator<UserModel>().user;
     var user = User(
         name: nameTextfieldController.value.text,
-        email: UserSession.instance.userProvider.user.email,
-        id: UserSession.instance.userProvider.user.id,
-        currentProgress: UserSession.instance.userProvider.user.currentProgress,
-        imageUrl: UserSession.instance.userProvider.user.imageUrl);
+        email: userModel.email,
+        id: userModel.id,
+        currentProgress: userModel.currentProgress,
+        imageUrl: userModel.imageUrl);
+
+    user.modulesProgress = userModel.modulesProgress;
 
     _viewModel.updateUser(user);
 
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userProvider = Provider.of<UserModel>(context, listen: false);
     userProvider.setUserName(nameTextfieldController.value.text);
 
     setState(() {
@@ -127,8 +130,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: 60),
                 Container(
                     child: ProgressWidget(
-                        UserSession.instance.userProvider.user.currentProgress /
-                            100)),
+                        locator<UserModel>().user.currentProgress / 100)),
                 SizedBox(height: 200),
                 ElevatedButton(
                   child: Text(isLogged ? "Log out" : "Login"),

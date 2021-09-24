@@ -58,11 +58,6 @@ class LearningViewModel
   Future<void> didSelectModule(String sectionID, String moduleID,
       BuildContext context, Function? handler) async {
     _getExerciseFromModule(sectionID, moduleID).then((excersies) {
-      // final viewModel = ExerciseViewModel(excersies);
-      // final routeName = excersies.first.category == ExercisesCategory.writing
-      // ? ExerciseWritingScreen.routeName
-      // : ExerciseMultiChoiceScreen.routeName;
-
       Navigator.of(context).pushNamed(ExerciseFlow.routePrefixExerciseFlow,
           arguments: {
             "exercises": excersies,

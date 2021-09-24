@@ -58,15 +58,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (ctx) => UserSession.instance.userProvider,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Dibras"),
-        ),
-        bottomNavigationBar: bottomNavigationBar,
-        body: _page,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Dibras"),
       ),
+      bottomNavigationBar: bottomNavigationBar,
+      body: _page,
     );
   }
 }

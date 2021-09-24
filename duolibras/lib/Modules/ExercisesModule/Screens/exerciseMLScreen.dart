@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/cameraWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
 import 'exerciseScreen.dart';
+import 'package:confetti/confetti.dart';
 
 class ExerciseMLScreen extends ExerciseStateful {
   static String routeName = "/ExerciseMLScreen";
@@ -19,6 +22,39 @@ class ExerciseMLScreen extends ExerciseStateful {
 
 class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   var _showingCamera = false;
+  var _finishedExercise = false;
+
+  late ConfettiController controllerTopCenter;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      initController();
+    });
+  }
+
+  void initController() {
+    controllerTopCenter =
+        ConfettiController(duration: const Duration(seconds: 2));
+  }
+
+  Align buildConfettiWidget(controller, double blastDirection) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConfettiWidget(
+        maximumSize: Size(30, 30),
+        shouldLoop: false,
+        confettiController: controller,
+        blastDirection: blastDirection,
+        blastDirectionality: BlastDirectionality.directional,
+        maxBlastForce: 20, // set a lower max blast force
+        minBlastForce: 8, // set a lower min blast force
+        emissionFrequency: 1, // a lot of particles at once
+        gravity: 1,
+      ),
+    );
+  }
 
   Widget showQuestionBody(Exercise exercise, ExerciseViewModel viewModel,
       Size containerSize, BuildContext ctx) {
@@ -59,13 +95,18 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   void _handleCameraPrediction(
       String label, double confidence, BuildContext ctx) {
     if (widget._viewModel
-        .isGestureCorrect(label, confidence, widget._exercise)) {
-      setState(() {
-        _showingCamera = false;
-        widget.showFinishExerciseBottomSheet(
-            true, widget._exercise.correctAnswer, ctx, () {
-          widget._viewModel
-              .didSubmitTextAnswer(label, widget._exercise.id, ctx);
+            .isGestureCorrect(label, confidence, widget._exercise) &&
+        !_finishedExercise) {
+      _finishedExercise = true;
+      controllerTopCenter.play();
+      Future.delayed(Duration(seconds: 2), () {
+        setState(() {
+          _showingCamera = false;
+          widget.showFinishExerciseBottomSheet(
+              true, widget._exercise.correctAnswer, ctx, () {
+            widget._viewModel
+                .didSubmitTextAnswer(label, widget._exercise.id, ctx);
+          });
         });
       });
     }
@@ -73,10 +114,14 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
 
   Widget cameraBody(Exercise exercise, Size containerSize, BuildContext ctx) {
     return Container(
-        child: CameraWidget(
-            exercise.correctAnswer,
-            (label, confidence) =>
-                _handleCameraPrediction(label, confidence, ctx)));
+        child: Stack(children: [
+      CameraWidget(
+          exercise.correctAnswer,
+          (label, confidence) =>
+              _handleCameraPrediction(label, confidence, ctx)),
+      buildConfettiWidget(controllerTopCenter, 3.14 / 1),
+      buildConfettiWidget(controllerTopCenter, 3.14 / 4),
+    ]));
   }
 
   @override

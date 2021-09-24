@@ -1,12 +1,13 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
 import 'package:duolibras/Network/Authentication/AuthenticatorProtocol.dart';
+import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
 import 'package:flutter/services.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../Service.dart';
-import '../UserSession.dart';
 
 class AppleAuthenticator extends AuthenticatorProtocol {
   static final _auth = FirebaseAuth.instance;
@@ -49,8 +50,7 @@ class AppleAuthenticator extends AuthenticatorProtocol {
   Future<void> signOut() {
     return _auth.signOut().then((value) async {
       SharedFeatures.instance.isLoggedIn = false;
-      UserSession.instance.userProvider
-          .setNewUser(await Service.instance.getUser());
+      locator<UserModel>().setNewUser(await Service.instance.getUser());
     });
   }
 

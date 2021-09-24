@@ -1,12 +1,16 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Commons/Utils/serviceLocator.dart';
+import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
 import 'package:duolibras/Network/Authentication/Apple/AppleAuthenticator.dart';
 import 'package:duolibras/Network/Authentication/Firebase/FirebaseAuthenticator.dart';
 import 'package:duolibras/Network/Authentication/Google/GoogleAuthenticator.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:duolibras/Network/Firebase/FirebaseErrors.dart';
+import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
 import 'package:duolibras/Network/Models/User.dart' as myUser;
 import 'package:duolibras/Network/Service.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fireUser;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 abstract class SignOutProtocol {
@@ -32,14 +36,14 @@ abstract class FirebaseAuthenticatorProtocol
   Future<void> handleFirebaseLink(Uri link, String email);
 }
 
-class AutheticationViewModel
+class AutheticationViewModel extends BaseViewModel
     implements
         GoogleSignInProtocol,
         AppleSignInProtocol,
         FirebaseAuthenticatorProtocol {
-  final _appleAuthenticator = AppleAuthenticator();
-  final _googleAuthenticator = GoogleAuthenticator();
-  final _firebaseAuthenticator = FirebaseAuthenticator();
+  final _appleAuthenticator = locator<AppleAuthenticator>();
+  final _googleAuthenticator = locator<GoogleAuthenticator>();
+  final _firebaseAuthenticator = locator<FirebaseAuthenticator>();
 
   @override
   Future<void> appleSignIn() async {
@@ -83,7 +87,7 @@ class AutheticationViewModel
       var userUpdated = await Service.instance.postUser(userModel);
       userUpdated.modulesProgress = await Service.instance.getModulesProgress();
 
-      UserSession.instance.userProvider.setNewUser(userUpdated);
+      locator<UserModel>().setNewUser(userUpdated);
       return;
     } else {
       throw PlatformException(code: "code");

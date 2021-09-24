@@ -13,7 +13,7 @@ import 'package:duolibras/Network/Models/User.dart' as myUser;
 import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/src/painting/image_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
 class FirebaseService extends ServicesProtocol {

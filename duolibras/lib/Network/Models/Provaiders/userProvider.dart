@@ -1,50 +1,63 @@
+import 'dart:async';
 import 'dart:developer';
 
+import 'package:duolibras/Commons/ViewModel/ScreenState.dart';
+import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
+import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'package:duolibras/Network/Models/User.dart';
 import 'package:flutter/foundation.dart';
 import 'package:duolibras/Network/Service.dart';
 
-class UserProvider with ChangeNotifier {
+class UserModel extends BaseViewModel {
   User? _user;
 
   User get user {
     if (_user != null) {
-      return User(
+      var user = User(
           name: _user!.name,
           email: _user!.email,
           id: _user!.id,
           currentProgress: _user!.currentProgress,
           imageUrl: _user!.imageUrl);
+      user.modulesProgress = _user!.modulesProgress;
+      return user;
     }
 
     return User(
-        name: "name",
-        email: "email,",
-        id: "id",
-        currentProgress: 10,
-        imageUrl: "imageUrl");
+        name: "", email: ",", id: "", currentProgress: 0, imageUrl: null);
   }
-
-  // UserProvider();
 
   void setNewUser(User newUser) {
     _user = newUser;
-    notifyListeners();
+    setState(ScreenState.Normal);
   }
 
   void setImageUrl(String url) {
     if (_user != null) {
       _user!.imageUrl = url;
-      notifyListeners();
+      setState(ScreenState.Normal);
+    }
+  }
+
+  void setModulesProgress(ModuleProgress moduleProgress) {
+    if (_user != null) {
+      final index =
+          _user!.modulesProgress.indexWhere((md) => md.id == moduleProgress.id);
+      if (index != -1) {
+        _user!.modulesProgress[index] = moduleProgress;
+        setState(ScreenState.Normal);
+        return;
+      }
+      _user!.modulesProgress.add(moduleProgress);
+      setState(ScreenState.Normal);
     }
   }
 
   void setUserName(String name) {
     if (_user != null) {
       _user!.name = name;
-      print("hasListeners ${hasListeners}");
-      notifyListeners();
+      setState(ScreenState.Normal);
     }
   }
 }

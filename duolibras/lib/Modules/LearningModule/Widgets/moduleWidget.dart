@@ -1,7 +1,10 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
-import 'package:duolibras/Network/Authentication/UserSession.dart';
+import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Network/Models/Module.dart';
+import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
+import 'package:duolibras/Network/Models/User.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 abstract class ModuleViewModel {
   Future<void> didSelectModule(String sectionID, String moduleID,
@@ -20,8 +23,7 @@ class MaduleWidget extends StatefulWidget {
 }
 
 class _MaduleWidgetState extends State<MaduleWidget> {
-  final user = UserSession.instance.userProvider.user;
-  double _getModulerProgress() {
+  double _getModulerProgress(User user) {
     if (user.modulesProgress.isEmpty) return 0;
 
     var progresses = user.modulesProgress;
@@ -29,7 +31,7 @@ class _MaduleWidgetState extends State<MaduleWidget> {
     final moduleProgress =
         progresses.where((p) => p.moduleId == widget._module.id);
 
-    if (moduleProgress == null || moduleProgress.isEmpty) return 0;
+    if (moduleProgress.isEmpty) return 0;
 
     return moduleProgress.first.progress / widget._module.maxProgress;
   }
@@ -55,13 +57,15 @@ class _MaduleWidgetState extends State<MaduleWidget> {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                CircularProgressIndicator(
-                  backgroundColor: Colors.grey[600],
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                      Color.fromRGBO(255, 215, 0, 1)),
-                  value: _getModulerProgress(),
-                  strokeWidth: 60,
-                ),
+                Consumer(builder: (ctx, UserModel userProvider, _) {
+                  return CircularProgressIndicator(
+                    backgroundColor: Colors.grey[600],
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Color.fromRGBO(255, 215, 0, 1)),
+                    value: _getModulerProgress(userProvider.user),
+                    strokeWidth: 60,
+                  );
+                }),
                 CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 40,
@@ -70,9 +74,10 @@ class _MaduleWidgetState extends State<MaduleWidget> {
                   child: Container(
                       height: 50, child: Image.network(widget._module.iconUrl)),
                   radius: 35,
-                  backgroundColor: 1 == _getModulerProgress()
-                      ? Color.fromRGBO(255, 215, 0, 1)
-                      : Colors.blue[400],
+                  backgroundColor:
+                      1 == _getModulerProgress(locator<UserModel>().user)
+                          ? Color.fromRGBO(255, 215, 0, 1)
+                          : Colors.blue[400],
                 ),
                 if (widget._module.minProgress >
                     SharedFeatures.instance.userProgress)

@@ -1,9 +1,11 @@
 import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
+import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/imagesMultiChoice.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/multiChoicesWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseScreen.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Network/Models/ExercisesCategory.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseMultiChoiceScreen extends ExerciseScreen {
@@ -45,6 +47,18 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
     );
   }
 
+  Widget _createMultiChoiceWidget(Exercise exercise, BuildContext ctx) {
+    return exercise.category == ExercisesCategory.multipleChoicesText
+        ? MultiChoicesWidget(exercise.answers, (answer) {
+            handleSubmitAnswer(
+                answer, exercise.correctAnswer, exercise.id, ctx);
+          })
+        : ImagesMultiChoice(exercise.answers, (answer) {
+            handleSubmitAnswer(
+                answer, exercise.correctAnswer, exercise.id, ctx);
+          });
+  }
+
   Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel,
       double containerHeight, BuildContext ctx) {
     return SafeArea(
@@ -57,7 +71,7 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
               height: containerHeight * 0.10,
               child: QuestionWidget(exercise.question)),
           Container(
-              height: containerHeight * 0.5,
+              height: containerHeight * 0.45,
               child: Image.network(exercise.mediaUrl)),
           Spacer(),
           Column(
@@ -65,12 +79,10 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
             children: [
               Container(
                   height: containerHeight * 0.40,
-                  child: MultiChoicesWidget(exercise.answers, (answer) {
-                    handleSubmitAnswer(
-                        answer, exercise.correctAnswer, exercise.id, ctx);
-                  })),
+                  child: _createMultiChoiceWidget(exercise, ctx)),
             ],
           ),
+          SizedBox(height: containerHeight * 0.05)
         ],
       ),
     ));
@@ -79,10 +91,15 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
   void handleSubmitAnswer(String answer, String correctAnswer,
       String exerciseID, BuildContext ctx) {
     final isCorrect = _viewModel.isAnswerCorrect(answer, exerciseID);
-
-    showFinishExerciseBottomSheet(isCorrect, correctAnswer, ctx, () {
-      _viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
-    });
+    if (_exercise.category == ExercisesCategory.multipleChoicesText) {
+      showFinishExerciseBottomSheet(isCorrect, correctAnswer, ctx, () {
+        _viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
+      });
+    } else {
+      showFinishExerciseBottomSheetWithImage(isCorrect, correctAnswer, ctx, () {
+        _viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
+      });
+    }
   }
 
   @override

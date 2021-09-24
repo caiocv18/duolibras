@@ -1,8 +1,10 @@
 import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Network/Authentication/AuthenticationModel.dart';
 import 'package:duolibras/Network/Authentication/AuthenticatorProtocol.dart';
 import 'package:duolibras/Network/Firebase/FirebaseErrors.dart';
+import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
 import 'package:duolibras/Network/Service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -56,8 +58,7 @@ class FirebaseAuthenticator extends AuthenticatorProtocol {
   Future<void> signOut() {
     return _auth.signOut().then((value) async {
       SharedFeatures.instance.isLoggedIn = false;
-      UserSession.instance.userProvider
-          .setNewUser(await Service.instance.getUser());
+      locator<UserModel>().setNewUser(await Service.instance.getUser());
     });
   }
 }
