@@ -8,7 +8,7 @@ class ProfileViewModel {
   final _service = Service.instance;
 
   Future<User> updateUser(User user) {
-    return _service.postUser(user);
+    return _service.postUser(user, false);
   }
 
   Future<void> signOut() {

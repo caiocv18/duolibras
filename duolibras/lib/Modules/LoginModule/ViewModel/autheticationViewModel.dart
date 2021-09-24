@@ -68,23 +68,25 @@ class AutheticationViewModel extends BaseViewModel
 
   Future<void> _updateUserInDatabase(fireUser.User? user) async {
     if (user != null) {
-      SharedFeatures.instance.isLoggedIn = true;
       final oldUser = await Service.instance.getUser();
-
+      final isNewUser = oldUser.id.isEmpty;
       myUser.User userModel;
-      if (oldUser.id.isEmpty) {
+
+      if (isNewUser) {
         userModel = myUser.User(
             id: user.uid,
             name: user.displayName ?? user.email ?? "",
             currentProgress: 0,
             email: user.email ?? "",
             imageUrl: null);
-        print("Tratar campos para enviar");
+
+        SharedFeatures.instance.isLoggedIn = false;
+        userModel.modulesProgress = await Service.instance.getModulesProgress();
       } else {
         userModel = oldUser;
       }
 
-      var userUpdated = await Service.instance.postUser(userModel);
+      var userUpdated = await Service.instance.postUser(userModel, isNewUser);
       userUpdated.modulesProgress = await Service.instance.getModulesProgress();
 
       locator<UserModel>().setNewUser(userUpdated);

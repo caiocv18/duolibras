@@ -2,7 +2,7 @@ import 'package:duolibras/Network/Models/ModuleProgress.dart';
 
 class User {
   String name;
-  final String email;
+  String? email;
   final String id;
   List<ModuleProgress> modulesProgress = [];
   final int currentProgress;
@@ -15,13 +15,13 @@ class User {
       required this.currentProgress,
       required this.imageUrl});
 
-  factory User.fromMap(Map<String, dynamic> parsedJson, String docId) {
+  factory User.fromMap(Map<String, dynamic> parsedJson, String id) {
     return User(
         name: parsedJson["name"],
         email: parsedJson["email"],
         currentProgress: parsedJson["currentProgress"],
         imageUrl: parsedJson["imageUrl"],
-        id: docId);
+        id: id);
   }
 
   Map<String, dynamic> toMap() {

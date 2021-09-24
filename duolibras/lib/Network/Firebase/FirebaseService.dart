@@ -26,7 +26,9 @@ class FirebaseService extends ServicesProtocol {
     if (firebaseUser == null) {
       throw FirebaseErrors.UserNotFound;
     }
+
     SharedFeatures.instance.isLoggedIn = true;
+    
     return firestoreInstance
         .collection(Constants.firebaseService.usersCollection)
         .doc(firebaseUser.uid);
@@ -137,8 +139,7 @@ class FirebaseService extends ServicesProtocol {
   //   return completer.future;
   // }
 
-  Future<bool> _postModuleProgressInFirebase(
-      ModuleProgress moduleProgress) async {
+  Future<bool> _postModuleProgressInFirebase(ModuleProgress moduleProgress) async {
     var completer = Completer<bool>();
     final userDocument = _getUserFromFirebase();
 
@@ -151,18 +152,33 @@ class FirebaseService extends ServicesProtocol {
     return completer.future;
   }
 
-  Future<myUser.User> _postUserInFirebase(myUser.User user) {
+  Future<myUser.User> _postUserInFirebase(myUser.User user, bool isNewUser) async{
     var completer = Completer<myUser.User>();
 
+    await 
     firestoreInstance
-        .collection(Constants.firebaseService.usersCollection)
-        .doc(user.id)
-        .set(user.toMap(), SetOptions(merge: true))
-        .then((_) => {
-              this.getUser().then((user) {
-                completer.complete(user);
-              })
-            });
+    .collection(Constants.firebaseService.usersCollection)
+    .doc(user.id)
+    .set(user.toMap(), SetOptions(merge: true))
+    .then((_) => {
+        this.getUser().then((newUser) {
+          if (isNewUser && !user.modulesProgress.isEmpty){
+            user.modulesProgress.forEach((moduleProgress) async {
+              await postModuleProgress(moduleProgress).then((value) 
+                {
+                  if (user.modulesProgress.last == moduleProgress){
+                    newUser.modulesProgress = user.modulesProgress;
+                    completer.complete(newUser);
+                  }
+                }
+              );
+            }); 
+          } else {
+            newUser.modulesProgress = user.modulesProgress;
+            completer.complete(newUser);
+          }
+        })
+      });
 
     return completer.future;
   }
@@ -183,8 +199,8 @@ class FirebaseService extends ServicesProtocol {
   }
 
   @override
-  Future<myUser.User> postUser(myUser.User user) async {
-    return _postUserInFirebase(user);
+  Future<myUser.User> postUser(myUser.User user, bool isNewUser) async {
+    return _postUserInFirebase(user, isNewUser);
   }
 
   @override

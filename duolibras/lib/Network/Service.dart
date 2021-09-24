@@ -11,7 +11,7 @@ import 'package:duolibras/Network/Models/User.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:username_gen/username_gen.dart';
 
 class Service extends ServicesProtocol {
   late ServicesProtocol _service;
@@ -50,21 +50,31 @@ class Service extends ServicesProtocol {
 
   @override
   Future<User> getUser() async {
-    return _service.getUser().onError((error, stackTrace) async {
-      User user =
-          User(name: "", id: "", email: "", currentProgress: 0, imageUrl: null);
+    return _service.getUser()
+    .onError((error, stackTrace) async {
+      SharedFeatures.instance.isLoggedIn = false;
+
+      return await _database.getUser()
+      .onError((error, stackTrace) async {
+        final randomUsername = UsernameGen().generate();
+        final newUser = User(name: randomUsername, id: "", email: "", currentProgress: 0, imageUrl: null);
+        return _database.saveUser(newUser).then((_) => newUser);
+      });
+    })
+    .then((user) async {
       user.modulesProgress = await Service.instance
-          .getModulesProgress()
-          .onError((error, stackTrace) {
+      .getModulesProgress()
+      .onError((error, stackTrace) {
         return [];
       });
+
       return user;
     });
   }
 
   @override
-  Future<User> postUser(User user) {
-    return _service.postUser(user);
+  Future<User> postUser(User user, bool isNewUser) {
+    return _service.postUser(user, isNewUser);
   }
 
   @override

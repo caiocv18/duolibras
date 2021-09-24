@@ -18,23 +18,7 @@ Future<void> main() async {
   //   print(user.name);
   // });
   SharedFeatures.instance.isLoggedIn = false;
-  // Service.instance.getTrail().then((trail) {
-  //   print(trail.title);
-  //   Service.instance.getSectionsFromTrail().then((sections) {
-  //     print(sections.first.title);
-  //     Service.instance
-  //         .getModulesFromSectionId(sections.first.id)
-  //         .then((modules) {
-  //       print(modules.first.title);
-  //       Service.instance
-  //           .getExercisesFromModuleId(sections.first.id, modules.first.id)
-  //           .then((modules) {
-  //         print(modules.first.question);
-  //       });
-  //     });
-  //   });
-  // });
-
+  
   runApp(MyApp());
 }
 
