@@ -14,11 +14,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   setupLocator();
-  // Service.instance.getUser().then((user) {
-  //   print(user.name);
-  // });
+
   SharedFeatures.instance.isLoggedIn = false;
-  
+
   runApp(MyApp());
 }
 

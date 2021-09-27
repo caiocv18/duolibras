@@ -12,7 +12,8 @@ void setupLocator() {
   locator.registerFactory<AppleAuthenticator>(() => AppleAuthenticator());
   locator.registerFactory<GoogleAuthenticator>(() => GoogleAuthenticator());
   locator.registerFactory<FirebaseAuthenticator>(() => FirebaseAuthenticator());
-  locator.registerSingleton(AutheticationViewModel());
+  locator
+      .registerFactory<AutheticationViewModel>(() => AutheticationViewModel());
 
   //user
   locator.registerSingleton(UserModel());

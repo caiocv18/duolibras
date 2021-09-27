@@ -28,18 +28,8 @@ class _LaunchScreenState extends State<LaunchScreen> {
   void getUser() {
     Service.instance.getUser().then((user) {
       print("Colocou o user");
-      UserSession.instance.userProvider.setNewUser(user);
+      locator<UserModel>().setNewUser(user);
       widget._loadCompleted();
-      // provider.setNewUser(user);
-      // Service.instance.getModulesProgress().then((progresses) {
-      //   //   user.modulesProgress = progresses;
-
-      //   print("Colocou o user2");
-      //   UserSession.instance.userProvider.setNewUser(user);
-      //   widget._loadCompleted();
-      // }).onError((error, stackTrace) {
-      //   widget._loadCompleted();
-      // });
     }).onError((error, stackTrace) {
       print("error: ${error}: stackTrace ${stackTrace}");
       widget._loadCompleted();

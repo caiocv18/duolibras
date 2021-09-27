@@ -80,7 +80,7 @@ class ExerciseViewModel with ExerciseWritingViewModel {
     }
 
     final exercise = _exercises[index + 1];
-    exerciseProgressValue = (index + 1) / _exercises.length;
+    exerciseProgressValue = index + 1;
     _didFinishExercise(exercise);
   }
 }

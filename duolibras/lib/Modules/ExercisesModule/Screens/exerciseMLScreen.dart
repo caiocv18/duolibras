@@ -61,6 +61,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     return SafeArea(
         child: SingleChildScrollView(
       child: Container(
+        color: Color.fromRGBO(234, 234, 234, 1),
         height: containerSize.height,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

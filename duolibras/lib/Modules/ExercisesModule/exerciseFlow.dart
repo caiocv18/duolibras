@@ -1,3 +1,4 @@
+import 'package:duolibras/Commons/Components/progressBar.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMLScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMultiChoiceScreen.dart';
@@ -145,6 +146,8 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
     return WillPopScope(
       onWillPop: _isExitDesired,
       child: Scaffold(
+        extendBodyBehindAppBar: true,
+        // extendBody: true,
         appBar: _buildFlowAppBar(),
         body: Navigator(
           key: _navigatorKey,
@@ -167,18 +170,6 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
       case ExerciseFlow.routeExerciseML:
         page = ExerciseMLScreen(widget._exercise!, _viewModel);
         break;
-
-      // case routeDeviceSetupConnectingPage:
-      //   page = WaitingPage(
-      //     message: 'Connecting...',
-      //     onWaitComplete: _onConnectionEstablished,
-      //   );
-      //   break;
-      // case routeDeviceSetupFinishedPage:
-      //   page = FinishedPage(
-      //     onFinishPressed: _exitSetup,
-      //   );
-      //   break;
     }
 
     return MaterialPageRoute<dynamic>(
@@ -191,23 +182,44 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
 
   PreferredSizeWidget _buildFlowAppBar() {
     return AppBar(
-        leading: IconButton(
-          onPressed: _onExitPressed,
-          icon: const Icon(Icons.chevron_left),
-        ),
-        title: const Text('Hora de Aprender'),
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("$_totalPoints", style: TextStyle(fontSize: 15)),
-            ),
+        backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+        foregroundColor: Colors.transparent,
+        elevation: 0.0,
+        toolbarHeight: 100,
+        leadingWidth: 0.0,
+        title: Container(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              OutlinedButton(
+                  onPressed: () => _onExitPressed(),
+                  child: Text("Desistir",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500)),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white))))),
+              SizedBox(
+                height: 25,
+              ),
+              Center(
+                child: Container(
+                  height: 20,
+                  width: 350,
+                  child: ProgressBar(
+                      max: widget.exercises.length.toDouble(),
+                      current: _exerciseProgress),
+                ),
+              ),
+            ],
           ),
-        ],
-        bottom: MyLinearProgressIndicator(
-          backgroundColor: Colors.grey,
-          value: _exerciseProgress,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
         ));
   }
 }

@@ -1,5 +1,6 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
+import 'package:duolibras/Commons/ViewModel/ScreenState.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
 import 'package:duolibras/Network/Authentication/Apple/AppleAuthenticator.dart';
 import 'package:duolibras/Network/Authentication/Firebase/FirebaseAuthenticator.dart';
