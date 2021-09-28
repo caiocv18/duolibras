@@ -60,6 +60,7 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
 
   var _exerciseProgress = 0.0;
   var _totalPoints = 0.0;
+
   @override
   void initState() {
     super.initState();

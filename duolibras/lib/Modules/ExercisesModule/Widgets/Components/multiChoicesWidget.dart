@@ -1,7 +1,6 @@
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
+import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
 import 'package:flutter/material.dart';
-
-enum _MultiChoiceState { NotAnswered, DidAnswer }
 
 class MultiChoicesWidget extends StatefulWidget {
   final List<String> _answers;
@@ -15,7 +14,7 @@ class MultiChoicesWidget extends StatefulWidget {
 }
 
 class _MultiChoicesWidgetState extends State<MultiChoicesWidget> {
-  _MultiChoiceState state = _MultiChoiceState.NotAnswered;
+  ExerciseScreenState state = ExerciseScreenState.NotAnswered;
   String? selectAnswer = null;
 
   bool isAnswerCorrect = false;
@@ -41,8 +40,9 @@ class _MultiChoicesWidgetState extends State<MultiChoicesWidget> {
             size: 25,
             color: _getButtonColor(title), //Colors.white, //Color(0xFFCA3034),
             onPressed: () {
+              if (state == ExerciseScreenState.DidAnswer) return;
               setState(() {
-                state = _MultiChoiceState.DidAnswer;
+                state = ExerciseScreenState.DidAnswer;
                 selectAnswer = title;
                 isAnswerCorrect = widget._correctAnswer == title;
                 widget._handleQuestion(title);
@@ -56,7 +56,7 @@ class _MultiChoicesWidgetState extends State<MultiChoicesWidget> {
   }
 
   Color _getButtonColor(String title) {
-    if (state == _MultiChoiceState.NotAnswered) return Colors.blue;
+    if (state == ExerciseScreenState.NotAnswered) return Colors.blue;
 
     if (isAnswerCorrect) {
     } else {
