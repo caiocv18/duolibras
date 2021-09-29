@@ -13,7 +13,7 @@ import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
 import 'package:flutter/material.dart';
 import 'package:username_gen/username_gen.dart';
 
-class Service extends ServicesProtocol {
+class Service {
   late ServicesProtocol _service;
   late DatabaseProtocol _database;
   static Service instance = Service._();
@@ -27,28 +27,23 @@ class Service extends ServicesProtocol {
     _database = SQLiteDatabase();
   }
 
-  @override
   Future<List<Exercise>> getExercisesFromModuleId(
       String? sectionId, String moduleId) {
     return _service.getExercisesFromModuleId(sectionId, moduleId);
   }
 
-  @override
   Future<List<Module>> getModulesFromSectionId(String sectionId) {
     return _service.getModulesFromSectionId(sectionId);
   }
 
-  @override
   Future<List<Section>> getSectionsFromTrail() {
     return _service.getSectionsFromTrail();
   }
 
-  @override
   Future<Trail> getTrail() {
     return _service.getTrail();
   }
 
-  @override
   Future<User> getUser() async {
     return _service.getUser()
     .onError((error, stackTrace) async {
@@ -72,12 +67,10 @@ class Service extends ServicesProtocol {
     });
   }
 
-  @override
   Future<User> postUser(User user, bool isNewUser) {
     return _service.postUser(user, isNewUser);
   }
 
-  @override
   Future<List<ModuleProgress>> getModulesProgress() {
     if (SharedFeatures.instance.isLoggedIn) {
       return _service.getModulesProgress();
@@ -86,22 +79,25 @@ class Service extends ServicesProtocol {
     }
   }
 
-  @override
   Future<bool> postModuleProgress(ModuleProgress moduleProgress) async {
     if (SharedFeatures.instance.isLoggedIn) {
       return _service.postModuleProgress(moduleProgress);
     } else {
-      return _database.saveModuleProgress(moduleProgress);
+      return _database.saveModuleProgress(moduleProgress).then((_) => true);
     }
   }
 
-  @override
+
   Future<List<User>> getUsersRanking() {
     return _service.getUsersRanking();
   }
 
-  @override
   Future uploadImage(FileImage image) {
     return _service.uploadImage(image);
   }
+
+  Future<void> cleanDatabase() {
+    return _database.cleanDatabase();
+  }
+
 }

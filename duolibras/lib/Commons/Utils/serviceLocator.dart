@@ -3,6 +3,7 @@ import 'package:duolibras/Network/Authentication/Apple/AppleAuthenticator.dart';
 import 'package:duolibras/Network/Authentication/Firebase/FirebaseAuthenticator.dart';
 import 'package:duolibras/Network/Authentication/Google/GoogleAuthenticator.dart';
 import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
+import 'package:duolibras/Network/Service.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt locator = GetIt.asNewInstance();
@@ -17,4 +18,7 @@ void setupLocator() {
 
   //user
   locator.registerSingleton(UserModel());
+
+  //service
+  locator.registerSingleton(Service.instance);
 }

@@ -82,13 +82,20 @@ class AutheticationViewModel extends BaseViewModel
             imageUrl: null);
 
         SharedFeatures.instance.isLoggedIn = false;
-        userModel.modulesProgress = await Service.instance.getModulesProgress();
+        userModel.modulesProgress = await Service.instance.getModulesProgress().onError((error, stackTrace) {
+          return [];
+        });
       } else {
         userModel = oldUser;
       }
 
       var userUpdated = await Service.instance.postUser(userModel, isNewUser);
-      userUpdated.modulesProgress = await Service.instance.getModulesProgress();
+      userUpdated.modulesProgress = await Service.instance.getModulesProgress().onError((error, stackTrace) {
+        return [];
+      });
+
+      //Resetando dados locais
+      locator<Service>().cleanDatabase();
 
       locator<UserModel>().setNewUser(userUpdated);
       return;
