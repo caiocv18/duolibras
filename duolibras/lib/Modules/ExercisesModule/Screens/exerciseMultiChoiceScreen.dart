@@ -1,5 +1,6 @@
 import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
+import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/imagesMultiChoice.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/midiaWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/multiChoicesWidget.dart';
@@ -9,22 +10,24 @@ import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/ExercisesCategory.dart';
 import 'package:flutter/material.dart';
 
-class ExerciseMultiChoiceScreen extends ExerciseScreen {
+class ExerciseMultiChoiceScreen extends ExerciseStateful {
   static String routeName = "/ExerciseMultiChoiceScreen";
-
-  final PreferredSizeWidget appBar = AppBarWidget();
-
-  final bottomNavigationBar = BottomNavigationBar(
-    items: [
-      BottomNavigationBarItem(icon: Icon(Icons.home), title: Container()),
-      BottomNavigationBarItem(icon: Icon(Icons.score), title: Container())
-    ],
-  );
 
   final ExerciseViewModel _viewModel;
   final Exercise _exercise;
 
   ExerciseMultiChoiceScreen(this._exercise, this._viewModel);
+
+  @override
+  State<ExerciseMultiChoiceScreen> createState() =>
+      _ExerciseMultiChoiceScreenState();
+}
+
+class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
+  final PreferredSizeWidget appBar = AppBarWidget();
+
+  ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
+  var answerPicked = "";
 
   Widget _buildPopupDialog(BuildContext context, String title) {
     return new AlertDialog(
@@ -52,43 +55,58 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
     return exercise.category == ExercisesCategory.multipleChoicesText
         ? MultiChoicesWidget(exercise.answers, exercise.correctAnswer,
             (answer) {
-            handleSubmitAnswer(
-                answer, exercise.correctAnswer, exercise.id, ctx);
+            if (_state == ExerciseScreenState.DidAnswer) return;
+
+            setState(() {
+              _state = ExerciseScreenState.DidAnswer;
+              answerPicked = answer;
+              handleSubmitAnswer(
+                  answer, exercise.correctAnswer, exercise.id, ctx);
+            });
           })
-        : ImagesMultiChoice(exercise.answers, (answer) {
-            handleSubmitAnswer(
-                answer, exercise.correctAnswer, exercise.id, ctx);
+        : ImagesMultiChoice(exercise.answers, exercise.correctAnswer, (answer) {
+            if (_state == ExerciseScreenState.DidAnswer) return;
+
+            setState(() {
+              _state = ExerciseScreenState.DidAnswer;
+              answerPicked = answer;
+              handleSubmitAnswer(
+                  answer, exercise.correctAnswer, exercise.id, ctx);
+            });
           });
   }
 
   Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel,
       Size containerSize, BuildContext ctx) {
     return Container(
+      width: double.infinity,
       color: Color.fromRGBO(234, 234, 234, 1),
       child: SafeArea(
           child: Container(
         color: Color.fromRGBO(234, 234, 234, 1),
-        height: containerSize.height,
+        height: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-                height: containerSize.height * 0.10,
+                height: containerSize.height * 0.08,
+                width: containerSize.width * 0.95,
                 child: QuestionWidget(exercise.question)),
+            SizedBox(height: containerSize.height * 0.05),
             Container(
-                height: containerSize.height * 0.37,
+                height: containerSize.height * 0.35,
                 width: containerSize.width * 0.54,
                 child: Midiawidget(exercise.mediaUrl)),
-            SizedBox(height: 34),
+            SizedBox(height: containerSize.height * 0.05),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
-                    height: containerSize.height * 0.40,
+                    height: containerSize.height * 0.42,
                     child: _createMultiChoiceWidget(exercise, ctx)),
               ],
             ),
-            SizedBox(height: containerSize.height * 0.05)
+            SizedBox(height: containerSize.height * 0.05),
           ],
         ),
       )),
@@ -97,14 +115,15 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
 
   void handleSubmitAnswer(String answer, String correctAnswer,
       String exerciseID, BuildContext ctx) {
-    final isCorrect = _viewModel.isAnswerCorrect(answer, exerciseID);
-    if (_exercise.category == ExercisesCategory.multipleChoicesText) {
-      showFinishExerciseBottomSheet(isCorrect, correctAnswer, ctx, () {
-        _viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
+    final isCorrect = widget._viewModel.isAnswerCorrect(answer, exerciseID);
+    if (widget._exercise.category == ExercisesCategory.multipleChoicesText) {
+      widget.showFinishExerciseBottomSheet(isCorrect, correctAnswer, ctx, () {
+        widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
       });
     } else {
-      showFinishExerciseBottomSheetWithImage(isCorrect, correctAnswer, ctx, () {
-        _viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
+      widget.showFinishExerciseBottomSheetWithImage(
+          isCorrect, correctAnswer, ctx, () {
+        widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
       });
     }
   }
@@ -118,8 +137,11 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
 
     final _mediaQuery = MediaQuery.of(context);
 
-    final containerHeight =
-        _mediaQuery.size.height - (appBar.preferredSize.height + 98);
+    final containerHeight = _mediaQuery.size.height -
+        AppBar().preferredSize.height -
+        _mediaQuery.padding.top -
+        _mediaQuery.padding.bottom;
+    // _mediaQuery.size.height - (appBar.preferredSize.height + 98);
     // (kBottomNavigationBarHeight +
     //     _mediaQuery.padding.bottom +
     //     // appBar.preferredSize.height +
@@ -133,7 +155,23 @@ class ExerciseMultiChoiceScreen extends ExerciseScreen {
         // drawer: AppBarWidget(),
         extendBodyBehindAppBar: true,
         extendBody: true,
-        // bottomNavigationBar: bottomNavigationBar,
-        body: _buildBody(_exercise, _viewModel, containerSize, context));
+        bottomNavigationBar: _state == ExerciseScreenState.DidAnswer
+            ? BottomAppBar(
+                color: Color.fromRGBO(234, 234, 234, 1),
+                child: GestureDetector(
+                  child: Icon(Icons.arrow_circle_up_rounded),
+                  onVerticalDragStart: (_) {
+                    handleSubmitAnswer(
+                        answerPicked,
+                        widget._exercise.correctAnswer,
+                        widget._exercise.id,
+                        context);
+                  },
+                ),
+                elevation: 0,
+              )
+            : null,
+        body: _buildBody(
+            widget._exercise, widget._viewModel, containerSize, context));
   }
 }

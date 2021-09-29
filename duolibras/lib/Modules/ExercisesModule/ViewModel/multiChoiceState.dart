@@ -1,0 +1,1 @@
+enum ExerciseScreenState { NotAnswered, DidAnswer }
