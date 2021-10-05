@@ -1,6 +1,5 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
-import 'package:duolibras/Modules/ExercisesModule/mlExerciseWidget.dart';
 
 import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
@@ -31,13 +30,13 @@ class MyApp extends StatelessWidget {
           title: 'Flutter Demo',
           theme: ThemeData(
             primarySwatch: Colors.blue,
+            fontFamily: 'Nunito'
           ),
           onGenerateRoute: (settings) =>
               MainRouter.instance.onGenerateRoute(settings),
           navigatorKey: MainRouter.instance.navigatorKey,
           home: LaunchScreen(MainRouter.instance.initialLoadCompleted)
 
-          // MLExerciseWidget()
           ),
     );
   }

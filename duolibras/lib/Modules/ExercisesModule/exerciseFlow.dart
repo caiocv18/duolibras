@@ -1,4 +1,5 @@
 import 'package:duolibras/Commons/Components/progressBar.dart';
+import 'package:duolibras/MachineLearning/TFLite/tflite_helper.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMLScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMultiChoiceScreen.dart';
@@ -20,6 +21,7 @@ class ExerciseFlow extends StatefulWidget {
   static const routeExerciseMultiChoicePage = 'multi_choice';
   static const routeExerciseWritingPage = 'writing';
   static const routeExerciseML = 'ml';
+  static const routeExerciseMLSpelling = 'mlSpelling';
 
   late final List<Exercise> exercises;
 
@@ -47,6 +49,8 @@ class ExerciseFlow extends StatefulWidget {
         return ExerciseFlow.routeExerciseWritingPage;
       case ExercisesCategory.ml:
         return ExerciseFlow.routeExerciseML;
+      case ExercisesCategory.mlSpelling:
+        return ExerciseFlow.routeExerciseMLSpelling;
       default:
         return "";
     }
@@ -95,6 +99,9 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
       case ExercisesCategory.ml:
         routeName = ExerciseFlow.routeExerciseML;
         break;
+      case ExercisesCategory.mlSpelling:
+        routeName = ExerciseFlow.routeExerciseMLSpelling;
+        break;
       default:
         _didFinishExercise(null);
         return;
@@ -131,8 +138,7 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
   }
 
   Future<void> _onExitPressed() async {
-    final isConfirmed = await _isExitDesired();
-
+    final isConfirmed = await _isExitDesired();    
     if (isConfirmed && mounted) {
       _exitSetup(null);
     }
@@ -169,7 +175,10 @@ class _ExerciseFlowState extends State<ExerciseFlow> {
         page = ExerciseWritingScreen(widget._exercise!, _viewModel);
         break;
       case ExerciseFlow.routeExerciseML:
-        page = ExerciseMLScreen(widget._exercise!, _viewModel);
+        page = ExerciseMLScreen(widget._exercise!, _viewModel, false);
+        break;
+      case ExerciseFlow.routeExerciseMLSpelling:
+        page = ExerciseMLScreen(widget._exercise!, _viewModel, true);
         break;
     }
 

@@ -2,6 +2,7 @@ enum ExercisesCategory {
   multipleChoicesImage,
   multipleChoicesText,
   ml,
+  mlSpelling,
   writing,
   none
 }
