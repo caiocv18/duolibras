@@ -17,12 +17,12 @@ class Database extends DatabaseProtocol {
   }
 
   @override
-  Future<bool> saveUser(User user) {
+  Future<void> saveUser(User user) {
     return _database.saveUser(user);
   }
 
   @override
-  Future<bool> updateUser(User user) async {
+  Future<void> updateUser(User user) async {
     return _database.updateUser(user);
   }
 
@@ -32,7 +32,12 @@ class Database extends DatabaseProtocol {
   }
 
   @override
-  Future<bool> saveModuleProgress(ModuleProgress moduleProgress) {
+  Future<void> saveModuleProgress(ModuleProgress moduleProgress) {
     return _database.saveModuleProgress(moduleProgress);
+  }
+
+  @override
+  Future<void> cleanDatabase() {
+    return _database.cleanDatabase();
   }
 }

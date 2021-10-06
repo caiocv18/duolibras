@@ -1,5 +1,7 @@
+import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Commons/Components/baseScreen.dart';
 import 'package:duolibras/Commons/Components/progressBar.dart';
+import 'package:duolibras/MachineLearning/TFLite/tflite_helper.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMLScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/feedbackExerciseScreen.dart';
@@ -29,6 +31,7 @@ class ExerciseFlow extends StatefulWidget {
   static const routeExerciseMultiChoicePage = 'multi_choice';
   static const routeExerciseWritingPage = 'writing';
   static const routeExerciseML = 'ml';
+  static const routeExerciseMLSpelling = 'mlSpelling';
   static const routeFeedbackModulePage = 'feedback_page';
 
   List<Exercise> exercises;
@@ -58,6 +61,8 @@ class ExerciseFlow extends StatefulWidget {
         return ExerciseFlow.routeExerciseWritingPage;
       case ExercisesCategory.ml:
         return ExerciseFlow.routeExerciseML;
+      case ExercisesCategory.mlSpelling:
+        return ExerciseFlow.routeExerciseMLSpelling;
       default:
         return "";
     }
@@ -67,12 +72,9 @@ class ExerciseFlow extends StatefulWidget {
 class _ExerciseFlowState extends State<ExerciseFlow>
     implements ExerciseFlowDelegate {
   final _navigatorKey = GlobalKey<NavigatorState>();
-  // late ExerciseViewModel _viewModel = locator<ExerciseViewModel>(
-  //     param1: Tuple2(widget.exercises, widget.moduleID),
-  //     param2: this); //ExerciseViewModel();
-
-  // ExerciseViewModel(widget.exercises, widget.moduleID, this);
-
+  // late ExerciseViewModel _viewModel =
+  //     ExerciseViewModel(widget.exercises, widget.moduleID, _didFinishExercise);
+  late PreferredSizeWidget? _appBar;
   var _exerciseProgress = 0.0;
   var isToShowAppBar = true;
 
@@ -111,7 +113,6 @@ class _ExerciseFlowState extends State<ExerciseFlow>
 
   Future<void> _onExitPressed() async {
     final isConfirmed = await _isExitDesired();
-
     if (isConfirmed && mounted) {
       _exitSetup(null);
     }
@@ -123,12 +124,12 @@ class _ExerciseFlowState extends State<ExerciseFlow>
 
   @override
   Widget build(BuildContext context) {
+    _appBar = _buildFlowAppBar(this.context);
+
     return WillPopScope(
       onWillPop: _isExitDesired,
       child: Scaffold(
-        extendBodyBehindAppBar: true,
-        // extendBody: true,
-        appBar: _buildFlowAppBar(),
+        appBar: _appBar,
         body: Navigator(
           key: _navigatorKey,
           initialRoute: widget.setupPageRoute,
@@ -141,9 +142,7 @@ class _ExerciseFlowState extends State<ExerciseFlow>
   Route _onGenerateRoute(RouteSettings settings) {
     final viewModel = locator<ExerciseViewModel>(
         param1: Tuple2(widget.exercises, widget.module), param2: this);
-    // viewModel.exercises = widget.exercises;
-    // viewModel.exerciseFlowDelegate = this;
-    // viewModel.exercisesAndModuleID = Tuple2(widget.exercises, widget.moduleID);
+
     late Widget page;
     switch (settings.name) {
       case ExerciseFlow.routeExerciseMultiChoicePage:
@@ -153,7 +152,10 @@ class _ExerciseFlowState extends State<ExerciseFlow>
         page = ExerciseWritingScreen(widget._exercise!, viewModel);
         break;
       case ExerciseFlow.routeExerciseML:
-        page = ExerciseMLScreen(widget._exercise!, viewModel);
+        page = ExerciseMLScreen(widget._exercise!, viewModel, false);
+        break;
+      case ExerciseFlow.routeExerciseMLSpelling:
+        page = ExerciseMLScreen(widget._exercise!, viewModel, true);
         break;
       case ExerciseFlow.routeFeedbackModulePage:
         page = FeedbackExerciseScreen(
@@ -169,51 +171,14 @@ class _ExerciseFlowState extends State<ExerciseFlow>
     );
   }
 
-  PreferredSizeWidget? _buildFlowAppBar() {
-    return !isToShowAppBar
-        ? null
-        : AppBar(
-            backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-            foregroundColor: Colors.transparent,
-            elevation: 0.0,
-            toolbarHeight: 100,
-            leadingWidth: 0.0,
-            title: Container(
-              width: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  OutlinedButton(
-                      onPressed: () => _onExitPressed(),
-                      child: Text("Desistir",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500)),
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(18.0),
-                                      side: BorderSide(color: Colors.white))))),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Center(
-                    child: Container(
-                      height: 20,
-                      width: 350,
-                      child: ProgressBar(
-                          max: widget.exercises.length.toDouble(),
-                          current: _exerciseProgress),
-                    ),
-                  ),
-                ],
-              ),
-            ));
+  PreferredSizeWidget? _buildFlowAppBar(BuildContext ctx) {
+    return isToShowAppBar
+        ? ExerciseAppBarWidget(
+            _onExitPressed,
+            widget.exercises.length.toDouble(),
+            _exerciseProgress,
+            MediaQuery.of(ctx).size)
+        : null;
   }
 
   @override

@@ -3,8 +3,9 @@ import 'package:duolibras/Network/Models/User.dart';
 
 abstract class DatabaseProtocol {
   Future<User> getUser();
-  Future<bool> saveUser(User user);
-  Future<bool> updateUser(User user);
+  Future<void> saveUser(User user);
+  Future<void> updateUser(User user);
   Future<List<ModuleProgress>> getModulesProgress();
-  Future<bool> saveModuleProgress(ModuleProgress moduleProgress);
+  Future<void> saveModuleProgress(ModuleProgress moduleProgress);
+  Future<void> cleanDatabase();
 }

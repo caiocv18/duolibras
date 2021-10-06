@@ -8,19 +8,23 @@ import '../Helpers/app_helper.dart';
 import '../Helpers/result.dart';
 
 class TFLiteHelper extends MLModelProtocol {
-  StreamController<List<Result>> tfLiteResultsController =
-      new StreamController.broadcast();
+  StreamController<List<Result>> tfLiteResultsController = new StreamController.broadcast();
   var _outputs = <Result>[];
 
   Future<void> loadModel() async {
     AppHelper.log("loadModel", "Loading model..");
+    tfLiteResultsController = new StreamController.broadcast();
 
     return Tflite.loadModel(
             model: "assets/model.tflite",
             labels: "assets/labels.txt",
             useGpuDelegate: false)
         .then((value) {
-      modelsIsLoaded = true;
+          print(value == "success");
+          if (value == "success") {
+            modelsIsLoaded = true;
+            isOpen = true;        
+          }
     });
   }
 
@@ -67,5 +71,7 @@ class TFLiteHelper extends MLModelProtocol {
   void close() {
     Tflite.close();
     tfLiteResultsController.close();
+    isOpen = false;
   }
+
 }

@@ -45,17 +45,21 @@ class SQLiteDatabase extends DatabaseProtocol {
   }
 
   @override
-  Future<bool> saveUser(User user) async {
+  Future<void> saveUser(User user) async {
     final db = await database;
 
     final id = await db.insert(Constants.database.userTable, user.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
 
-    return id != 0;
+    if (id == 0) {
+      throw SQLiteDatabaseErrors.UserError;
+    }
+
+    return;
   }
 
   @override
-  Future<bool> updateUser(User user) async {
+  Future<void> updateUser(User user) async {
     final db = await database;
 
     final id = await db.update(
@@ -65,7 +69,11 @@ class SQLiteDatabase extends DatabaseProtocol {
       whereArgs: [user.id],
     );
 
-    return id != 0;
+    if (id == 0) {
+      throw SQLiteDatabaseErrors.UserError;
+    }
+
+    return;
   }
 
   @override
@@ -85,13 +93,25 @@ class SQLiteDatabase extends DatabaseProtocol {
   }
 
   @override
-  Future<bool> saveModuleProgress(ModuleProgress moduleProgress) async {
-    var completer = Completer<bool>();
+  Future<void> saveModuleProgress(ModuleProgress moduleProgress) async {
+    var completer = Completer<void>();
     final db = await database;
     await db
         .insert(Constants.database.moduleProgressTable, moduleProgress.toMap(),
             conflictAlgorithm: ConflictAlgorithm.replace)
-        .then((value) => {completer.complete(true)});
+        .then((value) => {completer.complete()});
+    return completer.future;
+  }
+
+  @override
+  Future<void> cleanDatabase() async {
+    var completer = Completer<void>();
+    final db = await database;
+
+    db.rawDelete('DELETE FROM ${Constants.database.userTable}').then((_) => {
+      db.rawDelete('DELETE FROM ${Constants.database.moduleProgressTable}').then((_) => {completer.complete()})
+    });
+
     return completer.future;
   }
 }

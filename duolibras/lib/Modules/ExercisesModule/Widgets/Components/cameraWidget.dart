@@ -12,8 +12,9 @@ import 'TextStream.dart';
 class CameraWidget extends StatefulWidget {
   final Function _handlerPrediction;
   final String label;
+  final List<String> spelledLetters;
 
-  CameraWidget(this.label, this._handlerPrediction);
+  CameraWidget(this.label, this._handlerPrediction, this.spelledLetters);
 
   @override
   CameraWidgetState createState() => CameraWidgetState();

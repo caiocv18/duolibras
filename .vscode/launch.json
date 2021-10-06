@@ -6,17 +6,16 @@
     "configurations": [
         {
             "name": "duolibras",
+            "cwd": "duolibras",
             "request": "launch",
             "type": "dart"
         },
         {
             "name": "duolibras (profile mode)",
-            "request": "launch",
+            "cwd": "duolibras",
+            "request": "attach",
             "type": "dart",
-            "flutterMode": "profile",
-            "args": [
-                    "--no-sound-null-safety"
-                        ]
+            "flutterMode": "profile"
         }
     ]
 }

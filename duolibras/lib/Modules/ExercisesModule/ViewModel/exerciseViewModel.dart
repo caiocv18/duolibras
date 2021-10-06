@@ -1,5 +1,7 @@
 import 'package:duolibras/Commons/ViewModel/ScreenState.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
+import 'package:duolibras/MachineLearning/TFLite/tflite_helper.dart';
+import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/Module.dart';
 import 'package:duolibras/Network/Models/ModuleProgress.dart';
@@ -14,8 +16,12 @@ import '../exerciseFlow.dart';
 class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
   final Tuple2<List<Exercise>, Module> exercisesAndModule;
 
+  // final void Function(Exercise? exercise) _didFinishExercise;
+  final mlModel = TFLiteHelper();
   final ExerciseFlowDelegate exerciseFlowDelegate;
 
+  List<String> spelledLetters = [];
+  //ML Exercise spelling
   late List<Exercise> exercises;
 
   ExerciseViewModel(this.exercisesAndModule, this.exerciseFlowDelegate) {
@@ -48,9 +54,21 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
     return exercise.correctAnswer == label && confidence > 0.9;
   }
 
+  bool isSpellingCorrect(
+      String newLetter, double confidence, Exercise exercise) {
+    final splittedAnswer = exercise.correctAnswer.split("");
+
+    if (splittedAnswer[spelledLetters.length] == newLetter &&
+        confidence > 0.9) {
+      spelledLetters.add(newLetter);
+      return true;
+    }
+    return false;
+  }
+
   void didSubmitGesture(String label, double confidence, Exercise exercise,
       BuildContext context) {
-    if (exercise.correctAnswer == label && confidence > 0.9) {
+    if (exercise.correctAnswer == label && confidence > 0.8) {
       didSubmitTextAnswer(label, exercise.id, context);
     }
   }

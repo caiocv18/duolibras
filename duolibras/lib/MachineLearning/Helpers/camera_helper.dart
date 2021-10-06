@@ -48,14 +48,13 @@ class CameraHelper {
       completer.complete();
 
       _camera.startImageStream((CameraImage image) {
-        if (!mlModel.modelsIsLoaded) return;
-        // if (isDetecting) return;
-        // isDetecting = true;
-        try {
-          mlModel.predict(image);
-        } catch (e) {
-          print(e);
-        }
+        if (mlModel.modelsIsLoaded && mlModel.isOpen) {
+          try {
+            mlModel.predict(image);
+          } catch (e) {
+            print(e);
+          }
+        } 
       });
     });
   }
