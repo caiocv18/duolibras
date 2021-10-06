@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:duolibras/Commons/Components/appBarWidget.dart';
+import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/imagesMultiChoice.dart';
@@ -84,7 +87,7 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
       child: SafeArea(
           child: Container(
         color: Color.fromRGBO(234, 234, 234, 1),
-        height: double.infinity,
+        // height: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -130,31 +133,13 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final args =
-    //     ModalRoute.of(context)!.settings.arguments as Map<String, Object>;
-    // final ExerciseViewModel viewModel = args["viewModel"] as ExerciseViewModel;
-    // final Exercise exercise = args["exercise"] as Exercise;
-
-    final _mediaQuery = MediaQuery.of(context);
-
-    final containerHeight = _mediaQuery.size.height -
-        AppBar().preferredSize.height -
-        _mediaQuery.padding.top -
-        _mediaQuery.padding.bottom;
-    // _mediaQuery.size.height - (appBar.preferredSize.height + 98);
-    // (kBottomNavigationBarHeight +
-    //     _mediaQuery.padding.bottom +
-    //     // appBar.preferredSize.height +
-    //     _mediaQuery.padding.top +
-    //     70);
-
-    final containerSize = Size(_mediaQuery.size.width, containerHeight);
+    final mediaQuery = MediaQuery.of(context);
+    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
+    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
+    final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop + mediaQuery.padding.bottom);
+    final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Scaffold(
-        // appBar: AppBarWidget(),
-        // drawer: AppBarWidget(),
-        extendBodyBehindAppBar: true,
-        extendBody: true,
         bottomNavigationBar: _state == ExerciseScreenState.DidAnswer
             ? BottomAppBar(
                 color: Color.fromRGBO(234, 234, 234, 1),
@@ -171,7 +156,6 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
                 elevation: 0,
               )
             : null,
-        body: _buildBody(
-            widget._exercise, widget._viewModel, containerSize, context));
+        body: _buildBody(widget._exercise, widget._viewModel, containerSize, context));
   }
 }

@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/MachineLearning/Helpers/camera_helper.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
@@ -66,26 +68,20 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   Widget build(BuildContext context) {
     final _mediaQuery = MediaQuery.of(context);
 
-    final _containerHeight = _mediaQuery.size.height -
-        (kBottomNavigationBarHeight +
-            _mediaQuery.padding.bottom +
-            50 +
-            _mediaQuery.padding.top);
-    final _containerWidth = _mediaQuery.size.width;
-
-    final containerSize = Size(_containerWidth, _containerHeight);
+    final mediaQuery = MediaQuery.of(context);
+    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
+    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
+    final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop);
+    final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Container(
-              color: Color.fromRGBO(234, 234, 234, 1),
-              height: containerSize.height,
-              child: 
-              _showingCamera ? _cameraBody(widget._exercise, containerSize, context) : 
-              _buildOnboardingBody(widget._exercise, widget._viewModel, containerSize, context))
-            )
-          ),
+          body: Container(
+            height: containerHeight,
+            color: Color.fromRGBO(234, 234, 234, 1),
+            child:  
+            SafeArea(child: _showingCamera ? _cameraBody(widget._exercise, containerSize, context) : 
+            _buildOnboardingBody(widget._exercise, widget._viewModel, containerSize, context))
+          )
         );
   }
 
@@ -106,9 +102,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     );
   }
 
-  Widget _buildOnboardingBody(Exercise exercise, ExerciseViewModel viewModel,
-      Size containerSize, BuildContext ctx) {
-
+  Widget _buildOnboardingBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -138,22 +132,24 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   }
 
   Widget _cameraBody(Exercise exercise, Size containerSize, BuildContext ctx) {
-    return Container(
-        child: Stack(children: [
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Stack(children: [
           Container(
             child: FutureBuilder<void>(
               future: completer.future,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       _buildQuestionText(),
                       _buildAnswerText(),
-                      SizedBox(height: 15),
+                      SizedBox(height: containerSize.height * 0.05),
                       Container(
                         width: containerSize.width * 0.95,
-                        height: containerSize.height * 0.7,
+                        height: containerSize.height * 0.63,
                         decoration: BoxDecoration(
                             color: Color.fromRGBO(200, 205, 219, 1),
                             borderRadius: BorderRadius.all(
@@ -163,7 +159,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                         child: Center(
                           child: Container(
                             width: containerSize.width * 0.91,
-                            height: containerSize.height * 0.675,
+                            height: containerSize.height * 0.605,
                             child: ClipRRect(
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(20.0),
@@ -176,7 +172,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                           )
                         )
                       ),
-                      SizedBox(height: 15),
+                      SizedBox(height: containerSize.height * 0.05),
                       _buildSpelledLetters()
                     ],
                   );
@@ -186,9 +182,11 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
               },
             ),
           ),
-      buildConfettiWidget(controllerTopCenter, 3.14 / 1),
-      buildConfettiWidget(controllerTopCenter, 3.14 / 4),
-    ]));
+          buildConfettiWidget(controllerTopCenter, 3.14 / 1),
+          buildConfettiWidget(controllerTopCenter, 3.14 / 4),
+        ]),
+      ],
+    );
   }
 
   Widget _buildQuestionText() {
@@ -205,7 +203,8 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
       return Center(
         child: Container(
             width: constraint.maxWidth * 0.85,
-            decoration: BoxDecoration(color: Colors.white, border: Border.all(), borderRadius: BorderRadius.all(Radius.circular(20))), 
+            height: 50,
+            decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(20))), 
             child: 
               Center(
                 child: Text(
@@ -223,7 +222,8 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
       return Center(
         child: Container(
             width: constraint.maxWidth * 0.85,
-            decoration: BoxDecoration(color: Colors.white, border: Border.all(), borderRadius: BorderRadius.all(Radius.circular(20))), 
+            height: 50,
+            decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(20))), 
             child: 
               Center(
                 child: Text(

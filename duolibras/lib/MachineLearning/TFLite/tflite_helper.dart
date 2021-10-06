@@ -8,8 +8,7 @@ import '../Helpers/app_helper.dart';
 import '../Helpers/result.dart';
 
 class TFLiteHelper extends MLModelProtocol {
-  StreamController<List<Result>> tfLiteResultsController =
-      new StreamController.broadcast();
+  StreamController<List<Result>> tfLiteResultsController = new StreamController.broadcast();
   var _outputs = <Result>[];
 
   Future<void> loadModel() async {
@@ -21,8 +20,11 @@ class TFLiteHelper extends MLModelProtocol {
             labels: "assets/labels.txt",
             useGpuDelegate: false)
         .then((value) {
-          modelsIsLoaded = true;
-          isOpen = true;
+          print(value == "success");
+          if (value == "success") {
+            modelsIsLoaded = true;
+            isOpen = true;        
+          }
     });
   }
 
