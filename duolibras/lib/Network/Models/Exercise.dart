@@ -8,6 +8,7 @@ class Exercise {
   final String id;
   final ExercisesCategory category;
   final String mediaUrl;
+  final int level;
 
   const Exercise(
       {required this.question,
@@ -15,6 +16,7 @@ class Exercise {
       required this.answers,
       required this.score,
       required this.id,
+      required this.level,
       required this.category,
       required this.mediaUrl});
 
@@ -25,6 +27,7 @@ class Exercise {
         answers: parsedJson["answers"].cast<String>(),
         score: parsedJson["score"],
         id: docId,
+        level: parsedJson["level"],
         mediaUrl: parsedJson["mediaUrl"],
         category:
             ExercisesCategoryExtension.createEnum(parsedJson["category"]));

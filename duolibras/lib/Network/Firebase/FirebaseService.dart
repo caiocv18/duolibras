@@ -28,7 +28,7 @@ class FirebaseService extends ServicesProtocol {
     }
 
     SharedFeatures.instance.isLoggedIn = true;
-    
+
     return firestoreInstance
         .collection(Constants.firebaseService.usersCollection)
         .doc(firebaseUser.uid);
@@ -73,7 +73,7 @@ class FirebaseService extends ServicesProtocol {
   }
 
   Future<List<Exercise>> _getExercisesFromFirebase(
-      String sectionId, String moduleId) async {
+      String sectionId, String moduleId, int level) async {
     var completer = Completer<List<Exercise>>();
 
     _getTrailFromFirebase()
@@ -82,6 +82,7 @@ class FirebaseService extends ServicesProtocol {
         .collection(Constants.firebaseService.modulesCollecion)
         .doc(moduleId)
         .collection(Constants.firebaseService.exercisesCollection)
+        .where("level", isEqualTo: level)
         .get()
         .then((value) => {
               completer.complete(value.docs
@@ -139,7 +140,8 @@ class FirebaseService extends ServicesProtocol {
   //   return completer.future;
   // }
 
-  Future<bool> _postModuleProgressInFirebase(ModuleProgress moduleProgress) async {
+  Future<bool> _postModuleProgressInFirebase(
+      ModuleProgress moduleProgress) async {
     var completer = Completer<bool>();
     final userDocument = _getUserFromFirebase();
 
@@ -152,33 +154,31 @@ class FirebaseService extends ServicesProtocol {
     return completer.future;
   }
 
-  Future<myUser.User> _postUserInFirebase(myUser.User user, bool isNewUser) async{
+  Future<myUser.User> _postUserInFirebase(
+      myUser.User user, bool isNewUser) async {
     var completer = Completer<myUser.User>();
 
-    await 
-    firestoreInstance
-    .collection(Constants.firebaseService.usersCollection)
-    .doc(user.id)
-    .set(user.toMap(), SetOptions(merge: true))
-    .then((_) => {
-        this.getUser().then((newUser) {
-          if (isNewUser && !user.modulesProgress.isEmpty){
-            user.modulesProgress.forEach((moduleProgress) async {
-              await postModuleProgress(moduleProgress).then((value) 
-                {
-                  if (user.modulesProgress.last == moduleProgress){
-                    newUser.modulesProgress = user.modulesProgress;
-                    completer.complete(newUser);
-                  }
+    await firestoreInstance
+        .collection(Constants.firebaseService.usersCollection)
+        .doc(user.id)
+        .set(user.toMap(), SetOptions(merge: true))
+        .then((_) => {
+              this.getUser().then((newUser) {
+                if (isNewUser && !user.modulesProgress.isEmpty) {
+                  user.modulesProgress.forEach((moduleProgress) async {
+                    await postModuleProgress(moduleProgress).then((value) {
+                      if (user.modulesProgress.last == moduleProgress) {
+                        newUser.modulesProgress = user.modulesProgress;
+                        completer.complete(newUser);
+                      }
+                    });
+                  });
+                } else {
+                  newUser.modulesProgress = user.modulesProgress;
+                  completer.complete(newUser);
                 }
-              );
-            }); 
-          } else {
-            newUser.modulesProgress = user.modulesProgress;
-            completer.complete(newUser);
-          }
-        })
-      });
+              })
+            });
 
     return completer.future;
   }
@@ -229,12 +229,12 @@ class FirebaseService extends ServicesProtocol {
 
   @override
   Future<List<Exercise>> getExercisesFromModuleId(
-      String? sectionId, String moduleId) async {
+      String? sectionId, String moduleId, int level) async {
     if (sectionId == null) {
       throw FirebaseErrors.SectionNotFound;
     }
 
-    return _getExercisesFromFirebase(sectionId, moduleId);
+    return _getExercisesFromFirebase(sectionId, moduleId, level);
   }
 
   @override
@@ -262,5 +262,27 @@ class FirebaseService extends ServicesProtocol {
     taskSnapshot.ref.getDownloadURL().then(
           (value) => print("Done: $value"),
         );
+  }
+
+  @override
+  Future<List<Exercise>> getANumberOfExercisesFromModuleId(
+      String? sectionId, String moduleId, int quantity) {
+    var completer = Completer<List<Exercise>>();
+
+    _getTrailFromFirebase()
+        .collection(Constants.firebaseService.sectionsCollection)
+        .doc(sectionId)
+        .collection(Constants.firebaseService.modulesCollecion)
+        .doc(moduleId)
+        .collection(Constants.firebaseService.exercisesCollection)
+        .limit(quantity)
+        .get()
+        .then((value) => {
+              completer.complete(value.docs
+                  .map((e) => Exercise.fromMap(e.data(), e.id))
+                  .toList())
+            });
+
+    return completer.future;
   }
 }

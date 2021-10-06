@@ -1,19 +1,27 @@
-import 'package:duolibras/Network/Authentication/UserSession.dart';
+import 'package:duolibras/Commons/ViewModel/ScreenState.dart';
+import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Network/Models/Module.dart';
 import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
 import 'package:duolibras/Network/Service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 import '../Screens/exerciseWritingScreen.dart';
+import '../exerciseFlow.dart';
 
-class ExerciseViewModel with ExerciseWritingViewModel {
-  List<Exercise> _exercises;
-  String _moduleID;
+class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
+  final Tuple2<List<Exercise>, Module> exercisesAndModule;
 
-  final void Function(Exercise? exercise) _didFinishExercise;
+  final ExerciseFlowDelegate exerciseFlowDelegate;
 
-  ExerciseViewModel(this._exercises, this._moduleID, this._didFinishExercise);
+  late List<Exercise> exercises;
+
+  ExerciseViewModel(this.exercisesAndModule, this.exerciseFlowDelegate) {
+    exercises = exercisesAndModule.item1;
+  }
+
   var exerciseProgressValue = 0.0;
   var totalPoints = 0.0;
 
@@ -23,7 +31,7 @@ class ExerciseViewModel with ExerciseWritingViewModel {
     if (answer.isEmpty) {
       return;
     }
-    final exercise = _exercises.where((exe) => exe.id == exerciseID).first;
+    final exercise = exercises.where((exe) => exe.id == exerciseID).first;
     totalPoints += exercise.correctAnswer == answer ? exercise.score : 0.0;
     _handleMoveToNextExercise(exerciseID, context);
   }
@@ -32,7 +40,7 @@ class ExerciseViewModel with ExerciseWritingViewModel {
     if (answer.isEmpty) {
       return false;
     }
-    final exercise = _exercises.where((exe) => exe.id == exerciseID).first;
+    final exercise = exercises.where((exe) => exe.id == exerciseID).first;
     return exercise.correctAnswer == answer;
   }
 
@@ -50,19 +58,25 @@ class ExerciseViewModel with ExerciseWritingViewModel {
   Future<void> _saveProgress(BuildContext context) async {
     final userProvider = Provider.of<UserModel>(context, listen: false);
     final index = userProvider.user.modulesProgress
-        .indexWhere((prog) => prog.moduleId == _moduleID);
+        .indexWhere((prog) => prog.moduleId == exercisesAndModule.item2.id);
+
     ModuleProgress moduleProgress;
+
     if (index != -1) {
+      if (userProvider.user.modulesProgress[index].progress >=
+          exercisesAndModule.item2.maxProgress) return;
+
       final progress = userProvider.user.modulesProgress[index].progress + 1;
       final id = userProvider.user.modulesProgress[index].id;
 
-      moduleProgress =
-          ModuleProgress(id: id, moduleId: _moduleID, progress: progress);
-      // user.modulesProgress[index] = moduleProgress;
+      moduleProgress = ModuleProgress(
+          id: id, moduleId: exercisesAndModule.item2.id, progress: progress);
       userProvider.setModulesProgress(moduleProgress);
     } else {
       moduleProgress = ModuleProgress(
-          id: UniqueKey().toString(), moduleId: _moduleID, progress: 1);
+          id: UniqueKey().toString(),
+          moduleId: exercisesAndModule.item2.id,
+          progress: 1);
       userProvider.setModulesProgress(moduleProgress);
     }
     await Service.instance.postModuleProgress(moduleProgress);
@@ -70,17 +84,67 @@ class ExerciseViewModel with ExerciseWritingViewModel {
 
   Future<void> _handleMoveToNextExercise(
       String exerciseID, BuildContext context) async {
-    final index = _exercises.indexWhere((m) => m.id == exerciseID);
+    final index = exercises.indexWhere((m) => m.id == exerciseID);
 
-    if (index + 1 == _exercises.length) {
+    if (index + 1 == exercises.length) {
       await _saveProgress(context);
-      exerciseProgressValue = 1;
-      _didFinishExercise(null);
+      exerciseProgressValue = index + 1;
+      exerciseFlowDelegate.didFinishExercise(null);
       return;
     }
 
-    final exercise = _exercises[index + 1];
+    final exercise = exercises[index + 1];
     exerciseProgressValue = index + 1;
-    _didFinishExercise(exercise);
+    exerciseFlowDelegate.didFinishExercise(exercise);
+  }
+}
+
+extension FeedbackScreenViewModel on ExerciseViewModel {
+  void goToNextLevel(BuildContext context) async {
+    setState(ScreenState.Loading);
+
+    final level = _getUserModuleLevel(context, exercisesAndModule.item2.id);
+
+    await Service.instance
+        .getExercisesFromModuleId(exerciseFlowDelegate.sectionID,
+            exercisesAndModule.item2.id, level + 1)
+        .then((exercises) {
+      exerciseFlowDelegate.startNewExercisesLevel(exercises);
+    });
+  }
+
+  void tryModuleAgain() {}
+
+  Future<bool> hasMoreExercises(BuildContext context) async {
+    setState(ScreenState.Loading);
+
+    final userProgress =
+        _getUserModuleLevel(context, exercisesAndModule.item2.id);
+
+    if (userProgress >= exercisesAndModule.item2.maxProgress) {
+      setState(ScreenState.Normal);
+      return false;
+    }
+
+    return Future.delayed(Duration(seconds: 2), () {}).then((_) {
+      setState(ScreenState.Normal);
+      return true;
+    }).onError((error, stackTrace) => true);
+  }
+
+  void finishModuleFlow() {
+    exerciseFlowDelegate.handleFinishFLow(true);
+  }
+
+  int _getUserModuleLevel(BuildContext ctx, String moduleID) {
+    final user = Provider.of<UserModel>(ctx, listen: false).user;
+
+    try {
+      final module = user.modulesProgress
+          .firstWhere((element) => element.moduleId == moduleID);
+      return module.progress;
+    } on StateError catch (_) {
+      return 1;
+    }
   }
 }

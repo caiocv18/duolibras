@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 abstract class ModuleViewModel {
-  Future<void> didSelectModule(String sectionID, String moduleID,
-      BuildContext context, Function? handler);
+  Future<void> didSelectModule(
+      String sectionID, Module module, BuildContext context, Function? handler);
 }
 
 class MaduleWidget extends StatefulWidget {
@@ -52,7 +52,7 @@ class _MaduleWidgetState extends State<MaduleWidget> {
           GestureDetector(
             onTap: () {
               widget._viewModel.didSelectModule(widget.sectionID,
-                  widget._module.id, context, _handleCompleModule);
+                  widget._module, context, _handleCompleModule);
             },
             child: Stack(
               alignment: Alignment.center,

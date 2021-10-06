@@ -3,6 +3,7 @@ import 'package:duolibras/Modules/HomeModule/homeScreen.dart';
 import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
 import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Network/Models/Module.dart';
 import 'package:flutter/material.dart';
 
 class MainRouter {
@@ -33,12 +34,17 @@ class MainRouter {
         .startsWith(ExerciseFlow.routePrefixExerciseFlow)) {
       final arg = settings.arguments as Map<String, Object>;
       final exercises = arg["exercises"] as List<Exercise>;
-      final moduleID = arg["moduleID"] as String;
+      final module = arg["module"] as Module;
+      final sectionID = arg["sectionID"] as String;
 
       final subRoute = ExerciseFlow.getRouteNameBy(exercises.first.category);
 
       page = ExerciseFlow(
-          exercises: exercises, moduleID: moduleID, setupPageRoute: subRoute);
+        exercises: exercises,
+        module: module,
+        setupPageRoute: subRoute,
+        sectionID: sectionID,
+      );
     } else {
       throw Exception('Unknown route: ${settings.name}');
     }

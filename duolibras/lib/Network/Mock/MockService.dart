@@ -38,7 +38,7 @@ class MockService extends ServicesProtocol {
 
   @override
   Future<List<Exercise>> getExercisesFromModuleId(
-      String? sectionId, String moduleId) async {
+      String? sectionId, String moduleId, int level) async {
     var completer = Completer<List<Exercise>>();
 
     // Nao apague -> caso precise utilizar novamente
@@ -47,7 +47,8 @@ class MockService extends ServicesProtocol {
     List<Exercise> exercisesList =
         List<Exercise>.from(parsedListJson.map((i) => Exercise.fromMap(i, "")));
 
-    completer.complete(exercisesList);
+    completer.complete(
+        exercisesList.where((element) => element.level == level).toList());
     return completer.future;
   }
 
@@ -129,5 +130,18 @@ class MockService extends ServicesProtocol {
     return completer.future;
   }
 
-  
+  @override
+  Future<List<Exercise>> getANumberOfExercisesFromModuleId(
+      String? sectionId, String moduleId, int quantity) async {
+    var completer = Completer<List<Exercise>>();
+
+    // Nao apague -> caso precise utilizar novamente
+    String jsonString = await Utils.loadJSON("Exercise");
+    List<dynamic> parsedListJson = json.decode(jsonString);
+    List<Exercise> exercisesList =
+        List<Exercise>.from(parsedListJson.map((i) => Exercise.fromMap(i, "")));
+    exercisesList.shuffle();
+    completer.complete(exercisesList);
+    return completer.future;
+  }
 }

@@ -29,8 +29,8 @@ class Service extends ServicesProtocol {
 
   @override
   Future<List<Exercise>> getExercisesFromModuleId(
-      String? sectionId, String moduleId) {
-    return _service.getExercisesFromModuleId(sectionId, moduleId);
+      String? sectionId, String moduleId, int level) {
+    return _service.getExercisesFromModuleId(sectionId, moduleId, level);
   }
 
   @override
@@ -50,21 +50,23 @@ class Service extends ServicesProtocol {
 
   @override
   Future<User> getUser() async {
-    return _service.getUser()
-    .onError((error, stackTrace) async {
+    return _service.getUser().onError((error, stackTrace) async {
       SharedFeatures.instance.isLoggedIn = false;
 
-      return await _database.getUser()
-      .onError((error, stackTrace) async {
+      return await _database.getUser().onError((error, stackTrace) async {
         final randomUsername = UsernameGen().generate();
-        final newUser = User(name: randomUsername, id: "", email: "", currentProgress: 0, imageUrl: null);
+        final newUser = User(
+            name: randomUsername,
+            id: "",
+            email: "",
+            currentProgress: 0,
+            imageUrl: null);
         return _database.saveUser(newUser).then((_) => newUser);
       });
-    })
-    .then((user) async {
+    }).then((user) async {
       user.modulesProgress = await Service.instance
-      .getModulesProgress()
-      .onError((error, stackTrace) {
+          .getModulesProgress()
+          .onError((error, stackTrace) {
         return [];
       });
 
@@ -103,5 +105,12 @@ class Service extends ServicesProtocol {
   @override
   Future uploadImage(FileImage image) {
     return _service.uploadImage(image);
+  }
+
+  @override
+  Future<List<Exercise>> getANumberOfExercisesFromModuleId(
+      String? sectionId, String moduleId, int quantity) {
+    return _service.getANumberOfExercisesFromModuleId(
+        sectionId, moduleId, quantity);
   }
 }
