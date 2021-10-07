@@ -25,6 +25,7 @@ abstract class ExerciseFlowDelegate {
   void handleFinishFLow(bool didComplete);
   void startNewExercisesLevel(List<Exercise> exercises);
   void restartLevel();
+  void updateNumberOfLifes(int lifes);
 
   String get sectionID;
 }
@@ -40,7 +41,7 @@ class ExerciseFlow extends StatefulWidget {
   static const routeFeedbackModulePage = 'feedback_page';
 
   List<Exercise> exercises;
-  
+
   final Module module;
   final String sectionID;
   ExerciseFlow(
@@ -53,6 +54,7 @@ class ExerciseFlow extends StatefulWidget {
 
   final String setupPageRoute;
   Exercise? _exercise;
+
   @override
   _ExerciseFlowState createState() => _ExerciseFlowState();
 
@@ -86,6 +88,7 @@ class _ExerciseFlowState extends State<ExerciseFlow>
   @override
   String get sectionID => widget.sectionID;
 
+  int lifes = 3;
   @override
   void initState() {
     super.initState();
@@ -110,7 +113,8 @@ class _ExerciseFlowState extends State<ExerciseFlow>
   }
 
   Route _onGenerateRoute(RouteSettings settings) {
-    final viewModel = locator<ExerciseViewModel>(param1: Tuple2(widget.exercises, widget.module), param2: this);
+    final viewModel = locator<ExerciseViewModel>(
+        param1: Tuple2(widget.exercises, widget.module), param2: this);
 
     late Widget page;
     switch (settings.name) {
@@ -152,11 +156,12 @@ class _ExerciseFlowState extends State<ExerciseFlow>
             _onExitPressed,
             widget.exercises.length.toDouble(),
             _exerciseProgress,
-            MediaQuery.of(ctx).size)
+            MediaQuery.of(ctx).size,
+            lifes)
         : null;
   }
-  
-    Future<bool> _isExitDesired() async {
+
+  Future<bool> _isExitDesired() async {
     return await showDialog<bool>(
             context: context,
             builder: (context) {
@@ -211,7 +216,8 @@ class _ExerciseFlowState extends State<ExerciseFlow>
     }
 
     setState(() {
-      _exerciseProgress = _exerciseProgress + 1; // _viewModel.exerciseProgressValue;
+      _exerciseProgress =
+          _exerciseProgress + 1; // _viewModel.exerciseProgressValue;
     });
 
     widget._exercise = exercise;
@@ -249,10 +255,10 @@ class _ExerciseFlowState extends State<ExerciseFlow>
 
   @override
   void didSelectAnswer() {
-    final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
+    final ExerciseAppBarWidget? exerciseAppBar =
+        Utils.tryCast(_appBar, fallback: null);
     if (exerciseAppBar != null) {
-      if (exerciseAppBar.showArrow != null)
-        exerciseAppBar.showArrow!();
+      if (exerciseAppBar.showArrow != null) exerciseAppBar.showArrow!();
     }
   }
 
@@ -280,6 +286,13 @@ class _ExerciseFlowState extends State<ExerciseFlow>
       isToShowAppBar = true;
     });
     _navigatorKey.currentState!.pushNamed(route);
+  }
+
+  @override
+  void updateNumberOfLifes(int lifes) {
+    setState(() {
+      this.lifes = lifes;
+    });
   }
 }
 

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'progressBar.dart';
 
-class ExerciseAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
-  
+class ExerciseAppBarWidget extends StatefulWidget
+    implements PreferredSizeWidget {
   Function _onNextExercisePressed;
   Function _onExitPressed;
   final double _maxProgress;
@@ -14,8 +14,15 @@ class ExerciseAppBarWidget extends StatefulWidget implements PreferredSizeWidget
   late _ExerciseAppBarWidgetState _state;
   Function? showArrow;
   static late double appBarHeight;
+  int _numberOfLifes;
 
-  ExerciseAppBarWidget(this._onNextExercisePressed, this._onExitPressed, this._maxProgress, this._currentProgress, this._screenSize) {
+  ExerciseAppBarWidget(
+      this._onNextExercisePressed,
+      this._onExitPressed,
+      this._maxProgress,
+      this._currentProgress,
+      this._screenSize,
+      this._numberOfLifes) {
     ExerciseAppBarWidget.appBarHeight = _screenSize.height * 0.15;
     _height = _screenSize.height * 0.15;
   }
@@ -39,7 +46,7 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
         _showNextExerciseArrow = true;
       });
     };
-    
+
     return _buildAppBar(context);
   }
 
@@ -56,44 +63,48 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                    OutlinedButton(onPressed: () => widget._onExitPressed(),
-                      child: 
-                      Text("Desistir",
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Container(
+                  width: 82,
+                  child: OutlinedButton(
+                      onPressed: () => widget._onExitPressed(),
+                      child: Text("Desistir",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
-                              fontWeight: FontWeight.w500
-                              )
-                            ),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(Colors.white),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(color: Colors.white)
-                              )
-                            )
-                          )
-                    ),
-                    if (_showNextExerciseArrow)
-                    OutlinedButton(onPressed: () => widget._onNextExercisePressed(),
-                      child: 
-                          Image(image: AssetImage(Constants.imageAssets.nextExerciseArrow)),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(Colors.white),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(color: Colors.white)
-                              )
-                            )
-                          )
-                    ),
+                              fontWeight: FontWeight.w500)),
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.white),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(color: Colors.white))))),
+                ),
+                // Expanded(child: SizedBox()),
+                _buildLifeWidget(widget._numberOfLifes),
+                // Expanded(child: SizedBox()),
+                // if (!_showNextExerciseArrow) Expanded(child: SizedBox()),
+                if (_showNextExerciseArrow)
+                  Container(
+                    width: 80,
+                    child: OutlinedButton(
+                        onPressed: () => widget._onNextExercisePressed(),
+                        child: Image(
+                            image: AssetImage(
+                                Constants.imageAssets.nextExerciseArrow)),
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.white),
+                            shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(color: Colors.white))))),
+                  ),
               ]),
-              SizedBox(
-                height: widget._height / 4
-              ),
+              SizedBox(height: widget._height / 4),
               Center(
                 child: Container(
                   height: widget._height / 5,
@@ -105,8 +116,31 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
               ),
             ],
           ),
-        )
-      );
+        ));
   }
 
+  Widget _buildLifeWidget(int numberOfLife) {
+    List<Widget> lifes = [];
+    for (var i = 0; i < numberOfLife; i++) {
+      lifes.add(
+        Icon(
+          Icons.favorite,
+          color: Colors.red,
+          size: 24.0,
+        ),
+      );
+    }
+    final outlineHearts = 3 - numberOfLife;
+    for (var i = 0; i < outlineHearts; i++) {
+      lifes.add(
+        Icon(
+          Icons.favorite_border_outlined,
+          color: Colors.red,
+          size: 24.0,
+        ),
+      );
+    }
+
+    return Row(children: [...lifes]);
+  }
 }

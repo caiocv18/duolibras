@@ -32,8 +32,12 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
   var exerciseProgressValue = 0.0;
   var totalPoints = 0.0;
   var wrongAnswers = 0;
+
+  var lifes = 3;
+
   @override
-  void didSubmitTextAnswer(String answer, String exerciseID, BuildContext context) {
+  void didSubmitTextAnswer(
+      String answer, String exerciseID, BuildContext context) {
     if (answer.isEmpty) {
       return;
     }
@@ -43,17 +47,16 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
 
     totalPoints += isAnswerCorrect ? exercise.score : 0.0;
 
-    if (_handleFinishModule(isAnswerCorrect)) {
-      return;
-    }
-
     _handleMoveToNextExercise(exerciseID, context);
   }
 
   bool _handleFinishModule(bool isAnswerCorrect) {
     wrongAnswers += isAnswerCorrect ? 0 : 1;
 
-    if (wrongAnswers == 1) {
+    lifes -= wrongAnswers;
+    exerciseFlowDelegate.updateNumberOfLifes(lifes);
+
+    if (lifes == 0) {
       exerciseFlowDelegate.didFinishExercise(null, FeedbackStatus.Failed);
       return true;
     }
@@ -62,9 +65,11 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
 
   bool isAnswerCorrect(String answer, String exerciseID) {
     if (answer.isEmpty) {
+      _handleFinishModule(false);
       return false;
     }
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
+    _handleFinishModule(exercise.correctAnswer == answer);
     return exercise.correctAnswer == answer;
   }
 
@@ -118,7 +123,8 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
     await Service.instance.postModuleProgress(moduleProgress);
   }
 
-  Future<void> _handleMoveToNextExercise(String exerciseID, BuildContext context) async {
+  Future<void> _handleMoveToNextExercise(
+      String exerciseID, BuildContext context) async {
     final index = exercises.indexWhere((m) => m.id == exerciseID);
 
     if (index + 1 == exercises.length) {
@@ -137,8 +143,6 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
     exerciseFlowDelegate.didSelectAnswer();
   }
 }
-
-
 
 extension FeedbackScreenViewModel on ExerciseViewModel {
   void goToNextLevel(BuildContext context) async {
