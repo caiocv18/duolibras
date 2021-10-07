@@ -17,9 +17,10 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 abstract class ExerciseFlowDelegate {
-  void didFinishExercise(Exercise? exercise);
+  void didFinishExercise(Exercise? exercise, FeedbackStatus? feedbackStatus);
   void handleFinishFLow(bool didComplete);
   void startNewExercisesLevel(List<Exercise> exercises);
+  void restartLevel();
 
   String get sectionID;
 }
@@ -158,8 +159,11 @@ class _ExerciseFlowState extends State<ExerciseFlow>
         page = ExerciseMLScreen(widget._exercise!, viewModel, true);
         break;
       case ExerciseFlow.routeFeedbackModulePage:
+        final arg = settings.arguments as Map<String, Object>;
+        final feedBackStatus = arg["feedbackStatus"] as FeedbackStatus;
         page = FeedbackExerciseScreen(
             Tuple2(widget.exercises, widget.module), this);
+        (page as FeedbackExerciseScreen).status = feedBackStatus;
         break;
     }
 
@@ -182,13 +186,14 @@ class _ExerciseFlowState extends State<ExerciseFlow>
   }
 
   @override
-  void didFinishExercise(Exercise? exercise) {
+  void didFinishExercise(Exercise? exercise, FeedbackStatus? feedbackStatus) {
     if (exercise == null) {
       setState(() {
         isToShowAppBar = false;
       });
-      _navigatorKey.currentState!
-          .pushNamed(ExerciseFlow.routeFeedbackModulePage);
+      _navigatorKey.currentState!.pushNamed(
+          ExerciseFlow.routeFeedbackModulePage,
+          arguments: {"feedbackStatus": feedbackStatus});
       return;
     }
 
@@ -215,7 +220,7 @@ class _ExerciseFlowState extends State<ExerciseFlow>
         routeName = ExerciseFlow.routeExerciseML;
         break;
       default:
-        didFinishExercise(null);
+        didFinishExercise(null, null);
         return;
     }
 
@@ -236,6 +241,18 @@ class _ExerciseFlowState extends State<ExerciseFlow>
     final firstExercise = exercises.first;
     widget._exercise = firstExercise;
 
+    final route = ExerciseFlow.getRouteNameBy(firstExercise.category);
+    setState(() {
+      _exerciseProgress = 0;
+      isToShowAppBar = true;
+    });
+    _navigatorKey.currentState!.pushNamed(route);
+  }
+
+  @override
+  void restartLevel() {
+    final firstExercise = widget.exercises.first;
+    widget._exercise = firstExercise;
     final route = ExerciseFlow.getRouteNameBy(firstExercise.category);
     setState(() {
       _exerciseProgress = 0;

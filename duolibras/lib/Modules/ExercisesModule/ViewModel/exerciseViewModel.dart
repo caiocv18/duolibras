@@ -1,6 +1,7 @@
 import 'package:duolibras/Commons/ViewModel/ScreenState.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
 import 'package:duolibras/MachineLearning/TFLite/tflite_helper.dart';
+import 'package:duolibras/Modules/ExercisesModule/Screens/feedbackExerciseScreen.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/Module.dart';
@@ -30,7 +31,7 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
 
   var exerciseProgressValue = 0.0;
   var totalPoints = 0.0;
-
+  var wrongAnswers = 0;
   @override
   void didSubmitTextAnswer(
       String answer, String exerciseID, BuildContext context) {
@@ -38,8 +39,26 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
       return;
     }
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
-    totalPoints += exercise.correctAnswer == answer ? exercise.score : 0.0;
+
+    final isAnswerCorrect = exercise.correctAnswer == answer;
+
+    totalPoints += isAnswerCorrect ? exercise.score : 0.0;
+
+    if (_handleFinishModule(isAnswerCorrect)) {
+      return;
+    }
+
     _handleMoveToNextExercise(exerciseID, context);
+  }
+
+  bool _handleFinishModule(bool isAnswerCorrect) {
+    wrongAnswers += isAnswerCorrect ? 0 : 1;
+
+    if (wrongAnswers == 1) {
+      exerciseFlowDelegate.didFinishExercise(null, FeedbackStatus.Failed);
+      return true;
+    }
+    return false;
   }
 
   bool isAnswerCorrect(String answer, String exerciseID) {
@@ -107,13 +126,13 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
     if (index + 1 == exercises.length) {
       await _saveProgress(context);
       exerciseProgressValue = index + 1;
-      exerciseFlowDelegate.didFinishExercise(null);
+      exerciseFlowDelegate.didFinishExercise(null, FeedbackStatus.Success);
       return;
     }
 
     final exercise = exercises[index + 1];
     exerciseProgressValue = index + 1;
-    exerciseFlowDelegate.didFinishExercise(exercise);
+    exerciseFlowDelegate.didFinishExercise(exercise, null);
   }
 }
 
@@ -131,7 +150,9 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
     });
   }
 
-  void tryModuleAgain() {}
+  void tryModuleAgain() {
+    exerciseFlowDelegate.restartLevel();
+  }
 
   Future<bool> hasMoreExercises(BuildContext context) async {
     setState(ScreenState.Loading);

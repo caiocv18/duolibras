@@ -67,6 +67,7 @@ flutter:
     - assets/model.tflite
     - assets/labels.txt
     - assets/images/moduleCompleted.png
+    - assets/images/sadFace.png
     - lib/Network/Mock/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
