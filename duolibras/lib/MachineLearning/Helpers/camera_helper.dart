@@ -37,7 +37,7 @@ class CameraHelper {
     _camera = CameraController(
         await _getCamera(_direction),
         defaultTargetPlatform == TargetPlatform.iOS
-            ? ResolutionPreset.low
+            ? ResolutionPreset.high
             : ResolutionPreset.high,
         enableAudio: false,
         imageFormatGroup: ImageFormatGroup.bgra8888);

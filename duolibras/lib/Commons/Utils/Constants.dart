@@ -1,7 +1,7 @@
 class Constants {
   static DatabaseConstants database = const DatabaseConstants();
-  static FirebaseServiceConstants firebaseService =
-      const FirebaseServiceConstants();
+  static FirebaseServiceConstants firebaseService = const FirebaseServiceConstants();
+  static ImageAssets imageAssets = const ImageAssets();
 }
 
 class DatabaseConstants {
@@ -31,4 +31,11 @@ class FirebaseAuthenticatorConstants {
   String get iosBundleId => "com.example.duolibras";
   String get androidPackageName => "com.example.duolibras";
   String get androidMinimumVersion => "12";
+}
+
+class ImageAssets {
+  const ImageAssets();
+  final _basicPath = "assets/images/";
+
+  String get nextExerciseArrow => "${_basicPath}nextExerciseArrow/nextExerciseArrow.png";
 }

@@ -1,11 +1,18 @@
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/midiaWidget.dart';
+import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
 
-abstract class ExerciseScreen extends StatelessWidget {
-  const ExerciseScreen({Key? key}) : super(key: key);
+abstract class ExerciseScreenDelegate {
+  Function? handleNextExercise;
+  void goNextExercise() {
+    if (handleNextExercise != null)
+    handleNextExercise!();
+  }
+}
 
+abstract class ExerciseStateless extends StatelessWidget with ExerciseScreenDelegate {
   void showFinishExerciseBottomSheet(bool isAnswerCorrect, String correctAnswer,
       BuildContext context, Function handler) {
     final button = ExerciseButton(
@@ -116,7 +123,7 @@ abstract class ExerciseScreen extends StatelessWidget {
   }
 }
 
-abstract class ExerciseStateful extends StatefulWidget {
+abstract class ExerciseStateful extends StatefulWidget with ExerciseScreenDelegate {
   void showFinishExerciseBottomSheet(bool isAnswerCorrect, String correctAnswer,
       BuildContext context, Function handler) {
     final button = ExerciseButton(

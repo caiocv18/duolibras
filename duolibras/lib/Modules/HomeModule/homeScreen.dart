@@ -1,3 +1,4 @@
+import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
@@ -13,9 +14,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool isSwitched = false;
+
   int _currentIndex = 1;
 
-  final _pages = [
+  var _pages = [
     RankingScreen(),
     LearningScreen(LearningViewModel()),
     ProfileFlow(setupPageRoute: ProfileFlow.routeProfile)
@@ -59,8 +62,37 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Dibras"),
+      appBar: 
+      AppBar(
+        title: 
+      Container(
+        child: Column(children: [
+          Text("Dibras"),
+          Container(
+            height: 20,
+            child: Switch(
+            value: isSwitched,
+            onChanged: (value){
+              setState(() {
+                isSwitched=value;
+                if (isSwitched){
+                  SharedFeatures.instance.enviroment = AppEnvironment.PROD;
+                } else {
+                  SharedFeatures.instance.enviroment = AppEnvironment.DEV;
+                }
+                _pages = [
+                  RankingScreen(),
+                  LearningScreen(LearningViewModel()),
+                  ProfileFlow(setupPageRoute: ProfileFlow.routeProfile)
+                ];
+                _page = _pages[_currentIndex];
+              });
+            },
+            activeTrackColor: Colors.lightGreenAccent,
+            activeColor: Colors.green,
+        ),
+          )
+        ],))
       ),
       bottomNavigationBar: bottomNavigationBar,
       body: _page,

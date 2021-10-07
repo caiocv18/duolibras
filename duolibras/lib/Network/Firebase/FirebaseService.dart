@@ -35,9 +35,13 @@ class FirebaseService extends ServicesProtocol {
   }
 
   DocumentReference<Map<String, dynamic>> _getTrailFromFirebase() {
+    final trailId = SharedFeatures.instance.enviroment == AppEnvironment.DEV ?
+    "dimVnUtg6Solp3aJkk45" : "xv8HNGRlLC3E2ioIRr1Z";
+
     return firestoreInstance
         .collection(Constants.firebaseService.trailsCollection)
-        .doc("dimVnUtg6Solp3aJkk45");
+        .doc(trailId);
+
   }
 
   Future<List<Section>> _getSectionsFromFirebase() async {

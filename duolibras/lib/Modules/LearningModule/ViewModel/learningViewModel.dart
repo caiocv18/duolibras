@@ -19,6 +19,7 @@ import '../mainRouter.dart';
 
 class LearningViewModel
     with SectionsViewModel, ModuleViewModel, LearningViewModelProtocol {
+      
   @override
   Future<List<Module>> getModulesfromSection(String sectionID) async {
     return Service.instance.getModulesFromSectionId(sectionID);
@@ -51,51 +52,44 @@ class LearningViewModel
     });
   }
 
-  Future<List<Exercise>> _getExerciseFromModule(
-      String sectionID, String moduleID, int level) {
-    return Service.instance
-        .getExercisesFromModuleId(sectionID, moduleID, level);
+  Future<List<Exercise>> _getExerciseFromModule(String sectionID, String moduleID, int level) {
+    return Service.instance.getExercisesFromModuleId(sectionID, moduleID, level);
   }
 
-  Future<List<Exercise>> _getANumberExerciseFromModule(
-      String sectionID, String moduleID, int quantity) {
+  Future<List<Exercise>> _getANumberExerciseFromModule(String sectionID, String moduleID, int quantity) {
     return Service.instance
         .getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity)
         .then((exercises) {
-      exercises.shuffle();
-      List<Exercise> newExercises = [];
+          exercises.shuffle();
+          List<Exercise> newExercises = [];
 
-      for (var i = 0; i < 15; i++) {
-        if (!exercises.containsAt(i)) {
+          for (var i = 0; i < 15; i++) {
+            if (!exercises.containsAt(i)) {
+              return newExercises;
+            } else {
+              newExercises.add(exercises[i]);
+            }
+          }
           return newExercises;
-        } else {
-          newExercises.add(exercises[i]);
-        }
-      }
-      return newExercises;
-    });
+        });
   }
 
   @override
-  Future<void> didSelectModule(String sectionID, Module module,
-      BuildContext context, Function? handler) async {
+  Future<void> didSelectModule(String sectionID, Module module,BuildContext context, Function? handler) async {
     final level = _getUserModuleLevel(context, module);
 
     if (level == module.maxProgress) {
       _getANumberExerciseFromModule(sectionID, module.id, 30).then((exercises) {
-        _navigateToExercisesModule(
-            sectionID, module, context, exercises, handler);
+        _navigateToExercisesModule(sectionID, module, context, exercises, handler);
       });
     } else {
       _getExerciseFromModule(sectionID, module.id, level).then((exercises) {
-        _navigateToExercisesModule(
-            sectionID, module, context, exercises, handler);
+        _navigateToExercisesModule(sectionID, module, context, exercises, handler);
       });
     }
   }
 
-  void _navigateToExercisesModule(String sectionID, Module module,
-      BuildContext context, List<Exercise> exercises, Function? handler) {
+  void _navigateToExercisesModule(String sectionID, Module module,BuildContext context, List<Exercise> exercises, Function? handler) {
     Navigator.of(context).pushNamed(ExerciseFlow.routePrefixExerciseFlow,
         arguments: {
           "exercises": exercises,
