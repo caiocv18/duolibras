@@ -32,8 +32,7 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
   var totalPoints = 0.0;
 
   @override
-  void didSubmitTextAnswer(
-      String answer, String exerciseID, BuildContext context) {
+  void didSubmitTextAnswer(String answer, String exerciseID, BuildContext context) {
     if (answer.isEmpty) {
       return;
     }
@@ -100,8 +99,7 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
     await Service.instance.postModuleProgress(moduleProgress);
   }
 
-  Future<void> _handleMoveToNextExercise(
-      String exerciseID, BuildContext context) async {
+  Future<void> _handleMoveToNextExercise(String exerciseID, BuildContext context) async {
     final index = exercises.indexWhere((m) => m.id == exerciseID);
 
     if (index + 1 == exercises.length) {
@@ -115,7 +113,13 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
     exerciseProgressValue = index + 1;
     exerciseFlowDelegate.didFinishExercise(exercise);
   }
+
+  void showNextArrow() {
+    exerciseFlowDelegate.didSelectAnswer();
+  }
 }
+
+
 
 extension FeedbackScreenViewModel on ExerciseViewModel {
   void goToNextLevel(BuildContext context) async {

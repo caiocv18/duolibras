@@ -13,7 +13,7 @@ import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/ExercisesCategory.dart';
 import 'package:flutter/material.dart';
 
-class ExerciseMultiChoiceScreen extends ExerciseStateful {
+class ExerciseMultiChoiceScreen extends ExerciseStateful{
   static String routeName = "/ExerciseMultiChoiceScreen";
 
   final ExerciseViewModel _viewModel;
@@ -24,6 +24,9 @@ class ExerciseMultiChoiceScreen extends ExerciseStateful {
   @override
   State<ExerciseMultiChoiceScreen> createState() =>
       _ExerciseMultiChoiceScreenState();
+
+  @override
+  Function? handleNextExercise;
 }
 
 class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
@@ -31,6 +34,19 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
 
   ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
   var answerPicked = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.handleNextExercise = () {
+      handleSubmitAnswer(
+                        answerPicked,
+                        widget._exercise.correctAnswer,
+                        widget._exercise.id,
+                        this.context);
+    };
+  }
 
   Widget _buildPopupDialog(BuildContext context, String title) {
     return new AlertDialog(
@@ -63,8 +79,7 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
             setState(() {
               _state = ExerciseScreenState.DidAnswer;
               answerPicked = answer;
-              handleSubmitAnswer(
-                  answer, exercise.correctAnswer, exercise.id, ctx);
+              widget._viewModel.showNextArrow();
             });
           })
         : ImagesMultiChoice(exercise.answers, exercise.correctAnswer, (answer) {
@@ -73,8 +88,7 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
             setState(() {
               _state = ExerciseScreenState.DidAnswer;
               answerPicked = answer;
-              handleSubmitAnswer(
-                  answer, exercise.correctAnswer, exercise.id, ctx);
+              widget._viewModel.showNextArrow();
             });
           });
   }
@@ -116,18 +130,12 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
     );
   }
 
-  void handleSubmitAnswer(String answer, String correctAnswer,
-      String exerciseID, BuildContext ctx) {
+  void handleSubmitAnswer(String answer, String correctAnswer,String exerciseID, BuildContext ctx) {
     final isCorrect = widget._viewModel.isAnswerCorrect(answer, exerciseID);
     if (widget._exercise.category == ExercisesCategory.multipleChoicesText) {
-      widget.showFinishExerciseBottomSheet(isCorrect, correctAnswer, ctx, () {
         widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
-      });
     } else {
-      widget.showFinishExerciseBottomSheetWithImage(
-          isCorrect, correctAnswer, ctx, () {
         widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
-      });
     }
   }
 
@@ -140,22 +148,6 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
     final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Scaffold(
-        bottomNavigationBar: _state == ExerciseScreenState.DidAnswer
-            ? BottomAppBar(
-                color: Color.fromRGBO(234, 234, 234, 1),
-                child: GestureDetector(
-                  child: Icon(Icons.arrow_circle_up_rounded),
-                  onVerticalDragStart: (_) {
-                    handleSubmitAnswer(
-                        answerPicked,
-                        widget._exercise.correctAnswer,
-                        widget._exercise.id,
-                        context);
-                  },
-                ),
-                elevation: 0,
-              )
-            : null,
         body: _buildBody(widget._exercise, widget._viewModel, containerSize, context));
   }
 }

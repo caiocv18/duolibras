@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:duolibras/Commons/Components/appBarWidget.dart';
+import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
@@ -8,6 +11,7 @@ import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWid
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseScreen.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 abstract class ExerciseWritingViewModel {
   void didSubmitTextAnswer(
@@ -31,32 +35,46 @@ class ExerciseWritingScreen extends ExerciseStateful {
 class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
   final PreferredSizeWidget appBar = AppBarWidget();
 
+  @override
+  void initState() {
+    super.initState();
+
+    widget.handleNextExercise = () {
+      handleSubmitAnswer(
+                        inputController.text,
+                        widget._exercise.correctAnswer,
+                        widget._exercise.id,
+                        this.context);
+    };
+
+  final keyboardVisibilityController = KeyboardVisibilityController();
+  keyboardVisibilityController.onChange.listen((bool visible) {
+    setState(() {
+        isKeyboardActive = visible;
+      });
+  });
+}
+
   ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
   var didAnswerCorrect = null;
+  var isKeyboardActive = false;
   final inputController = TextEditingController();
 
-  void handleSubmitAnswer(String answer, String correctAnswer,
-      String exerciseID, BuildContext ctx) {
-    didAnswerCorrect = widget._viewModel.isAnswerCorrect(answer, exerciseID);
-
-    widget.showFinishExerciseBottomSheet(didAnswerCorrect, correctAnswer, ctx,
-        () {
-      widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
-    });
+  void handleSubmitAnswer(String answer, String correctAnswer, String exerciseID, BuildContext ctx) {
+    widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
   }
 
-  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel,
-      Size containerSize, BuildContext ctx) {
+  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
     return Container(
-      height: double.infinity,
+      height: containerSize.height,
       color: Color.fromRGBO(234, 234, 234, 1),
-      child: SafeArea(
-          child: SingleChildScrollView(
-        child: Container(
-          color: Color.fromRGBO(234, 234, 234, 1),
-          height: containerSize.height,
+      child: Container(
+        height: containerSize.height,
+        child: SingleChildScrollView(
+          physics: isKeyboardActive ? null : NeverScrollableScrollPhysics(),
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
                   height: containerSize.height * 0.10,
@@ -99,57 +117,35 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
                             ? Colors.grey
                             : didAnswerCorrect
                                 ? Colors.green
-                                : Colors
-                                    .red, //Colors.white, //Color(0xFFCA3034),
+                                : Colors.red, //Colors.white, //Color(0xFFCA3034),
                         onPressed: () {
                           if (_state == ExerciseScreenState.DidAnswer) return;
                           setState(() {
                             _state = ExerciseScreenState.DidAnswer;
-                            handleSubmitAnswer(inputController.text,
-                                exercise.correctAnswer, exercise.id, ctx);
+                            didAnswerCorrect = widget._viewModel.isAnswerCorrect(inputController.text, widget._exercise.id);
+                            widget._viewModel.showNextArrow();
                           });
                         },
-                      )),
-                ],
-              ),
+                      )
+                  ),
             ],
           ),
+          ],
         ),
-      )),
+      ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final _mediaQuery = MediaQuery.of(context);
-
-    final _containerHeight = _mediaQuery.size.height -
-        (kBottomNavigationBarHeight +
-            _mediaQuery.padding.bottom +
-            appBar.preferredSize.height +
-            _mediaQuery.padding.top);
-    final _containerWidth = _mediaQuery.size.width;
-
-    final containerSize = Size(_containerWidth, _containerHeight);
+    final mediaQuery = MediaQuery.of(context);
+    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
+    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
+    final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop);
+    final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Scaffold(
-        body: _buildBody(
-            widget._exercise, widget._viewModel, containerSize, context),
-        bottomNavigationBar: _state == ExerciseScreenState.DidAnswer
-            ? BottomAppBar(
-                color: Color.fromRGBO(234, 234, 234, 1),
-                child: GestureDetector(
-                  child: Icon(Icons.arrow_circle_up_rounded),
-                  onVerticalDragStart: (_) {
-                    handleSubmitAnswer(
-                        inputController.text,
-                        widget._exercise.correctAnswer,
-                        widget._exercise.id,
-                        context);
-                  },
-                ),
-                elevation: 0,
-              )
-            : null);
+        body: _buildBody(widget._exercise, widget._viewModel, containerSize, context));
   }
 }

@@ -162,21 +162,6 @@ class _LearningScreenState extends State<LearningScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   title: Text("Duolibras"),
-        //   actions: [
-        //     IconButton(
-        //         icon: Icon(Icons.person),
-        //         onPressed: () => {
-        //               Navigator.of(context)
-        //                   .pushNamed(MainRouter.routeSignIn)
-        //                   .then((value) {
-        //                 _handleCompletedLogin(value as bool?);
-        //               })
-        //             })
-        //   ],
-        // ),
-        // bottomNavigationBar: bottomNavigationBar,
         body: _buildBody());
   }
 }

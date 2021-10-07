@@ -417,6 +417,8 @@ PODS:
     - FirebaseCore (~> 8.0)
     - GTMSessionFetcher/Core (~> 1.5)
   - Flutter (1.0.0)
+  - flutter_keyboard_visibility (0.0.1):
+    - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -501,6 +503,7 @@ DEPENDENCIES:
   - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
+  - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -547,6 +550,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: Flutter
+  flutter_keyboard_visibility:
+    :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   google_sign_in:
     :path: ".symlinks/plugins/google_sign_in/ios"
   sign_in_with_apple:
@@ -574,6 +579,7 @@ SPEC CHECKSUMS:
   FirebaseFirestore: 7b8bd72aff4d3ad91498343e81fdbaa994ce8abe
   FirebaseStorage: 2765944230981e63f8bd2938d9d5819158b7c34c
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_sign_in: de494e5e993986afae63e22a32441e30c35c9823
   GoogleDataTransport: 85fd18ff3019bb85d3f2c551d04c481dedf71fc9

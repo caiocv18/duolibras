@@ -12,7 +12,7 @@ import 'package:path/path.dart';
 import 'exerciseScreen.dart';
 import 'package:confetti/confetti.dart';
 
-class ExerciseMLScreen extends ExerciseStateful {
+class ExerciseMLScreen extends ExerciseStateful{
   static String routeName = "/ExerciseMLScreen";
 
   final ExerciseViewModel _viewModel;
@@ -23,6 +23,7 @@ class ExerciseMLScreen extends ExerciseStateful {
 
   @override
   _ExerciseMLScreenState createState() => _ExerciseMLScreenState();
+
 }
 
 class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
@@ -53,10 +54,15 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
       onError: (error) {
       }
     );
+
+    widget.handleNextExercise = () {
+      goNextExerciseFromAppBar();
+    };
     
     setState(() {
       initController();
     });
+
   }
 
   void initController() {
@@ -66,8 +72,6 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
 
     @override
   Widget build(BuildContext context) {
-    final _mediaQuery = MediaQuery.of(context);
-
     final mediaQuery = MediaQuery.of(context);
     final appBarHeight = ExerciseAppBarWidget.appBarHeight;
     final paddingTop = MediaQueryData.fromWindow(window).padding.top;
@@ -251,15 +255,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
         controllerTopCenter.play();
           setState(() {
             spelledText = label;
-            widget._viewModel.mlModel.close();
-            widget._viewModel.didSubmitTextAnswer(spelledText, widget._exercise.id, ctx);
-            Future.delayed(Duration(seconds: 2), () {
-                cameraHelper.dispose();
-                if (!mounted){ return; }
-                setState(() {
-                  _showingCamera = false;
-                });
-              });
+            _closeAll(ctx);
           });
     }
   }
@@ -273,31 +269,36 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
           _finishedExercise = true;
           controllerTopCenter.play();
             setState(() {
-              widget._viewModel.mlModel.close();
-              widget._viewModel.didSubmitTextAnswer(spelledText, widget._exercise.id, ctx);
-              Future.delayed(Duration(seconds: 2), () {
-                cameraHelper.dispose();
-                if (!mounted){ return; }
-                setState(() {
-                  _showingCamera = false;
-                });
-              });
+              _closeAll(ctx);
             });
       }
          
     }
   }
   
-  void _closeCamera() {
-    _showingCamera = false;
-    cameraHelper.dispose();
+  void _closeAll(BuildContext ctx) {
+      widget._viewModel.showNextArrow();
+      widget._viewModel.mlModel.close();
+      Future.delayed(Duration(seconds: 2), () {
+        cameraHelper.dispose();
+        if (!mounted){ return; }
+        setState(() {
+          _showingCamera = false;
+        });
+      });
   }
 
   @override
   void dispose() {
     super.dispose();
     widget._viewModel.mlModel.tfLiteResultsController.close();
-    _closeCamera();
+    _showingCamera = false;
+    cameraHelper.dispose();
+  }
+
+  void goNextExerciseFromAppBar() {
+    _closeAll(this.context);
+    widget._viewModel.didSubmitTextAnswer(spelledText, widget._exercise.id, this.context);
   }
 
 }
