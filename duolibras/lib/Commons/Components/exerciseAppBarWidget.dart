@@ -78,7 +78,12 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
                           )
                     ),
                     if (_showNextExerciseArrow)
-                    OutlinedButton(onPressed: () => widget._onNextExercisePressed(),
+                    OutlinedButton(onPressed: () {
+                        widget._onNextExercisePressed();
+                        setState(() {
+                          _showNextExerciseArrow = false;
+                        });
+                    } ,
                       child: 
                           Image(image: AssetImage(Constants.imageAssets.nextExerciseArrow)),
                           style: ButtonStyle(

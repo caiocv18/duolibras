@@ -17,10 +17,6 @@ class CameraHelper {
   MLModelProtocol mlModel;
 
   CameraHelper(this.mlModel, this._direction) {
-    initializeCamera();
-
-    //Load TFLite Model
-    mlModel.loadModel();
   }
 
   Future<CameraDescription> _getCamera(CameraLensDirection dir) async {
@@ -37,29 +33,29 @@ class CameraHelper {
     _camera = CameraController(
         await _getCamera(_direction),
         defaultTargetPlatform == TargetPlatform.iOS
-            ? ResolutionPreset.high
+            ? ResolutionPreset.medium
             : ResolutionPreset.high,
         enableAudio: false,
-        imageFormatGroup: ImageFormatGroup.bgra8888);
+        imageFormatGroup: defaultTargetPlatform == TargetPlatform.iOS ? ImageFormatGroup.bgra8888 : ImageFormatGroup.yuv420);
 
     await _camera.initialize().then((value) {
-      AppHelper.log(
-          "_initializeCamera", "Camera initialized, starting camera stream..");
+      AppHelper.log("_initializeCamera", "Camera initialized, starting camera stream..");
+      mlModel.loadModel();
       completer.complete();
 
       _camera.startImageStream((CameraImage image) {
-        if (mlModel.modelsIsLoaded && mlModel.isOpen) {
-          try {
-            mlModel.predict(image);
-          } catch (e) {
-            print(e);
-          }
-        } 
+        try {
+          mlModel.predict(image);
+        } catch (e) {
+          print(e);
+        }
       });
     });
   }
 
-  void dispose() {
-    _camera.dispose();
+  Future<void> close() async {
+    await _camera.stopImageStream();
+    await _camera.dispose();
   }
+
 }

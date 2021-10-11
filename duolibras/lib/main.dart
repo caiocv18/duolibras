@@ -26,18 +26,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (ctx) => locator<UserModel>(),
-      child: MaterialApp(
+      child: 
+        MaterialApp(
           title: 'Flutter Demo',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
-            fontFamily: 'Nunito'
+            primarySwatch: Colors.blue
           ),
-          onGenerateRoute: (settings) =>
-              MainRouter.instance.onGenerateRoute(settings),
+          onGenerateRoute: (settings) => MainRouter.instance.onGenerateRoute(settings),
           navigatorKey: MainRouter.instance.navigatorKey,
           home: LaunchScreen(MainRouter.instance.initialLoadCompleted)
-
-          ),
+        ),
     );
   }
 }

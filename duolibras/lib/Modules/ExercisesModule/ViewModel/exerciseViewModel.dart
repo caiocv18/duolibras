@@ -1,5 +1,7 @@
+import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/ViewModel/ScreenState.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
+import 'package:duolibras/MachineLearning/Helpers/camera_helper.dart';
 import 'package:duolibras/MachineLearning/TFLite/tflite_helper.dart';
 import 'package:duolibras/Network/Authentication/UserSession.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
@@ -17,12 +19,13 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
   final Tuple2<List<Exercise>, Module> exercisesAndModule;
 
   // final void Function(Exercise? exercise) _didFinishExercise;
-  final mlModel = TFLiteHelper();
   final ExerciseFlowDelegate exerciseFlowDelegate;
-
-  List<String> spelledLetters = [];
-  //ML Exercise spelling
   late List<Exercise> exercises;
+
+  //ML Exercise 
+  final CameraHelper cameraHelper = CameraHelper(TFLiteHelper(), CameraLensDirection.front);
+  List<String> spelledLetters = [];
+ 
 
   ExerciseViewModel(this.exercisesAndModule, this.exerciseFlowDelegate) {
     exercises = exercisesAndModule.item1;
@@ -168,5 +171,10 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
     } on StateError catch (_) {
       return 1;
     }
+  }
+
+  void closeCamera() async {
+    await cameraHelper.close();
+    await cameraHelper.mlModel.close();
   }
 }

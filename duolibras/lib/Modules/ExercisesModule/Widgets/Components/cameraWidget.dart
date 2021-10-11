@@ -35,7 +35,7 @@ class CameraWidgetState extends State<CameraWidget> {
   @override
   void dispose() {
     mlModel.close();
-    cameraHelper.dispose();
+    cameraHelper.close();
     AppHelper.log("dispose", "Clear resources.");
     super.dispose();
   }
