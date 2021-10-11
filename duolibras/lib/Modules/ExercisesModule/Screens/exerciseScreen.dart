@@ -7,12 +7,12 @@ import 'package:duolibras/Commons/Extensions/color_extension.dart';
 abstract class ExerciseScreenDelegate {
   Function? handleNextExercise;
   void goNextExercise() {
-    if (handleNextExercise != null)
-    handleNextExercise!();
+    if (handleNextExercise != null) handleNextExercise!();
   }
 }
 
-abstract class ExerciseStateless extends StatelessWidget with ExerciseScreenDelegate {
+abstract class ExerciseStateless extends StatelessWidget
+    with ExerciseScreenDelegate {
   void showFinishExerciseBottomSheet(bool isAnswerCorrect, String correctAnswer,
       BuildContext context, Function handler) {
     final button = ExerciseButton(
@@ -123,7 +123,8 @@ abstract class ExerciseStateless extends StatelessWidget with ExerciseScreenDele
   }
 }
 
-abstract class ExerciseStateful extends StatefulWidget with ExerciseScreenDelegate {
+abstract class ExerciseStateful extends StatefulWidget
+    with ExerciseScreenDelegate {
   void showFinishExerciseBottomSheet(bool isAnswerCorrect, String correctAnswer,
       BuildContext context, Function handler) {
     final button = ExerciseButton(

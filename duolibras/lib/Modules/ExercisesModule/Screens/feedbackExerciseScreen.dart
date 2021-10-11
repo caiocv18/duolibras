@@ -19,6 +19,7 @@ class FeedbackExerciseScreen extends StatefulWidget {
   final ExerciseFlowDelegate delegate;
 
   //  Function(bool)? handleFinishFLow;
+  late FeedbackStatus status;
 
   FeedbackExerciseScreen(this.exercisesAndModule, this.delegate);
 
@@ -27,8 +28,6 @@ class FeedbackExerciseScreen extends StatefulWidget {
 }
 
 class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
-  FeedbackStatus status = FeedbackStatus.Success;
-
   // @override
   // initState() {
   //   locator<ExerciseViewModel>().hasMoreExercises();
@@ -37,7 +36,7 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
 
   Widget _createButtons(
       ExerciseViewModel viewModel, BuildContext ctx, Size containerSize) {
-    final titleButton = status == FeedbackStatus.Success
+    final titleButton = widget.status == FeedbackStatus.Success
         ? "Tentar Próxima dificuldade"
         : "Tentara novamente";
 
@@ -62,7 +61,7 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
             color: HexColor.fromHex(
                 "#93CAFA"), //Colors.white, //Color(0xFFCA3034),
             onPressed: () {
-              status == FeedbackStatus.Success
+              widget.status == FeedbackStatus.Success
                   ? viewModel.goToNextLevel(ctx)
                   : viewModel.tryModuleAgain();
             },
@@ -103,11 +102,15 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
   }
 
   Widget _buildBody(Size containerSize, BuildContext ctx) {
-    final msg = status == FeedbackStatus.Success
+    final msg = widget.status == FeedbackStatus.Success
         ? (hasMoreExercises
             ? "Parabéns! Você completou o módulo!"
             : "Paranéns, você já é um experte nesse assunto!")
         : "Oh não, vamos práticar um pouco?";
+
+    final imageName = widget.status == FeedbackStatus.Success
+        ? "assets/images/moduleCompleted.png"
+        : "assets/images/sadFace.png";
     return BaseScreen<ExerciseViewModel>(
       parameters: Tuple2(widget.exercisesAndModule, widget.delegate),
       onModelReady: (model) {
