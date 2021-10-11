@@ -51,12 +51,12 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
   }
 
   Widget _buildAppBar(BuildContext ctx) {
+    final size = MediaQuery.of(ctx).size;
+
     return AppBar(
         backgroundColor: Color.fromRGBO(234, 234, 234, 1),
         foregroundColor: Colors.transparent,
-        elevation: 0.0,
         toolbarHeight: widget._height,
-        leadingWidth: 0.0,
         title: Container(
           width: double.infinity,
           child: Column(
@@ -65,19 +65,22 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
             children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Container(
-                  width: 82,
+                  width: size.width * 0.21,
                   child: OutlinedButton(
                       onPressed: () => widget._onExitPressed(),
-                      child: Text("Desistir",
-                          style: TextStyle(
+                      child: 
+                      Text("Desistir",
+                          style: 
+                          TextStyle(
                               color: Colors.black,
                               fontSize: 14,
-                              fontWeight: FontWeight.w500)),
+                              fontFamily: "Nunito",
+                              fontWeight: FontWeight.w500
+                          )
+                      ),
                       style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                          backgroundColor:MaterialStateProperty.all(Colors.white),
+                          shape:MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(18.0),
                                       side: BorderSide(color: Colors.white))))),
@@ -88,20 +91,24 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
                 // if (!_showNextExerciseArrow) Expanded(child: SizedBox()),
                 if (_showNextExerciseArrow)
                   Container(
-                    width: 80,
+                    width: size.width * 0.21,
                     child: OutlinedButton(
-                        onPressed: () => widget._onNextExercisePressed(),
-                        child: Image(
-                            image: AssetImage(
+                        onPressed: () { 
+                          widget._onNextExercisePressed();
+                          _showNextExerciseArrow = false;
+                        },
+                        child: 
+                          Image(image: 
+                            AssetImage(
                                 Constants.imageAssets.nextExerciseArrow)),
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.white),
-                            shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    side: BorderSide(color: Colors.white))))),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(Colors.white),
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(color: Colors.white))
+                                    )
+                                )
+                    ),
                   ),
               ]),
               SizedBox(height: widget._height / 4),
@@ -123,21 +130,13 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
     List<Widget> lifes = [];
     for (var i = 0; i < numberOfLife; i++) {
       lifes.add(
-        Icon(
-          Icons.favorite,
-          color: Colors.red,
-          size: 24.0,
-        ),
+        Image(image: AssetImage(Constants.imageAssets.lifeIcon)),
       );
     }
     final outlineHearts = 3 - numberOfLife;
     for (var i = 0; i < outlineHearts; i++) {
       lifes.add(
-        Icon(
-          Icons.favorite_border_outlined,
-          color: Colors.red,
-          size: 24.0,
-        ),
+        Image(image: AssetImage(Constants.imageAssets.lifeIconEmpty)),
       );
     }
 

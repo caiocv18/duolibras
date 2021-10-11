@@ -232,7 +232,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     return LayoutBuilder(builder: (ctx, constraint) {
       return Container(
         width: constraint.maxWidth * 0.89,
-        height: constraint.maxHeight * 0.075,
+        height: 54,
         decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(20))), 
         child: 
           Center(
@@ -250,7 +250,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
       return Center(
         child: Container(
             width: constraint.maxWidth * 0.89,
-            height: constraint.maxHeight * 0.075,
+            height: 54,
             decoration: 
             BoxDecoration(color: Colors.white, 
               border: Border.all(width: 5, color: _finishedExercise ? (_isRightAnswer ? Color.fromRGBO(147, 202, 250, 1) : Color.fromRGBO(233, 112, 112, 1)) : Colors.white) , 

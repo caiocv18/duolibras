@@ -49,6 +49,7 @@ flutter:
     - assets/images/sadFace.png
     - lib/Network/Mock/
     - assets/images/nextExerciseArrow/
+    - assets/images/tabBar/
   fonts:
     - family: Nunito
       fonts:
