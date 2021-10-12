@@ -13,13 +13,6 @@ import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
-abstract class ExerciseWritingViewModel {
-  void didSubmitTextAnswer(
-      String answer, String exerciseID, BuildContext context);
-
-  bool isAnswerCorrect(String answer, String exerciseID);
-}
-
 class ExerciseWritingScreen extends ExerciseStateful {
   static String routeName = "/ExerciseWritingScreen";
 
@@ -34,6 +27,10 @@ class ExerciseWritingScreen extends ExerciseStateful {
 
 class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
   final PreferredSizeWidget appBar = AppBarWidget();
+  ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
+  var didAnswerCorrect = null;
+  var isKeyboardActive = false;
+  final inputController = TextEditingController();
 
   @override
   void initState() {
@@ -41,27 +38,35 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
 
     widget.handleNextExercise = () {
       handleSubmitAnswer(
-                        inputController.text,
-                        widget._exercise.correctAnswer,
-                        widget._exercise.id,
-                        this.context);
+        inputController.text,
+        widget._exercise.correctAnswer,
+        widget._exercise.id,
+        this.context
+      );
     };
 
-  final keyboardVisibilityController = KeyboardVisibilityController();
-  keyboardVisibilityController.onChange.listen((bool visible) {
-    setState(() {
-        isKeyboardActive = visible;
-      });
-  });
-}
-
-  ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
-  var didAnswerCorrect = null;
-  var isKeyboardActive = false;
-  final inputController = TextEditingController();
+    final keyboardVisibilityController = KeyboardVisibilityController();
+    keyboardVisibilityController.onChange.listen((bool visible) {
+      setState(() {
+          isKeyboardActive = visible;
+        });
+    });
+  }
 
   void handleSubmitAnswer(String answer, String correctAnswer, String exerciseID, BuildContext ctx) {
     widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
+    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
+    final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop);
+    final containerSize = Size(mediaQuery.size.width, containerHeight);
+
+    return Scaffold(
+        body: _buildBody(widget._exercise, widget._viewModel, containerSize, context));
   }
 
   Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
@@ -137,15 +142,4 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
-    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop);
-    final containerSize = Size(mediaQuery.size.width, containerHeight);
-
-    return Scaffold(
-        body: _buildBody(widget._exercise, widget._viewModel, containerSize, context));
-  }
 }

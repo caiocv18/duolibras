@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
+import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/timeBar.dart';
@@ -307,11 +308,12 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
           height: containerSize.height * 0.5,
           decoration: 
           BoxDecoration(color: Colors.white, 
-            border: Border.all(width: 5, color: _isRightAnswer ? Color.fromRGBO(147, 202, 250, 1) : Color.fromRGBO(233, 112, 112, 1)) , 
+            border: Border.all(width: 5, color: Colors.white) , 
             borderRadius: BorderRadius.all(Radius.circular(20))
-          ), 
-        )
+          ),
+          child: Image(image: AssetImage(_isRightAnswer ? Constants.imageAssets.happyFace : Constants.imageAssets.sadFace ))), 
     );
+    
   }
 
   void _finishExercise(bool rightAnswer) {

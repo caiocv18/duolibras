@@ -3,26 +3,27 @@ import 'package:flutter/material.dart';
 
 import 'progressBar.dart';
 
-class ExerciseAppBarWidget extends StatefulWidget
-    implements PreferredSizeWidget {
-  Function _onNextExercisePressed;
-  Function _onExitPressed;
+class ExerciseAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   final double _maxProgress;
-  final double _currentProgress;
   final Size _screenSize;
   late double _height;
+  final int _numberOfLifes;
   late _ExerciseAppBarWidgetState _state;
+
   Function? showArrow;
+  Function(int)? onUpdateLifes;
+  Function(double)? onUpdateProgress;
+  Function _onNextExercisePressed;
+  Function _onExitPressed;
+
   static late double appBarHeight;
-  int _numberOfLifes;
 
   ExerciseAppBarWidget(
-      this._onNextExercisePressed,
-      this._onExitPressed,
       this._maxProgress,
-      this._currentProgress,
       this._screenSize,
-      this._numberOfLifes) {
+      this._numberOfLifes, 
+      this._onNextExercisePressed,
+      this._onExitPressed) {
     ExerciseAppBarWidget.appBarHeight = _screenSize.height * 0.15;
     _height = _screenSize.height * 0.15;
   }
@@ -38,12 +39,26 @@ class ExerciseAppBarWidget extends StatefulWidget
 
 class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
   var _showNextExerciseArrow = false;
+  double _currentProgress = 0;
+  late var _currentLifes = widget._numberOfLifes;
 
   @override
   Widget build(BuildContext context) {
     widget.showArrow = () {
       setState(() {
         _showNextExerciseArrow = true;
+      });
+    };
+
+    widget.onUpdateLifes = (lifes) {
+      setState(() {
+        _currentLifes = lifes;
+      });
+    };
+
+    widget.onUpdateProgress = (progress) {
+      setState(() {
+        _currentProgress = progress;
       });
     };
 
@@ -57,6 +72,8 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
         backgroundColor: Color.fromRGBO(234, 234, 234, 1),
         foregroundColor: Colors.transparent,
         toolbarHeight: widget._height,
+        leadingWidth: 0,
+        elevation: 0,
         title: Container(
           width: double.infinity,
           child: Column(
@@ -64,52 +81,10 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Container(
-                  width: size.width * 0.21,
-                  child: OutlinedButton(
-                      onPressed: () => widget._onExitPressed(),
-                      child: 
-                      Text("Desistir",
-                          style: 
-                          TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontFamily: "Nunito",
-                              fontWeight: FontWeight.w500
-                          )
-                      ),
-                      style: ButtonStyle(
-                          backgroundColor:MaterialStateProperty.all(Colors.white),
-                          shape:MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(18.0),
-                                      side: BorderSide(color: Colors.white))))),
-                ),
-                // Expanded(child: SizedBox()),
+                _buildExitButton(size),
                 _buildLifeWidget(widget._numberOfLifes),
-                // Expanded(child: SizedBox()),
-                // if (!_showNextExerciseArrow) Expanded(child: SizedBox()),
                 if (_showNextExerciseArrow)
-                  Container(
-                    width: size.width * 0.21,
-                    child: OutlinedButton(
-                        onPressed: () { 
-                          widget._onNextExercisePressed();
-                          _showNextExerciseArrow = false;
-                        },
-                        child: 
-                          Image(image: 
-                            AssetImage(
-                                Constants.imageAssets.nextExerciseArrow)),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(Colors.white),
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(18.0),
-                                      side: BorderSide(color: Colors.white))
-                                    )
-                                )
-                    ),
-                  ),
+                _buildNextExerciseButton(size)
               ]),
               SizedBox(height: widget._height / 4),
               Center(
@@ -118,7 +93,7 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
                   width: widget._screenSize.width * 0.8,
                   child: ProgressBar(
                       max: widget._maxProgress,
-                      current: widget._currentProgress),
+                      current: _currentProgress),
                 ),
               ),
             ],
@@ -126,14 +101,68 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
         ));
   }
 
+  Widget _buildExitButton(Size containerSize) {
+    return 
+    Container(
+      width: containerSize.width * 0.21,
+      child: OutlinedButton(
+          onPressed: () => widget._onExitPressed(),
+          child: 
+          Text("Desistir",
+              style: 
+              TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontFamily: "Nunito",
+                  fontWeight: FontWeight.w500
+              )
+          ),
+          style: 
+          ButtonStyle(
+              backgroundColor:MaterialStateProperty.all(Colors.white),
+              shape:MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.white))
+                  )
+          )
+      ),
+    );
+  }
+
+  Widget _buildNextExerciseButton(Size containerSize) {
+    return 
+    Container(
+        width: containerSize.width * 0.21,
+        child: OutlinedButton(
+            onPressed: () { 
+              widget._onNextExercisePressed();
+              _showNextExerciseArrow = false;
+            },
+            child: 
+              Image(image: 
+                AssetImage(
+                    Constants.imageAssets.nextExerciseArrow)),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.white))
+                        )
+                    )
+        ),
+      );
+  }
+
   Widget _buildLifeWidget(int numberOfLife) {
     List<Widget> lifes = [];
-    for (var i = 0; i < numberOfLife; i++) {
+    for (var i = 0; i < _currentLifes; i++) {
       lifes.add(
         Image(image: AssetImage(Constants.imageAssets.lifeIcon)),
       );
+      lifes.add(SizedBox(width: 5));
     }
-    final outlineHearts = 3 - numberOfLife;
+    final outlineHearts = 3 - _currentLifes;
     for (var i = 0; i < outlineHearts; i++) {
       lifes.add(
         Image(image: AssetImage(Constants.imageAssets.lifeIconEmpty)),

@@ -46,6 +46,7 @@ flutter:
     - assets/model.tflite
     - assets/labels.txt
     - assets/images/moduleCompleted.png
+    - assets/images/happyFace.png
     - assets/images/sadFace.png
     - lib/Network/Mock/
     - assets/images/nextExerciseArrow/

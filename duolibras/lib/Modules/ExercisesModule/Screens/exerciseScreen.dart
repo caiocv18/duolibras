@@ -11,8 +11,7 @@ abstract class ExerciseScreenDelegate {
   }
 }
 
-abstract class ExerciseStateless extends StatelessWidget
-    with ExerciseScreenDelegate {
+abstract class ExerciseStateless extends StatelessWidget with ExerciseScreenDelegate {
   void showFinishExerciseBottomSheet(bool isAnswerCorrect, String correctAnswer,
       BuildContext context, Function handler) {
     final button = ExerciseButton(
@@ -123,8 +122,7 @@ abstract class ExerciseStateless extends StatelessWidget
   }
 }
 
-abstract class ExerciseStateful extends StatefulWidget
-    with ExerciseScreenDelegate {
+abstract class ExerciseStateful extends StatefulWidget with ExerciseScreenDelegate {
   void showFinishExerciseBottomSheet(bool isAnswerCorrect, String correctAnswer,
       BuildContext context, Function handler) {
     final button = ExerciseButton(

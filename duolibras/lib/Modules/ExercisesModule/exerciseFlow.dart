@@ -76,19 +76,16 @@ class ExerciseFlow extends StatefulWidget {
   }
 }
 
-class _ExerciseFlowState extends State<ExerciseFlow>
-    implements ExerciseFlowDelegate {
+class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDelegate {
   final _navigatorKey = GlobalKey<NavigatorState>();
-  // late ExerciseViewModel _viewModel =
-  //     ExerciseViewModel(widget.exercises, widget.moduleID, _didFinishExercise);
   late PreferredSizeWidget? _appBar;
   var _exerciseProgress = 0.0;
   var isToShowAppBar = true;
   late ExerciseScreenDelegate? _currentPage;
+
   @override
   String get sectionID => widget.sectionID;
-
-  int lifes = 3;
+  
   @override
   void initState() {
     super.initState();
@@ -152,12 +149,12 @@ class _ExerciseFlowState extends State<ExerciseFlow>
   PreferredSizeWidget? _buildFlowAppBar(BuildContext ctx) {
     return isToShowAppBar
         ? ExerciseAppBarWidget(
-            _onNextExercisePressed,
-            _onExitPressed,
             widget.exercises.length.toDouble(),
-            _exerciseProgress,
             MediaQuery.of(ctx).size,
-            lifes)
+            3,
+            _onNextExercisePressed,
+            _onExitPressed
+        )
         : null;
   }
 
@@ -199,6 +196,14 @@ class _ExerciseFlowState extends State<ExerciseFlow>
     _currentPage?.goNextExercise();
   }
 
+  @override
+  void updateNumberOfLifes(int lifes) {
+    final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
+    if (exerciseAppBar != null) {
+      if (exerciseAppBar.onUpdateLifes != null) exerciseAppBar.onUpdateLifes!(lifes);
+    }
+  }
+
   void _exitSetup(bool? completed) {
     Navigator.of(context).pop(completed);
   }
@@ -215,10 +220,11 @@ class _ExerciseFlowState extends State<ExerciseFlow>
       return;
     }
 
-    setState(() {
-      _exerciseProgress =
-          _exerciseProgress + 1; // _viewModel.exerciseProgressValue;
-    });
+    final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
+    if (exerciseAppBar != null) {
+      _exerciseProgress += 1;
+      if (exerciseAppBar.onUpdateProgress != null) exerciseAppBar.onUpdateProgress!(_exerciseProgress);
+    }
 
     widget._exercise = exercise;
 
@@ -287,31 +293,6 @@ class _ExerciseFlowState extends State<ExerciseFlow>
     });
     _navigatorKey.currentState!.pushNamed(route);
   }
-
-  @override
-  void updateNumberOfLifes(int lifes) {
-    setState(() {
-      this.lifes = lifes;
-    });
-  }
 }
 
-class MyLinearProgressIndicator extends LinearProgressIndicator
-    implements PreferredSizeWidget {
-  final double _kMyLinearProgressIndicatorHeight = 20.0;
 
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize =>
-      Size(double.infinity, _kMyLinearProgressIndicatorHeight);
-
-  MyLinearProgressIndicator({
-    required double value,
-    required Color backgroundColor,
-    required Animation<Color> valueColor,
-  }) : super(
-          value: value,
-          backgroundColor: backgroundColor,
-          valueColor: valueColor,
-        );
-}

@@ -40,9 +40,27 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
     super.initState();
 
     widget.handleNextExercise = () {
-      handleSubmitAnswer(answerPicked, widget._exercise.correctAnswer,
-          widget._exercise.id, this.context);
+      handleSubmitAnswer(
+        answerPicked, 
+        widget._exercise.correctAnswer,
+        widget._exercise.id, 
+        this.context
+      );
     };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
+    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
+    final containerHeight = mediaQuery.size.height -
+        (appBarHeight + paddingTop + mediaQuery.padding.bottom);
+    final containerSize = Size(mediaQuery.size.width, containerHeight);
+
+    return Scaffold(
+        body: _buildBody(
+            widget._exercise, widget._viewModel, containerSize, context));
   }
 
   Widget _buildPopupDialog(BuildContext context, String title) {
@@ -127,27 +145,11 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
     );
   }
 
-  void handleSubmitAnswer(String answer, String correctAnswer,
-      String exerciseID, BuildContext ctx) {
-    final isCorrect = widget._viewModel.isAnswerCorrect(answer, exerciseID);
+  void handleSubmitAnswer(String answer, String correctAnswer,String exerciseID, BuildContext ctx) {
     if (widget._exercise.category == ExercisesCategory.multipleChoicesText) {
       widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
     } else {
       widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
-    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    final containerHeight = mediaQuery.size.height -
-        (appBarHeight + paddingTop + mediaQuery.padding.bottom);
-    final containerSize = Size(mediaQuery.size.width, containerHeight);
-
-    return Scaffold(
-        body: _buildBody(
-            widget._exercise, widget._viewModel, containerSize, context));
   }
 }

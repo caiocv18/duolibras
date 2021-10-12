@@ -16,7 +16,7 @@ import 'package:tuple/tuple.dart';
 import '../Screens/exerciseWritingScreen.dart';
 import '../exerciseFlow.dart';
 
-class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
+class ExerciseViewModel extends BaseViewModel {
   final Tuple2<List<Exercise>, Module> exercisesAndModule;
 
   // final void Function(Exercise? exercise) _didFinishExercise;
@@ -38,41 +38,11 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
 
   var lifes = 3;
 
-  @override
-  void didSubmitTextAnswer(
-      String answer, String exerciseID, BuildContext context) {
-    if (answer.isEmpty) {
-      return;
-    }
-    final exercise = exercises.where((exe) => exe.id == exerciseID).first;
-
-    final isAnswerCorrect = exercise.correctAnswer == answer;
-
-    totalPoints += isAnswerCorrect ? exercise.score : 0.0;
-
-    _handleMoveToNextExercise(exerciseID, context);
-  }
-
-  bool _handleFinishModule(bool isAnswerCorrect) {
-    wrongAnswers += isAnswerCorrect ? 0 : 1;
-
-    lifes -= wrongAnswers;
-    exerciseFlowDelegate.updateNumberOfLifes(lifes);
-
-    if (lifes == 0) {
-      exerciseFlowDelegate.didFinishExercise(null, FeedbackStatus.Failed);
-      return true;
-    }
-    return false;
-  }
-
   bool isAnswerCorrect(String answer, String exerciseID) {
     if (answer.isEmpty) {
-      _handleFinishModule(false);
       return false;
     }
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
-    _handleFinishModule(exercise.correctAnswer == answer);
     return exercise.correctAnswer == answer;
   }
 
@@ -80,22 +50,23 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
     return exercise.correctAnswer == label && confidence > 0.9;
   }
 
-  bool isSpellingCorrect(
-      String newLetter, double confidence, Exercise exercise) {
+  bool isSpellingCorrect(String newLetter, double confidence, Exercise exercise) {
     final splittedAnswer = exercise.correctAnswer.split("");
 
-    if (splittedAnswer[spelledLetters.length] == newLetter &&
-        confidence > 0.9) {
+    if (splittedAnswer[spelledLetters.length] == newLetter && confidence > 0.9) {
       spelledLetters.add(newLetter);
       return true;
     }
     return false;
   }
 
-  void didSubmitGesture(String label, double confidence, Exercise exercise,
-      BuildContext context) {
-    if (exercise.correctAnswer == label && confidence > 0.8) {
-      didSubmitTextAnswer(label, exercise.id, context);
+  void didSubmitTextAnswer(String answer, String exerciseID, BuildContext context) {
+    final exercise = exercises.where((exe) => exe.id == exerciseID).first;
+    final isAnswerCorrect = exercise.correctAnswer == answer;
+    totalPoints += isAnswerCorrect ? exercise.score : 0.0;
+
+    if (!_handleFinishModule(isAnswerCorrect)){
+       _handleMoveToNextExercise(exerciseID, context);
     }
   }
 
@@ -126,8 +97,7 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
     await Service.instance.postModuleProgress(moduleProgress);
   }
 
-  Future<void> _handleMoveToNextExercise(
-      String exerciseID, BuildContext context) async {
+  Future<void> _handleMoveToNextExercise(String exerciseID, BuildContext context) async {
     final index = exercises.indexWhere((m) => m.id == exerciseID);
 
     if (index + 1 == exercises.length) {
@@ -140,6 +110,20 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
     final exercise = exercises[index + 1];
     exerciseProgressValue = index + 1;
     exerciseFlowDelegate.didFinishExercise(exercise, null);
+  }
+
+  bool _handleFinishModule(bool isAnswerCorrect) {
+    if (isAnswerCorrect) return false;
+
+    wrongAnswers += isAnswerCorrect ? 0 : 1;
+    lifes -= wrongAnswers;
+    exerciseFlowDelegate.updateNumberOfLifes(lifes);
+
+    if (lifes == 0) {
+      exerciseFlowDelegate.didFinishExercise(null, FeedbackStatus.Failed);
+      return true;
+    }
+    return false;
   }
 
   void showNextArrow() {
