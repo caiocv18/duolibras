@@ -4,6 +4,7 @@ enum ExercisesCategory {
   ml,
   mlSpelling,
   writing,
+  content,
   none
 }
 

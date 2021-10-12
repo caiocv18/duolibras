@@ -12,9 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
+import 'exerciseScreen.dart';
+
 enum FeedbackStatus { Failed, Success }
 
-class FeedbackExerciseScreen extends StatefulWidget {
+class FeedbackExerciseScreen extends ExerciseStateful {
   final Tuple2<List<Exercise>, Module> exercisesAndModule;
   final ExerciseFlowDelegate delegate;
 

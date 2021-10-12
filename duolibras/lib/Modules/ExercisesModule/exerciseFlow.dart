@@ -4,6 +4,7 @@ import 'package:duolibras/Commons/Components/progressBar.dart';
 import 'package:duolibras/Commons/Utils/Utils.dart';
 import 'package:duolibras/MachineLearning/TFLite/tflite_helper.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
+import 'package:duolibras/Modules/ExercisesModule/Screens/contentScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMLScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/feedbackExerciseScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
@@ -39,21 +40,17 @@ class ExerciseFlow extends StatefulWidget {
   static const routeExerciseML = 'ml';
   static const routeExerciseMLSpelling = 'mlSpelling';
   static const routeFeedbackModulePage = 'feedback_page';
+  static const routeContentModulePage = 'content';
 
   List<Exercise> exercises;
-
   final Module module;
   final String sectionID;
-  ExerciseFlow(
-      {Key? key,
-      required this.setupPageRoute,
-      required this.exercises,
-      required this.module,
-      required this.sectionID})
-      : super(key: key);
+  late Exercise _currentExercise;
 
-  final String setupPageRoute;
-  Exercise? _exercise;
+  ExerciseFlow (this.exercises,this.module, this.sectionID) {
+    _currentExercise = exercises.first;
+  }
+
 
   @override
   _ExerciseFlowState createState() => _ExerciseFlowState();
@@ -70,6 +67,8 @@ class ExerciseFlow extends StatefulWidget {
         return ExerciseFlow.routeExerciseML;
       case ExercisesCategory.mlSpelling:
         return ExerciseFlow.routeExerciseMLSpelling;
+      case ExercisesCategory.content:
+        return ExerciseFlow.routeContentModulePage;
       default:
         return "";
     }
@@ -82,6 +81,7 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
   var _exerciseProgress = 0.0;
   var isToShowAppBar = true;
   late ExerciseScreenDelegate? _currentPage;
+  late var viewModel = locator<ExerciseViewModel>(param1: Tuple2(widget.exercises, widget.module), param2: this);
 
   @override
   String get sectionID => widget.sectionID;
@@ -89,12 +89,11 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
   @override
   void initState() {
     super.initState();
-    widget._exercise = widget.exercises.first;
   }
 
   @override
   Widget build(BuildContext context) {
-    _appBar = _buildFlowAppBar(this.context);
+    _appBar = _buildFlowAppBar(this.context, widget._currentExercise.category == ExercisesCategory.content ? TabType.ContentBar : TabType.ExerciseBar);
 
     return WillPopScope(
       onWillPop: _isExitDesired,
@@ -102,30 +101,28 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
         appBar: _appBar,
         body: Navigator(
           key: _navigatorKey,
-          initialRoute: widget.setupPageRoute,
+          initialRoute: ExerciseFlow.getRouteNameBy(widget._currentExercise.category),
           onGenerateRoute: _onGenerateRoute,
         ),
       ),
     );
   }
 
-  Route _onGenerateRoute(RouteSettings settings) {
-    final viewModel = locator<ExerciseViewModel>(
-        param1: Tuple2(widget.exercises, widget.module), param2: this);
 
+  Route _onGenerateRoute(RouteSettings settings) {
     late Widget page;
     switch (settings.name) {
       case ExerciseFlow.routeExerciseMultiChoicePage:
-        page = ExerciseMultiChoiceScreen(widget._exercise!, viewModel);
+        page = ExerciseMultiChoiceScreen(widget._currentExercise, viewModel);
         break;
       case ExerciseFlow.routeExerciseWritingPage:
-        page = ExerciseWritingScreen(widget._exercise!, viewModel);
+        page = ExerciseWritingScreen(widget._currentExercise, viewModel);
         break;
       case ExerciseFlow.routeExerciseML:
-        page = ExerciseMLScreen(widget._exercise!, viewModel, false);
+        page = ExerciseMLScreen(widget._currentExercise, viewModel, false);
         break;
       case ExerciseFlow.routeExerciseMLSpelling:
-        page = ExerciseMLScreen(widget._exercise!, viewModel, true);
+        page = ExerciseMLScreen(widget._currentExercise, viewModel, true);
         break;
       case ExerciseFlow.routeFeedbackModulePage:
         final arg = settings.arguments as Map<String, Object>;
@@ -133,6 +130,13 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
         page = FeedbackExerciseScreen(
             Tuple2(widget.exercises, widget.module), this);
         (page as FeedbackExerciseScreen).status = feedBackStatus;
+        break;
+      case ExerciseFlow.routeContentModulePage:
+        page = ContentScreen(viewModel, _getContentsFromExercisesList());
+        final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
+        if (exerciseAppBar != null) {
+          if (exerciseAppBar.showContentTabBar != null) exerciseAppBar.showContentTabBar!(TabType.ContentBar);
+        }
         break;
     }
 
@@ -146,14 +150,16 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
     );
   }
 
-  PreferredSizeWidget? _buildFlowAppBar(BuildContext ctx) {
+  PreferredSizeWidget? _buildFlowAppBar(BuildContext ctx, TabType tabType) {
     return isToShowAppBar
         ? ExerciseAppBarWidget(
             widget.exercises.length.toDouble(),
             MediaQuery.of(ctx).size,
             3,
+            tabType,
             _onNextExercisePressed,
-            _onExitPressed
+            _onExitPressed,
+            _onSkipPressed
         )
         : null;
   }
@@ -196,6 +202,49 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
     _currentPage?.goNextExercise();
   }
 
+  Future<void> _onSkipPressed() async {
+    _currentPage?.goNextExercise();
+
+    final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
+    if (exerciseAppBar != null) {
+      if (exerciseAppBar.showContentTabBar != null) exerciseAppBar.showContentTabBar!(TabType.ExerciseBar);
+    }
+    // final index = widget.exercises.indexOf(widget._currentExercise);
+    // if (widget.exercises.length > index + 1){
+    //   final nextExercise = widget.exercises[index + 1];
+    //   widget._currentExercise = nextExercise;
+    // } else {
+    //   didFinishExercise(null, FeedbackStatus.Success);
+    //   return;
+    // }
+
+    // final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
+    // if (exerciseAppBar != null) {
+    //   if (exerciseAppBar.showContentTabBar != null) exerciseAppBar.showContentTabBar!(TabType.ExerciseBar);
+    // }
+    // didFinishExercise(widget._currentExercise, null);
+  }
+
+  void _sortExercisesList() {
+    widget.exercises.sort((a,b){
+      return a.order.compareTo(b.order);
+    });
+  }
+
+  List<Exercise> _getContentsFromExercisesList() {
+    var contents = [widget._currentExercise];
+    final currentIndex = widget.exercises.indexOf(widget._currentExercise);
+    if (widget.exercises.length > currentIndex + 1){
+      final nextExercise = widget.exercises[currentIndex + 1];
+      if (nextExercise.category == ExercisesCategory.content){
+        contents.add(nextExercise);
+      }
+    }
+
+    widget._currentExercise = contents.last;
+    return contents;
+  }
+
   @override
   void updateNumberOfLifes(int lifes) {
     final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
@@ -226,11 +275,11 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
       if (exerciseAppBar.onUpdateProgress != null) exerciseAppBar.onUpdateProgress!(_exerciseProgress);
     }
 
-    widget._exercise = exercise;
+    widget._currentExercise = exercise;
 
     String routeName;
 
-    switch (widget._exercise!.category) {
+    switch (widget._currentExercise.category) {
       case ExercisesCategory.multipleChoicesImage:
         routeName = ExerciseFlow.routeExerciseMultiChoicePage;
         break;
@@ -245,6 +294,9 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
         break;
       case ExercisesCategory.mlSpelling:
         routeName = ExerciseFlow.routeExerciseMLSpelling;
+        break;
+      case ExercisesCategory.content:
+        routeName = ExerciseFlow.routeContentModulePage;
         break;
       default:
         didFinishExercise(null, null);
@@ -271,10 +323,10 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
   @override
   void startNewExercisesLevel(List<Exercise> exercises) {
     widget.exercises = exercises;
-    final firstExercise = exercises.first;
-    widget._exercise = firstExercise;
+    _sortExercisesList();
+    widget._currentExercise = exercises.first;
 
-    final route = ExerciseFlow.getRouteNameBy(firstExercise.category);
+    final route = ExerciseFlow.getRouteNameBy(widget._currentExercise.category);
     setState(() {
       _exerciseProgress = 0;
       isToShowAppBar = true;
@@ -284,9 +336,9 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
 
   @override
   void restartLevel() {
-    final firstExercise = widget.exercises.first;
-    widget._exercise = firstExercise;
-    final route = ExerciseFlow.getRouteNameBy(firstExercise.category);
+    widget._currentExercise = widget.exercises.first;
+
+    final route = ExerciseFlow.getRouteNameBy(widget._currentExercise.category);
     setState(() {
       _exerciseProgress = 0;
       isToShowAppBar = true;

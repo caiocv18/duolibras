@@ -37,14 +37,12 @@ class MainRouter {
       final module = arg["module"] as Module;
       final sectionID = arg["sectionID"] as String;
 
-      final subRoute = ExerciseFlow.getRouteNameBy(exercises.first.category);
+      exercises.sort((a,b){
+        return a.order.compareTo(b.order);
+      });
 
-      page = ExerciseFlow(
-        exercises: exercises,
-        module: module,
-        setupPageRoute: subRoute,
-        sectionID: sectionID,
-      );
+      page = ExerciseFlow(exercises,module,sectionID);
+      
     } else {
       throw Exception('Unknown route: ${settings.name}');
     }

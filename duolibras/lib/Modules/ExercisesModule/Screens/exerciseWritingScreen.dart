@@ -83,7 +83,7 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
             children: [
               Container(
                   height: containerSize.height * 0.10,
-                  child: QuestionWidget(exercise.question)),
+                  child: QuestionWidget(exercise.question ?? "")),
               SizedBox(
                 height: containerSize.height * 0.05,
               ),

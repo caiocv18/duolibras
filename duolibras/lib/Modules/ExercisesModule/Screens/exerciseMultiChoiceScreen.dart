@@ -87,7 +87,7 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
 
   Widget _createMultiChoiceWidget(Exercise exercise, BuildContext ctx) {
     return exercise.category == ExercisesCategory.multipleChoicesText
-        ? MultiChoicesWidget(exercise.answers, exercise.correctAnswer,
+        ? MultiChoicesWidget(exercise.answers ?? [], exercise.correctAnswer,
             (answer) {
             if (_state == ExerciseScreenState.DidAnswer) return;
             widget._viewModel.isAnswerCorrect(answer, widget._exercise.id);
@@ -97,7 +97,7 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
               widget._viewModel.showNextArrow();
             });
           })
-        : ImagesMultiChoice(exercise.answers, exercise.correctAnswer, (answer) {
+        : ImagesMultiChoice(exercise.answers ?? [], exercise.correctAnswer, (answer) {
             if (_state == ExerciseScreenState.DidAnswer) return;
             widget._viewModel.isAnswerCorrect(answer, widget._exercise.id);
             setState(() {
@@ -123,7 +123,7 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
             Container(
                 height: containerSize.height * 0.08,
                 width: containerSize.width * 0.95,
-                child: QuestionWidget(exercise.question)),
+                child: QuestionWidget(exercise.question ?? "")),
             SizedBox(height: containerSize.height * 0.05),
             Container(
                 height: containerSize.height * 0.35,

@@ -34,15 +34,17 @@ class ExerciseViewModel extends BaseViewModel {
 
   var exerciseProgressValue = 0.0;
   var totalPoints = 0.0;
-  var wrongAnswers = 0;
 
   var lifes = 3;
 
   bool isAnswerCorrect(String answer, String exerciseID) {
     if (answer.isEmpty) {
+      _handleFinishModule(false);
       return false;
     }
+
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
+     _handleFinishModule(exercise.correctAnswer == answer);
     return exercise.correctAnswer == answer;
   }
 
@@ -63,11 +65,9 @@ class ExerciseViewModel extends BaseViewModel {
   void didSubmitTextAnswer(String answer, String exerciseID, BuildContext context) {
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
     final isAnswerCorrect = exercise.correctAnswer == answer;
-    totalPoints += isAnswerCorrect ? exercise.score : 0.0;
+    totalPoints += isAnswerCorrect ? (exercise.score ?? 0) : 0.0;
 
-    if (!_handleFinishModule(isAnswerCorrect)){
-       _handleMoveToNextExercise(exerciseID, context);
-    }
+    _handleMoveToNextExercise(exerciseID, context);
   }
 
   Future<void> _saveProgress(BuildContext context) async {
@@ -115,8 +115,7 @@ class ExerciseViewModel extends BaseViewModel {
   bool _handleFinishModule(bool isAnswerCorrect) {
     if (isAnswerCorrect) return false;
 
-    wrongAnswers += isAnswerCorrect ? 0 : 1;
-    lifes -= wrongAnswers;
+    lifes -= 1;
     exerciseFlowDelegate.updateNumberOfLifes(lifes);
 
     if (lifes == 0) {

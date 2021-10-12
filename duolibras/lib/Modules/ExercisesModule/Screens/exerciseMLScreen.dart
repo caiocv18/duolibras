@@ -207,7 +207,10 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
           )
         ),
         TimeBar(Size(containerSize.width * 0.93, containerSize.height * 0.04), totalTime, [Color.fromRGBO(73, 130, 246, 1), Color.fromRGBO(44, 196, 252, 1)], 
-        () => _finishExercise(false))
+        () {
+          widget._viewModel.isAnswerCorrect("", widget._exercise.id);
+          _finishExercise(false); 
+        })
       ]
     );
   }
@@ -220,7 +223,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
         height: 33,
         child:  Center(
           child: Text(
-            question,
+            question ?? "",
             style: TextStyle(fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w700),
           ),
         )
