@@ -7,6 +7,7 @@ import 'package:duolibras/Network/Models/Exercise.dart';
 import 'package:duolibras/Network/Models/Module.dart';
 import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
+import 'package:duolibras/Network/Models/sectionProgress.dart';
 import 'package:duolibras/Network/Service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -98,29 +99,35 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
 
   Future<void> _saveProgress(BuildContext context) async {
     final userProvider = Provider.of<UserModel>(context, listen: false);
-    final index = userProvider.user.modulesProgress
-        .indexWhere((prog) => prog.moduleId == exercisesAndModule.item2.id);
 
-    ModuleProgress moduleProgress;
+    var moduleProgressIndex = -1;
+    var sectionsProgressIndex = -1;
 
-    if (index != -1) {
-      if (userProvider.user.modulesProgress[index].progress >=
-          exercisesAndModule.item2.maxProgress) return;
+    try {
+      sectionsProgressIndex = userProvider.user.sectionsProgress
+          .indexWhere((s) => s.sectionId == exerciseFlowDelegate.sectionID);
+    } on StateError catch (_) {
+      sectionsProgressIndex = -1;
+    }
+    late SectionProgress sectionProgress;
 
-      final progress = userProvider.user.modulesProgress[index].progress + 1;
-      final id = userProvider.user.modulesProgress[index].id;
-
-      moduleProgress = ModuleProgress(
-          id: id, moduleId: exercisesAndModule.item2.id, progress: progress);
-      userProvider.setModulesProgress(moduleProgress);
+    if (sectionsProgressIndex != -1) {
+      userProvider.incrementModulesProgress(exerciseFlowDelegate.sectionID,
+          exercisesAndModule.item2.id, exercisesAndModule.item2.maxProgress);
     } else {
-      moduleProgress = ModuleProgress(
+      sectionProgress = SectionProgress(
+          id: UniqueKey().toString(),
+          sectionId: exerciseFlowDelegate.sectionID,
+          progress: 1,
+          modulesProgress: []);
+      sectionProgress.modulesProgress.add(ModuleProgress(
           id: UniqueKey().toString(),
           moduleId: exercisesAndModule.item2.id,
-          progress: 1);
-      userProvider.setModulesProgress(moduleProgress);
+          progress: 1,
+          maxModuleProgress: exercisesAndModule.item2.maxProgress));
+      userProvider.addSectionProgress(sectionProgress);
     }
-    await Service.instance.postModuleProgress(moduleProgress);
+    await Service.instance.postSectionProgress(sectionProgress);
   }
 
   Future<void> _handleMoveToNextExercise(
@@ -187,7 +194,9 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
     final user = Provider.of<UserModel>(ctx, listen: false).user;
 
     try {
-      final module = user.modulesProgress
+      final module = user.sectionsProgress
+          .firstWhere((s) => s.sectionId == exerciseFlowDelegate.sectionID)
+          .modulesProgress
           .firstWhere((element) => element.moduleId == moduleID);
       return module.progress;
     } on StateError catch (_) {

@@ -82,7 +82,9 @@ class AutheticationViewModel extends BaseViewModel
             imageUrl: null);
 
         SharedFeatures.instance.isLoggedIn = false;
-        userModel.modulesProgress = await Service.instance.getModulesProgress().onError((error, stackTrace) {
+        userModel.sectionsProgress = await Service.instance
+            .getSectionsProgress()
+            .onError((error, stackTrace) {
           return [];
         });
       } else {
@@ -90,7 +92,9 @@ class AutheticationViewModel extends BaseViewModel
       }
 
       var userUpdated = await Service.instance.postUser(userModel, isNewUser);
-      userUpdated.modulesProgress = await Service.instance.getModulesProgress().onError((error, stackTrace) {
+      userUpdated.sectionsProgress = await Service.instance
+          .getSectionsProgress()
+          .onError((error, stackTrace) {
         return [];
       });
 

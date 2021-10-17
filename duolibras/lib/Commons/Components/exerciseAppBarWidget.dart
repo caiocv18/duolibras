@@ -82,10 +82,7 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
                                       borderRadius: BorderRadius.circular(18.0),
                                       side: BorderSide(color: Colors.white))))),
                 ),
-                // Expanded(child: SizedBox()),
                 _buildLifeWidget(widget._numberOfLifes),
-                // Expanded(child: SizedBox()),
-                // if (!_showNextExerciseArrow) Expanded(child: SizedBox()),
                 if (_showNextExerciseArrow)
                   Container(
                     width: 80,

@@ -10,6 +10,7 @@ import 'package:duolibras/Network/Models/Trail.dart';
 import 'package:duolibras/Network/Models/Section.dart';
 import 'package:duolibras/Network/Models/Module.dart';
 import 'package:duolibras/Network/Models/User.dart' as myUser;
+import 'package:duolibras/Network/Models/sectionProgress.dart';
 import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -35,13 +36,13 @@ class FirebaseService extends ServicesProtocol {
   }
 
   DocumentReference<Map<String, dynamic>> _getTrailFromFirebase() {
-    final trailId = SharedFeatures.instance.enviroment == AppEnvironment.DEV ?
-    "dimVnUtg6Solp3aJkk45" : "xv8HNGRlLC3E2ioIRr1Z";
+    final trailId = SharedFeatures.instance.enviroment == AppEnvironment.DEV
+        ? "dimVnUtg6Solp3aJkk45"
+        : "xv8HNGRlLC3E2ioIRr1Z";
 
     return firestoreInstance
         .collection(Constants.firebaseService.trailsCollection)
         .doc(trailId);
-
   }
 
   Future<List<Section>> _getSectionsFromFirebase() async {
@@ -97,15 +98,15 @@ class FirebaseService extends ServicesProtocol {
     return completer.future;
   }
 
-  Future<List<ModuleProgress>> _getModuleProgressFromFirebase() {
-    var completer = Completer<List<ModuleProgress>>();
+  Future<List<SectionProgress>> _getSectionsProgressFromFirebase() {
+    var completer = Completer<List<SectionProgress>>();
 
     _getUserFromFirebase()
-        .collection(Constants.firebaseService.moduleProgressCollection)
+        .collection(Constants.firebaseService.sectionProgressCollection)
         .get()
         .then((response) => {
               completer.complete(response.docs
-                  .map((e) => ModuleProgress.fromMap(e.data(), e.id))
+                  .map((e) => SectionProgress.fromMap(e.data(), e.id))
                   .toList())
             });
 
@@ -144,15 +145,15 @@ class FirebaseService extends ServicesProtocol {
   //   return completer.future;
   // }
 
-  Future<bool> _postModuleProgressInFirebase(
-      ModuleProgress moduleProgress) async {
+  Future<bool> _postSectionProgressInFirebase(
+      SectionProgress sectionProgress) async {
     var completer = Completer<bool>();
     final userDocument = _getUserFromFirebase();
 
     userDocument
-        .collection(Constants.firebaseService.moduleProgressCollection)
-        .doc(moduleProgress.id)
-        .set(moduleProgress.toMap(), SetOptions(merge: true))
+        .collection(Constants.firebaseService.sectionProgressCollection)
+        .doc(sectionProgress.id)
+        .set(sectionProgress.toMap(), SetOptions(merge: true))
         .then((_) => {completer.complete(true)});
 
     return completer.future;
@@ -168,17 +169,17 @@ class FirebaseService extends ServicesProtocol {
         .set(user.toMap(), SetOptions(merge: true))
         .then((_) => {
               this.getUser().then((newUser) {
-                if (isNewUser && !user.modulesProgress.isEmpty) {
-                  user.modulesProgress.forEach((moduleProgress) async {
-                    await postModuleProgress(moduleProgress).then((value) {
-                      if (user.modulesProgress.last == moduleProgress) {
-                        newUser.modulesProgress = user.modulesProgress;
+                if (isNewUser && !user.sectionsProgress.isEmpty) {
+                  user.sectionsProgress.forEach((moduleProgress) async {
+                    await postSectionProgress(moduleProgress).then((value) {
+                      if (user.sectionsProgress.last == moduleProgress) {
+                        newUser.sectionsProgress = user.sectionsProgress;
                         completer.complete(newUser);
                       }
                     });
                   });
                 } else {
-                  newUser.modulesProgress = user.modulesProgress;
+                  newUser.sectionsProgress = user.sectionsProgress;
                   completer.complete(newUser);
                 }
               })
@@ -242,13 +243,13 @@ class FirebaseService extends ServicesProtocol {
   }
 
   @override
-  Future<List<ModuleProgress>> getModulesProgress() async {
-    return _getModuleProgressFromFirebase();
+  Future<List<SectionProgress>> getSectionsProgress() async {
+    return _getSectionsProgressFromFirebase();
   }
 
   @override
-  Future<bool> postModuleProgress(ModuleProgress moduleProgress) async {
-    return _postModuleProgressInFirebase(moduleProgress);
+  Future<bool> postSectionProgress(SectionProgress sectionProgress) async {
+    return _postSectionProgressInFirebase(sectionProgress);
   }
 
   @override

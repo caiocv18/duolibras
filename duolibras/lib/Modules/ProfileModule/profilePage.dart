@@ -94,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
         currentProgress: userModel.currentProgress,
         imageUrl: userModel.imageUrl);
 
-    user.modulesProgress = userModel.modulesProgress;
+    user.sectionsProgress = userModel.sectionsProgress;
 
     _viewModel.updateUser(user);
 

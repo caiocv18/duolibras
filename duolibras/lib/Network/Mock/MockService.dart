@@ -8,6 +8,7 @@ import 'package:duolibras/Network/Models/Section.dart';
 import 'package:duolibras/Network/Models/Module.dart';
 import 'package:duolibras/Network/Models/User.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Network/Models/sectionProgress.dart';
 import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
 import 'package:flutter/material.dart';
 
@@ -92,24 +93,16 @@ class MockService extends ServicesProtocol {
   }
 
   @override
-  Future<List<ModuleProgress>> getModulesProgress() async {
-    var completer = Completer<List<ModuleProgress>>();
+  Future<List<SectionProgress>> getSectionsProgress() async {
+    var completer = Completer<List<SectionProgress>>();
 
     // Nao apague -> caso precise utilizar novamente
     String jsonString = await Utils.loadJSON("ModuleProgress");
     List<dynamic> parsedListJson = json.decode(jsonString);
-    List<ModuleProgress> modulesList = List<ModuleProgress>.from(
-        parsedListJson.map((i) => ModuleProgress.fromMap(i, "")));
+    List<SectionProgress> modulesList = List<SectionProgress>.from(
+        parsedListJson.map((i) => SectionProgress.fromMap(i, "")));
 
     completer.complete(modulesList);
-    return completer.future;
-  }
-
-  @override
-  Future<bool> postModuleProgress(ModuleProgress moduleProgress) {
-    var completer = Completer<bool>();
-    completer.complete(true);
-
     return completer.future;
   }
 
@@ -142,6 +135,14 @@ class MockService extends ServicesProtocol {
         List<Exercise>.from(parsedListJson.map((i) => Exercise.fromMap(i, "")));
     exercisesList.shuffle();
     completer.complete(exercisesList);
+    return completer.future;
+  }
+
+  @override
+  Future<bool> postSectionProgress(SectionProgress sectionProgress) {
+    var completer = Completer<bool>();
+    completer.complete(true);
+
     return completer.future;
   }
 }

@@ -2,6 +2,7 @@ import 'package:duolibras/Database/DatabaseProtocol.dart';
 import 'package:duolibras/Database/SQLite/SQLiteDatabase.dart';
 import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'package:duolibras/Network/Models/User.dart';
+import 'package:duolibras/Network/Models/sectionProgress.dart';
 
 class Database extends DatabaseProtocol {
   late DatabaseProtocol _database;
@@ -27,13 +28,13 @@ class Database extends DatabaseProtocol {
   }
 
   @override
-  Future<List<ModuleProgress>> getModulesProgress() {
+  Future<List<SectionProgress>> getModulesProgress() {
     return _database.getModulesProgress();
   }
 
   @override
-  Future<void> saveModuleProgress(ModuleProgress moduleProgress) {
-    return _database.saveModuleProgress(moduleProgress);
+  Future<void> saveSectionProgress(SectionProgress sectionProgress) {
+    return _database.saveSectionProgress(sectionProgress);
   }
 
   @override

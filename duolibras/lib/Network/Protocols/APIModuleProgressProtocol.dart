@@ -1,6 +1,6 @@
-import 'package:duolibras/Network/Models/ModuleProgress.dart';
+import 'package:duolibras/Network/Models/sectionProgress.dart';
 
-abstract class APIModuleProgressProtocol {
-  Future<List<ModuleProgress>> getModulesProgress();
-  Future<bool> postModuleProgress(ModuleProgress moduleProgress);
+abstract class APISectionProgressProtocol {
+  Future<List<SectionProgress>> getSectionsProgress();
+  Future<bool> postSectionProgress(SectionProgress sectionProgress);
 }

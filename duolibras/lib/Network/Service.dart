@@ -4,11 +4,11 @@ import 'package:duolibras/Database/SQLite/SQLiteDatabase.dart';
 import 'package:duolibras/Network/Firebase/FirebaseService.dart';
 import 'package:duolibras/Network/Mock/MockService.dart';
 import 'package:duolibras/Network/Models/Module.dart';
-import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'package:duolibras/Network/Models/Section.dart';
 import 'package:duolibras/Network/Models/Trail.dart';
 import 'package:duolibras/Network/Models/User.dart';
 import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Network/Models/sectionProgress.dart';
 import 'package:duolibras/Network/Protocols/ServicesProtocol.dart';
 import 'package:flutter/material.dart';
 import 'package:username_gen/username_gen.dart';
@@ -59,8 +59,8 @@ class Service {
         return _database.saveUser(newUser).then((_) => newUser);
       });
     }).then((user) async {
-      user.modulesProgress = await Service.instance
-          .getModulesProgress()
+      user.sectionsProgress = await Service.instance
+          .getSectionsProgress()
           .onError((error, stackTrace) {
         return [];
       });
@@ -73,22 +73,21 @@ class Service {
     return _service.postUser(user, isNewUser);
   }
 
-  Future<List<ModuleProgress>> getModulesProgress() {
+  Future<List<SectionProgress>> getSectionsProgress() {
     if (SharedFeatures.instance.isLoggedIn) {
-      return _service.getModulesProgress();
+      return _service.getSectionsProgress();
     } else {
       return _database.getModulesProgress();
     }
   }
 
-  Future<bool> postModuleProgress(ModuleProgress moduleProgress) async {
+  Future<bool> postSectionProgress(SectionProgress sectionProgress) async {
     if (SharedFeatures.instance.isLoggedIn) {
-      return _service.postModuleProgress(moduleProgress);
+      return _service.postSectionProgress(sectionProgress);
     } else {
-      return _database.saveModuleProgress(moduleProgress).then((_) => true);
+      return _database.saveSectionProgress(sectionProgress).then((_) => true);
     }
   }
-
 
   Future<List<User>> getUsersRanking() {
     return _service.getUsersRanking();
@@ -108,5 +107,4 @@ class Service {
   Future<void> cleanDatabase() {
     return _database.cleanDatabase();
   }
-
 }

@@ -17,9 +17,7 @@ import 'package:rxdart/subjects.dart';
 import 'package:duolibras/Commons/Extensions/list_extension.dart';
 import '../mainRouter.dart';
 
-class LearningViewModel
-    with SectionsViewModel, ModuleViewModel, LearningViewModelProtocol {
-      
+class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
   @override
   Future<List<Module>> getModulesfromSection(String sectionID) async {
     return Service.instance.getModulesFromSectionId(sectionID);
@@ -34,8 +32,27 @@ class LearningViewModel
   BehaviorSubject<List<Section>> _controller = BehaviorSubject<List<Section>>();
 
   List<Section> allSections = [];
+
+  Map<Color, int> colorForModules = {};
   LearningViewModel() {
     sections = _controller.stream;
+    modules = _controllerModules.stream;
+  }
+
+  BehaviorSubject<List<Module>> _controllerModules =
+      BehaviorSubject<List<Module>>();
+  List<Module> allModules = [];
+
+  Future<void> _getModules(List<Section> newSections) async {
+    for (var i = 0; i < newSections.length; i++) {
+      await getModulesfromSection(newSections[i].id).then((modules) {
+        allModules.addAll(modules);
+        Color color = modules.first.color;
+        colorForModules.addAll({color: modules.length});
+      });
+    }
+
+    _controllerModules.sink.add(allModules);
   }
 
   @override
@@ -44,7 +61,9 @@ class LearningViewModel
     await Service.instance.getSectionsFromTrail().then((newSections) {
       hasMore = false;
       loading = false;
-      _controller.sink.add(newSections);
+      // _controller.sink.add(newSections);
+
+      _getModules(newSections);
     }).onError((error, stackTrace) {
       error = true;
       hasMore = false;
@@ -52,44 +71,51 @@ class LearningViewModel
     });
   }
 
-  Future<List<Exercise>> _getExerciseFromModule(String sectionID, String moduleID, int level) {
-    return Service.instance.getExercisesFromModuleId(sectionID, moduleID, level);
+  Future<List<Exercise>> _getExerciseFromModule(
+      String sectionID, String moduleID, int level) {
+    return Service.instance
+        .getExercisesFromModuleId(sectionID, moduleID, level);
   }
 
-  Future<List<Exercise>> _getANumberExerciseFromModule(String sectionID, String moduleID, int quantity) {
+  Future<List<Exercise>> _getANumberExerciseFromModule(
+      String sectionID, String moduleID, int quantity) {
     return Service.instance
         .getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity)
         .then((exercises) {
-          exercises.shuffle();
-          List<Exercise> newExercises = [];
+      exercises.shuffle();
+      List<Exercise> newExercises = [];
 
-          for (var i = 0; i < 15; i++) {
-            if (!exercises.containsAt(i)) {
-              return newExercises;
-            } else {
-              newExercises.add(exercises[i]);
-            }
-          }
+      for (var i = 0; i < 15; i++) {
+        if (!exercises.containsAt(i)) {
           return newExercises;
-        });
+        } else {
+          newExercises.add(exercises[i]);
+        }
+      }
+      return newExercises;
+    });
   }
 
   @override
-  Future<void> didSelectModule(String sectionID, Module module,BuildContext context, Function? handler) async {
-    final level = _getUserModuleLevel(context, module);
+  Future<void> didSelectModule(String sectionID, Module module,
+      BuildContext context, Function? handler) async {
+    final level = _getUserModuleLevel(context, sectionID, module);
 
     if (level == module.maxProgress) {
       _getANumberExerciseFromModule(sectionID, module.id, 30).then((exercises) {
-        _navigateToExercisesModule(sectionID, module, context, exercises, handler);
+        _navigateToExercisesModule(
+            sectionID, module, context, exercises, handler);
       });
     } else {
       _getExerciseFromModule(sectionID, module.id, level).then((exercises) {
-        _navigateToExercisesModule(sectionID, module, context, exercises, handler);
+        _navigateToExercisesModule(
+            sectionID, module, context, exercises, handler);
       });
     }
   }
 
-  void _navigateToExercisesModule(String sectionID, Module module,BuildContext context, List<Exercise> exercises, Function? handler) {
+  void _navigateToExercisesModule(String sectionID, Module module,
+      BuildContext context, List<Exercise> exercises, Function? handler) {
     Navigator.of(context).pushNamed(ExerciseFlow.routePrefixExerciseFlow,
         arguments: {
           "exercises": exercises,
@@ -102,12 +128,14 @@ class LearningViewModel
     });
   }
 
-  int _getUserModuleLevel(BuildContext ctx, Module module) {
+  int _getUserModuleLevel(BuildContext ctx, String sectionID, Module module) {
     final user = Provider.of<UserModel>(ctx, listen: false).user;
 
     try {
-      final moduleProgress = user.modulesProgress
-          .firstWhere((element) => element.moduleId == module.id);
+      final moduleProgress = user.sectionsProgress
+          .firstWhere((section) => section.sectionId == sectionID)
+          .modulesProgress
+          .firstWhere((m) => m.moduleId == module.id);
 
       if (moduleProgress.progress == module.maxProgress) {
         return moduleProgress.progress;

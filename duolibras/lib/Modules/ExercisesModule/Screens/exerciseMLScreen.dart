@@ -12,7 +12,7 @@ import 'package:path/path.dart';
 import 'exerciseScreen.dart';
 import 'package:confetti/confetti.dart';
 
-class ExerciseMLScreen extends ExerciseStateful{
+class ExerciseMLScreen extends ExerciseStateful {
   static String routeName = "/ExerciseMLScreen";
 
   final ExerciseViewModel _viewModel;
@@ -23,13 +23,13 @@ class ExerciseMLScreen extends ExerciseStateful{
 
   @override
   _ExerciseMLScreenState createState() => _ExerciseMLScreenState();
-
 }
 
 class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   var _showingCamera = false;
   var _finishedExercise = false;
-  late CameraHelper cameraHelper = CameraHelper(widget._viewModel.mlModel, CameraLensDirection.front);
+  late CameraHelper cameraHelper =
+      CameraHelper(widget._viewModel.mlModel, CameraLensDirection.front);
   final completer = Completer<void>();
   var spelledText = "";
 
@@ -41,28 +41,21 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
 
     cameraHelper.completer.future.then((_) => {completer.complete()});
 
-    widget._viewModel.mlModel.tfLiteResultsController.stream.listen(
-      (value) {
-        //Update results on screen
-        setState(() {
-          _handleCameraPrediction(value.first.label, value.first.confidence, this.context);
-        });
-      },
-      onDone: () {
-
-      },
-      onError: (error) {
-      }
-    );
+    widget._viewModel.mlModel.tfLiteResultsController.stream.listen((value) {
+      //Update results on screen
+      setState(() {
+        _handleCameraPrediction(
+            value.first.label, value.first.confidence, this.context);
+      });
+    }, onDone: () {}, onError: (error) {});
 
     widget.handleNextExercise = () {
       goNextExerciseFromAppBar();
     };
-    
+
     setState(() {
       initController();
     });
-
   }
 
   void initController() {
@@ -70,23 +63,24 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
         ConfettiController(duration: const Duration(seconds: 2));
   }
 
-    @override
+  @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final appBarHeight = ExerciseAppBarWidget.appBarHeight;
     final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop);
+    final containerHeight =
+        mediaQuery.size.height - (appBarHeight + paddingTop);
     final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Scaffold(
-          body: Container(
+        body: Container(
             height: containerHeight,
             color: Color.fromRGBO(234, 234, 234, 1),
-            child:  
-            SafeArea(child: _showingCamera ? _cameraBody(widget._exercise, containerSize, context) : 
-            _buildOnboardingBody(widget._exercise, widget._viewModel, containerSize, context))
-          )
-        );
+            child: SafeArea(
+                child: _showingCamera
+                    ? _cameraBody(widget._exercise, containerSize, context)
+                    : _buildOnboardingBody(widget._exercise, widget._viewModel,
+                        containerSize, context))));
   }
 
   Align buildConfettiWidget(controller, double blastDirection) {
@@ -106,33 +100,34 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     );
   }
 
-  Widget _buildOnboardingBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-              height: containerSize.height * 0.10,
-              child: QuestionWidget("Faça o sinal em Libras")),
-          SizedBox(height: 15),
-          Container(
-            height: containerSize.height * 0.08,
-            width: containerSize.width * 0.7,
-            child: ElevatedButton(
-              child: Text("Abrir a Câmera"),
-              onPressed: () {
-                setState(() {
-                  _showingCamera = true;
-                });
-              },
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          side: BorderSide(color: Colors.blue)))),
-            ),
+  Widget _buildOnboardingBody(Exercise exercise, ExerciseViewModel viewModel,
+      Size containerSize, BuildContext ctx) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+            height: containerSize.height * 0.10,
+            child: QuestionWidget("Faça o sinal em Libras")),
+        SizedBox(height: 15),
+        Container(
+          height: containerSize.height * 0.08,
+          width: containerSize.width * 0.7,
+          child: ElevatedButton(
+            child: Text("Abrir a Câmera"),
+            onPressed: () {
+              setState(() {
+                _showingCamera = true;
+              });
+            },
+            style: ButtonStyle(
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: BorderSide(color: Colors.blue)))),
           ),
-        ],
-      );
+        ),
+      ],
+    );
   }
 
   Widget _cameraBody(Exercise exercise, Size containerSize, BuildContext ctx) {
@@ -152,30 +147,27 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                       _buildAnswerText(),
                       SizedBox(height: containerSize.height * 0.05),
                       Container(
-                        width: containerSize.width * 0.95,
-                        height: containerSize.height * 0.63,
-                        decoration: BoxDecoration(
+                          width: containerSize.width * 0.95,
+                          height: containerSize.height * 0.63,
+                          decoration: BoxDecoration(
                             color: Color.fromRGBO(200, 205, 219, 1),
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
-                        child: Center(
-                          child: Container(
-                            width: containerSize.width * 0.91,
-                            height: containerSize.height * 0.605,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20.0),
-                                topRight: Radius.circular(20.0),
-                                bottomRight: Radius.circular(20.0),
-                                bottomLeft: Radius.circular(20.0),
-                              ),
-                              child: CameraPreview(cameraHelper.camera)
-                            )
-                          )
-                        )
-                      ),
+                          child: Center(
+                              child: Container(
+                                  width: containerSize.width * 0.91,
+                                  height: containerSize.height * 0.605,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20.0),
+                                        topRight: Radius.circular(20.0),
+                                        bottomRight: Radius.circular(20.0),
+                                        bottomLeft: Radius.circular(20.0),
+                                      ),
+                                      child: CameraPreview(
+                                          cameraHelper.camera))))),
                       SizedBox(height: containerSize.height * 0.05),
                       _buildSpelledLetters()
                     ],
@@ -197,7 +189,8 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     final question = widget._exercise.question;
     return Text(
       question,
-      style: TextStyle(fontSize: 24, color: Colors.black, fontWeight: FontWeight.w700),
+      style: TextStyle(
+          fontSize: 24, color: Colors.black, fontWeight: FontWeight.w700),
     );
   }
 
@@ -205,87 +198,99 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     final answer = widget._exercise.correctAnswer;
     return LayoutBuilder(builder: (ctx, constraint) {
       return Center(
-        child: Container(
-            width: constraint.maxWidth * 0.85,
-            height: 50,
-            decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(20))), 
-            child: 
-              Center(
+          child: Container(
+              width: constraint.maxWidth * 0.85,
+              height: 50,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              child: Center(
                 child: Text(
                   answer,
-                  style: TextStyle(fontSize: 24, color: Colors.black, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500),
                 ),
-              )
-        )
-      );
+              )));
     });
   }
 
   Widget _buildSpelledLetters() {
     return LayoutBuilder(builder: (ctx, constraint) {
       return Center(
-        child: Container(
-            width: constraint.maxWidth * 0.85,
-            height: 50,
-            decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(20))), 
-            child: 
-              Center(
+          child: Container(
+              width: constraint.maxWidth * 0.85,
+              height: 50,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              child: Center(
                 child: Text(
                   spelledText,
-                  style: TextStyle(fontSize: 24, color: Colors.black, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500),
                 ),
-              )
-          )
-      );
+              )));
     });
   }
 
-  void _handleCameraPrediction(String label, double confidence, BuildContext ctx) {
-      if (!widget.isSpelling) {
-        _handleCameraPredictionLetter(label, confidence, ctx);
-      }
-      else {
-        _handleCameraPredictionSpelling(label, confidence, ctx);
-      }
-  }
-
-  void _handleCameraPredictionLetter(String label, double confidence, BuildContext ctx){
-    if (widget._viewModel.isGestureCorrect(label, confidence, widget._exercise) && !_finishedExercise) {
-        _finishedExercise = true;
-        controllerTopCenter.play();
-          setState(() {
-            spelledText = label;
-            _closeAll(ctx);
-          });
+  void _handleCameraPrediction(
+      String label, double confidence, BuildContext ctx) {
+    if (!widget.isSpelling) {
+      _handleCameraPredictionLetter(label, confidence, ctx);
+    } else {
+      _handleCameraPredictionSpelling(label, confidence, ctx);
     }
   }
 
-  void _handleCameraPredictionSpelling(String newLetter, double confidence, BuildContext ctx){
-    if (widget._viewModel.isSpellingCorrect(newLetter, confidence, widget._exercise)) {
+  void _handleCameraPredictionLetter(
+      String label, double confidence, BuildContext ctx) {
+    if (widget._viewModel
+            .isGestureCorrect(label, confidence, widget._exercise) &&
+        !_finishedExercise) {
+      _finishedExercise = true;
+      controllerTopCenter.play();
+      setState(() {
+        spelledText = label;
+        _closeAll(ctx);
+      });
+    }
+  }
+
+  void _handleCameraPredictionSpelling(
+      String newLetter, double confidence, BuildContext ctx) {
+    if (widget._viewModel
+        .isSpellingCorrect(newLetter, confidence, widget._exercise)) {
       setState(() {
         spelledText = widget._viewModel.spelledLetters.join();
       });
       if (spelledText == widget._exercise.correctAnswer) {
-          _finishedExercise = true;
-          controllerTopCenter.play();
-            setState(() {
-              _closeAll(ctx);
-            });
+        _finishedExercise = true;
+        controllerTopCenter.play();
+        setState(() {
+          _closeAll(ctx);
+        });
       }
-         
     }
   }
-  
+
   void _closeAll(BuildContext ctx) {
-      widget._viewModel.showNextArrow();
-      widget._viewModel.mlModel.close();
-      Future.delayed(Duration(seconds: 2), () {
-        cameraHelper.dispose();
-        if (!mounted){ return; }
-        setState(() {
-          _showingCamera = false;
-        });
+    widget._viewModel.showNextArrow();
+    widget._viewModel.mlModel.close();
+    Future.delayed(Duration(seconds: 2), () {
+      cameraHelper.dispose();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _showingCamera = false;
       });
+    });
   }
 
   @override
@@ -298,7 +303,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
 
   void goNextExerciseFromAppBar() {
     _closeAll(this.context);
-    widget._viewModel.didSubmitTextAnswer(spelledText, widget._exercise.id, this.context);
+    widget._viewModel
+        .didSubmitTextAnswer(spelledText, widget._exercise.id, this.context);
   }
-
 }

@@ -12,6 +12,5 @@ abstract class ServicesProtocol extends APIExerciseProtocol
         APISectionProtocol,
         APITrailProtocol,
         APIUserProtocol,
-        APIModuleProgressProtocol,
+        APISectionProgressProtocol,
         APIStorageProtocol {}
-

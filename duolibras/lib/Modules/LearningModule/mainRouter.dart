@@ -38,7 +38,7 @@ class MainRouter {
       final sectionID = arg["sectionID"] as String;
 
       final subRoute = ExerciseFlow.getRouteNameBy(exercises.first.category);
-
+      print(subRoute);
       page = ExerciseFlow(
         exercises: exercises,
         module: module,
