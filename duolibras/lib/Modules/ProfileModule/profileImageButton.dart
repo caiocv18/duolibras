@@ -4,8 +4,9 @@ import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/ProfileModule/profileViewModel.dart';
 import 'package:duolibras/Modules/ProfileModule/takePictureScreen.dart';
-import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 class ProfileImageButton extends StatefulWidget {
   final bool isEnabled;
@@ -49,13 +50,13 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
                           semanticLabel:
                               'Text to announce in accessibility modes',
                         ))),
-              Positioned(child: cameraButton(), bottom: -15)
+              Positioned(child: cameraButton(context), bottom: -15)
             ])));
   }
 
-  Widget cameraButton() {
+  Widget cameraButton(BuildContext context){
     return MaterialButton(
-      onPressed: () => widget.isEnabled ? _openCamera() : null,
+      onPressed: () => widget.isEnabled ? _openCamera(context) : null,
       color: Colors.blue,
       textColor: Colors.white,
       child: Icon(
@@ -75,7 +76,7 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
     );
   }
 
-  void _openCamera() async {
+  void _openCamera(BuildContext context) async {
     final frontalCamera = await _getCamera(CameraLensDirection.front);
     Navigator.push(
         context,
@@ -85,13 +86,15 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
       var imagePath = value as String?;
       setState(() {
         imageUrl = imagePath;
-        _uploadImage();
+        _uploadImage(context);
       });
     });
   }
 
-  void _uploadImage() {
+  void _uploadImage(BuildContext context) {
     var fileImage = FileImage(File(imageUrl!));
-    widget.viewModel.uploadImage(fileImage);
+    widget.viewModel.uploadImage(fileImage, context, exitClosure: () {
+      Navigator.of(context).pop();
+    });
   }
 }

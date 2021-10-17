@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
@@ -9,8 +8,8 @@ import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/midiaWidget
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/multiChoicesWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseScreen.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
-import 'package:duolibras/Network/Models/ExercisesCategory.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
+import 'package:duolibras/Services/Models/exercisesCategory.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseMultiChoiceScreen extends ExerciseStateful {
@@ -30,7 +29,6 @@ class ExerciseMultiChoiceScreen extends ExerciseStateful {
 }
 
 class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
-  final PreferredSizeWidget appBar = AppBarWidget();
 
   ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
   var answerPicked = "";

@@ -1,6 +1,6 @@
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/midiaWidget.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:flutter/material.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
 

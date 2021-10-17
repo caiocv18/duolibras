@@ -1,9 +1,9 @@
 import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
 import 'package:duolibras/Modules/HomeModule/homeScreen.dart';
-import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
+import 'package:duolibras/Modules/Launch/launchScreen.dart';
 import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
-import 'package:duolibras/Network/Models/Module.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
+import 'package:duolibras/Services/Models/module.dart';
 import 'package:flutter/material.dart';
 
 class MainRouter {

@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
@@ -9,7 +8,7 @@ import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/inputAnswer
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/midiaWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseScreen.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
@@ -26,7 +25,6 @@ class ExerciseWritingScreen extends ExerciseStateful {
 }
 
 class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
-  final PreferredSizeWidget appBar = AppBarWidget();
   ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
   var didAnswerCorrect = null;
   var isKeyboardActive = false;

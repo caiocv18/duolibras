@@ -2,8 +2,7 @@ import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
 import 'package:duolibras/Modules/RankingModule/ViewModel/rankingViewModel.dart';
 import 'package:duolibras/Modules/RankingModule/Widgets/rankingTile.dart';
-import 'package:duolibras/Network/Authentication/UserSession.dart';
-import 'package:duolibras/Network/Models/User.dart';
+import 'package:duolibras/Services/Models/user.dart';
 import 'package:flutter/material.dart';
 
 class RankingScreen extends StatefulWidget {
@@ -17,6 +16,8 @@ class _RankingScreenState extends State<RankingScreen> {
 
   @override
   initState() {
+    super.initState();
+
     widget._viewModel.usersRank!.asBroadcastStream().listen((newUsersRank) {
       setState(() {
         this.usersRank = newUsersRank.reversed.toList();
@@ -32,7 +33,7 @@ class _RankingScreenState extends State<RankingScreen> {
 
   Widget createRankingBody(BuildContext context) {
     if (widget._viewModel.firstTime) {
-      widget._viewModel.fetchUsersRank();
+      widget._viewModel.fetchUsersRank(context);
     }
     final _mediaQuery = MediaQuery.of(context);
 

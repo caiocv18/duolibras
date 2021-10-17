@@ -1,33 +1,35 @@
+import 'dart:async';
+
 import 'package:camera/camera.dart';
-import 'package:duolibras/Commons/ViewModel/ScreenState.dart';
+import 'package:duolibras/Commons/Utils/utils.dart';
+import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
 import 'package:duolibras/MachineLearning/Helpers/camera_helper.dart';
+import 'package:duolibras/MachineLearning/Helpers/result.dart';
 import 'package:duolibras/MachineLearning/TFLite/tflite_helper.dart';
+import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/feedbackExerciseScreen.dart';
-import 'package:duolibras/Network/Authentication/UserSession.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
-import 'package:duolibras/Network/Models/Module.dart';
-import 'package:duolibras/Network/Models/ModuleProgress.dart';
-import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
-import 'package:duolibras/Network/Service.dart';
+import 'package:duolibras/Services/Models/appError.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
+import 'package:duolibras/Services/Models/module.dart';
+import 'package:duolibras/Services/Models/moduleProgress.dart';
+import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
-import '../Screens/exerciseWritingScreen.dart';
 import '../exerciseFlow.dart';
 
 class ExerciseViewModel extends BaseViewModel {
   final Tuple2<List<Exercise>, Module> exercisesAndModule;
-
-  // final void Function(Exercise? exercise) _didFinishExercise;
   final ExerciseFlowDelegate exerciseFlowDelegate;
   late List<Exercise> exercises;
+  final _errorHandler = ErrorHandler();
 
   //ML Exercise 
-  final CameraHelper cameraHelper = CameraHelper(TFLiteHelper(), CameraLensDirection.front);
+  final CameraHelper _cameraHelper = CameraHelper(TFLiteHelper(), CameraLensDirection.front);
   List<String> spelledLetters = [];
  
-
   ExerciseViewModel(this.exercisesAndModule, this.exerciseFlowDelegate) {
     exercises = exercisesAndModule.item1;
   }
@@ -70,7 +72,7 @@ class ExerciseViewModel extends BaseViewModel {
     _handleMoveToNextExercise(exerciseID, context);
   }
 
-  Future<void> _saveProgress(BuildContext context) async {
+  Future<void> _saveProgress(BuildContext context, {Function? exitClosure = null}) async {
     final userProvider = Provider.of<UserModel>(context, listen: false);
     final index = userProvider.user.modulesProgress
         .indexWhere((prog) => prog.moduleId == exercisesAndModule.item2.id);
@@ -94,7 +96,24 @@ class ExerciseViewModel extends BaseViewModel {
           progress: 1);
       userProvider.setModulesProgress(moduleProgress);
     }
-    await Service.instance.postModuleProgress(moduleProgress);
+    await Service.instance.postModuleProgress(moduleProgress)
+          .onError((error, stackTrace) {
+            final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
+            debugPrint("Error Exercise View Model: $appError.description");
+
+            Completer<bool> completer = Completer<bool>();
+            _errorHandler.showModal(appError, context, tryAgainClosure: () {
+              return Service.instance.postModuleProgress(moduleProgress).then((value) => completer.complete(value))
+              .onError((error, stackTrace) {
+                _errorHandler.showModal(appError, context, exitClosure: () {
+                 if (exitClosure != null)
+                    exitClosure();
+                  completer.complete(false);
+                });
+              });
+            }, exitClosure: exitClosure);
+            return completer.future;
+          });
   }
 
   Future<void> _handleMoveToNextExercise(String exerciseID, BuildContext context) async {
@@ -181,8 +200,20 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
     }
   }
 
+  CameraController getCamera() {
+    return _cameraHelper.camera;
+  }
+
+  Stream<List<Result>> getMlModelStream() {
+    return _cameraHelper.mlModel.tfLiteResultsController.stream;
+  }
+
+  Future<void> initializeCamera() {
+    return _cameraHelper.initializeCamera();
+  }
+
   void closeCamera() async {
-    await cameraHelper.close();
-    await cameraHelper.mlModel.close();
+    await _cameraHelper.close();
+    await _cameraHelper.mlModel.close();
   }
 }

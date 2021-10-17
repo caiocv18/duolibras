@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'package:duolibras/Network/Models/Module.dart';
-import 'package:duolibras/Network/Models/Section.dart';
+import 'package:duolibras/Services/Models/module.dart';
+import 'package:duolibras/Services/Models/section.dart';
 import 'package:flutter/material.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
 
 abstract class SectionsViewModel {
-  Future<List<Section>> getSectionsFromTrail(String id);
-  Future<List<Module>> getModulesfromSection(String sectionID);
+  Future<List<Section>> getSectionsFromTrail(BuildContext context);
+  Future<List<Module>> getModulesfromSection(String sectionID, BuildContext context);
 }
 
 class SectionWidget extends StatefulWidget {
@@ -24,12 +24,12 @@ class _SectionWidgetState extends State<SectionWidget> {
   @override
   void initState() {
     super.initState();
-    _getModules();
+    _getModules(this.context);
   }
 
-  void _getModules() {
+  void _getModules(BuildContext context) {
     widget._viewModel
-        .getModulesfromSection(widget._section.id)
+        .getModulesfromSection(widget._section.id, context)
         .then((newModules) {
       setState(() {
         this._modules = newModules;

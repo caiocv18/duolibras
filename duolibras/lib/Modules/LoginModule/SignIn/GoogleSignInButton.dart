@@ -1,9 +1,9 @@
-import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
+import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  final GoogleSignInProtocol _viewModel;
+  final LoginViewModel _viewModel;
   GoogleSignInButton(this._viewModel);
 
   @override
@@ -31,7 +31,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                 ),
               ),
               onPressed: () async {
-                loginWithGoogle();
+                loginWithGoogle(context);
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -57,12 +57,12 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     );
   }
 
-  void loginWithGoogle() async {
+  void loginWithGoogle(BuildContext context) async {
     setState(() {
       _isSigningIn = true;
     });
     widget._viewModel
-        .googleSignIn()
+        .login(context, LoginType.Google)
         .then((value) => Navigator.of(context).pop(true));
 
     setState(() {

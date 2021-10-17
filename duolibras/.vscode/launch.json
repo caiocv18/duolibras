@@ -15,8 +15,8 @@
             "type": "dart",
             "flutterMode": "profile",
             "args": [
-                    "--no-sound-null-safety"
-                        ]
+                "--no-sound-null-safety"
+            ]
         }
     ]
 }

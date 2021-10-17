@@ -36,6 +36,7 @@ dependencies:
   tuple: ^2.0.0
   flutter_keyboard_visibility: ^5.0.3
   smooth_page_indicator: ^1.0.0+2
+  modal_bottom_sheet: ^2.0.0
   
 dev_dependencies:
   flutter_test:
@@ -49,7 +50,7 @@ flutter:
     - assets/images/moduleCompleted.png
     - assets/images/happyFace.png
     - assets/images/sadFace.png
-    - lib/Network/Mock/
+    - lib/Services/Mock/
     - assets/images/nextExerciseArrow/
     - assets/images/tabBar/
   fonts:
@@ -59,7 +60,8 @@ flutter:
           weight: 700
         - asset: assets/fonts/Nunito-Regular.ttf
           weight: 500
-         
+        - asset: assets/fonts/Nunito-Semibold.ttf
+          weight: 600
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

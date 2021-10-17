@@ -1,5 +1,5 @@
 import 'package:camera/camera.dart';
-import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -5,9 +5,8 @@ import 'package:duolibras/Commons/Components/customTextfield.dart';
 import 'package:duolibras/Modules/ProfileModule/profileImageButton.dart';
 import 'package:duolibras/Modules/ProfileModule/profileViewModel.dart';
 import 'package:duolibras/Modules/ProfileModule/progressWidget.dart';
-import 'package:duolibras/Network/Authentication/UserSession.dart';
-import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
-import 'package:duolibras/Network/Models/User.dart';
+import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -80,30 +79,10 @@ class _ProfilePageState extends State<ProfilePage> {
   final _viewModel = ProfileViewModel();
   var _userHasChanged = false;
   var _userName = locator<UserModel>().user.name;
+  
   @override
   void initState() {
     super.initState();
-  }
-
-  void _handleSubmitNewName(String newName) {
-    final userModel = locator<UserModel>().user;
-    var user = User(
-        name: nameTextfieldController.value.text,
-        email: userModel.email,
-        id: userModel.id,
-        currentProgress: userModel.currentProgress,
-        imageUrl: userModel.imageUrl);
-
-    user.modulesProgress = userModel.modulesProgress;
-
-    _viewModel.updateUser(user);
-
-    final userProvider = Provider.of<UserModel>(context, listen: false);
-    userProvider.setUserName(nameTextfieldController.value.text);
-
-    setState(() {
-      _userName = newName;
-    });
   }
 
   @override
@@ -154,5 +133,26 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ))));
+  }
+
+  void _handleSubmitNewName(String newName) {
+    final userModel = locator<UserModel>().user;
+    var user = User(
+        name: nameTextfieldController.value.text,
+        email: userModel.email,
+        id: userModel.id,
+        currentProgress: userModel.currentProgress,
+        imageUrl: userModel.imageUrl);
+
+    user.modulesProgress = userModel.modulesProgress;
+
+    _viewModel.updateUser(user);
+
+    final userProvider = Provider.of<UserModel>(context, listen: false);
+    userProvider.setUserName(nameTextfieldController.value.text);
+
+    setState(() {
+      _userName = newName;
+    });
   }
 }

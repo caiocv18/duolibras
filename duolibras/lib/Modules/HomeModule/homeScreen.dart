@@ -4,7 +4,7 @@ import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
 import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 import 'package:duolibras/Modules/RankingModule/rankingScreen.dart';
-import 'package:duolibras/Network/Authentication/UserSession.dart';
+import 'package:duolibras/Services/Authentication/userSession.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

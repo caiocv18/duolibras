@@ -8,16 +8,15 @@ import 'mlModelProtocol.dart';
 import 'app_helper.dart';
 
 class CameraHelper {
+  bool isDetecting = false;
+  CameraLensDirection _direction;
+  MLModelProtocol _mlModel;
+  MLModelProtocol get mlModel => _mlModel;
+
   late CameraController _camera;
   CameraController get camera => _camera;
 
-  bool isDetecting = false;
-  CameraLensDirection _direction;
-  Completer<void> completer = Completer();
-  MLModelProtocol mlModel;
-
-  CameraHelper(this.mlModel, this._direction) {
-  }
+  CameraHelper(this._mlModel, this._direction) {}
 
   Future<CameraDescription> _getCamera(CameraLensDirection dir) async {
     return await availableCameras().then(
@@ -27,7 +26,7 @@ class CameraHelper {
     );
   }
 
-  void initializeCamera() async {
+  Future<void> initializeCamera() async {
     AppHelper.log("_initializeCamera", "Initializing camera..");
 
     _camera = CameraController(
@@ -38,10 +37,9 @@ class CameraHelper {
         enableAudio: false,
         imageFormatGroup: defaultTargetPlatform == TargetPlatform.iOS ? ImageFormatGroup.bgra8888 : ImageFormatGroup.yuv420);
 
-    await _camera.initialize().then((value) {
+    return await _camera.initialize().then((value) {
       AppHelper.log("_initializeCamera", "Camera initialized, starting camera stream..");
       mlModel.loadModel();
-      completer.complete();
 
       _camera.startImageStream((CameraImage image) {
         try {
@@ -56,6 +54,7 @@ class CameraHelper {
   Future<void> close() async {
     await _camera.stopImageStream();
     await _camera.dispose();
+
   }
 
 }

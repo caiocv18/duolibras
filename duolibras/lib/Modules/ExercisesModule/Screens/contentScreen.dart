@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter/material.dart';
 import 'exerciseScreen.dart';

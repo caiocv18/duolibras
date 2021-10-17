@@ -1,7 +1,7 @@
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
-import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
-import 'package:duolibras/Network/Service.dart';
+import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/service.dart';
 import 'package:flutter/material.dart';
 
 class LaunchScreen extends StatefulWidget {

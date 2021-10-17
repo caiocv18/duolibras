@@ -1,8 +1,5 @@
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
-import 'package:duolibras/Commons/Components/baseScreen.dart';
-import 'package:duolibras/Commons/Components/progressBar.dart';
-import 'package:duolibras/Commons/Utils/Utils.dart';
-import 'package:duolibras/MachineLearning/TFLite/tflite_helper.dart';
+import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/contentScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMLScreen.dart';
@@ -10,12 +7,10 @@ import 'package:duolibras/Modules/ExercisesModule/Screens/feedbackExerciseScreen
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseMultiChoiceScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseWritingScreen.dart';
-import 'package:duolibras/Network/Authentication/UserSession.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
-import 'package:duolibras/Network/Models/ExercisesCategory.dart';
-import 'package:duolibras/Network/Models/Module.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
+import 'package:duolibras/Services/Models/exercisesCategory.dart';
+import 'package:duolibras/Services/Models/module.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 import 'Screens/exerciseScreen.dart';

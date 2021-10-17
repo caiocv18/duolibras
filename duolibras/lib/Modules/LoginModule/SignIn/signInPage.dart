@@ -1,6 +1,5 @@
 import 'package:duolibras/Commons/Components/baseScreen.dart';
-import 'package:duolibras/Commons/ViewModel/ScreenState.dart';
-import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
+import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
 import 'package:flutter/material.dart';
 
 import 'GoogleSignInButton.dart';
@@ -10,7 +9,7 @@ import 'firebaseSignInWidget.dart';
 class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BaseScreen<AutheticationViewModel>(
+    return BaseScreen<LoginViewModel>(
         builder: (_, viewModel, __) => Container(
               height: 100,
               child: Column(

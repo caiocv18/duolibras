@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/sectionWidget.dart';
-import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
-import 'package:duolibras/Network/Models/Section.dart';
+import 'package:duolibras/Services/Models/section.dart';
 import 'package:flutter/material.dart';
 
 abstract class LearningViewModelProtocol {
@@ -16,7 +15,7 @@ abstract class LearningViewModelProtocol {
   bool loading = false;
   bool firstFetch = true;
 
-  Future<void> fetchSections();
+  Future<void> fetchSections(BuildContext context);
   void disposeStreams();
 }
 
@@ -58,14 +57,14 @@ class _LearningScreenState extends State<LearningScreen> {
     super.dispose();
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     final _mediaQuery = MediaQuery.of(context);
 
     if (sections.isEmpty) {
       if (widget._viewModel.firstFetch) {
         widget._viewModel.firstFetch = false;
         widget._viewModel.loading = true;
-        widget._viewModel.fetchSections();
+        widget._viewModel.fetchSections(context);
       }
 
       if (widget._viewModel.loading) {
@@ -81,7 +80,7 @@ class _LearningScreenState extends State<LearningScreen> {
             setState(() {
               widget._viewModel.loading = true;
               widget._viewModel.error = false;
-              widget._viewModel.fetchSections();
+              widget._viewModel.fetchSections(context);
             });
           },
           child: Padding(
@@ -108,7 +107,7 @@ class _LearningScreenState extends State<LearningScreen> {
                     itemBuilder: (ctx, index) {
                       if (index == sections.length - 1 &&
                           widget._viewModel.hasMore) {
-                        widget._viewModel.fetchSections();
+                        widget._viewModel.fetchSections(context);
                       }
 
                       if (index == sections.length) {
@@ -119,7 +118,7 @@ class _LearningScreenState extends State<LearningScreen> {
                               setState(() {
                                 widget._viewModel.loading = true;
                                 widget._viewModel.error = false;
-                                widget._viewModel.fetchSections();
+                                widget._viewModel.fetchSections(context);
                               });
                             },
                             child: Padding(
@@ -162,6 +161,6 @@ class _LearningScreenState extends State<LearningScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: _buildBody());
+        body: _buildBody(context));
   }
 }

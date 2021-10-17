@@ -1,15 +1,13 @@
 import 'package:duolibras/Commons/Components/baseScreen.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
-import 'package:duolibras/Commons/Utils/serviceLocator.dart';
-import 'package:duolibras/Commons/ViewModel/ScreenState.dart';
+import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
-import 'package:duolibras/Network/Models/Module.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
+import 'package:duolibras/Services/Models/module.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 import 'exerciseScreen.dart';

@@ -3,11 +3,11 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
-import 'package:duolibras/Commons/Utils/Constants.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/timeBar.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:flutter/material.dart';
 import 'exerciseScreen.dart';
 
@@ -37,22 +37,6 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   @override
   void initState() {
     super.initState();
-
-    widget._viewModel.cameraHelper.completer.future.then((_) => {completer.complete()});
-
-    widget._viewModel.cameraHelper.mlModel.tfLiteResultsController.stream.listen(
-      (value) {
-        //Update results on screen
-        setState(() {
-          _handleCameraPrediction(value.first.label, value.first.confidence, this.context);
-        });
-      },
-      onDone: () {
-
-      },
-      onError: (error) {
-      }
-    );
 
     widget.handleNextExercise = () {
       _submitAnswer(this.context);
@@ -118,12 +102,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
             width: containerSize.width * 0.7,
             child: ElevatedButton(
               child: Text("Abrir a Câmera"),
-              onPressed: () {
-                setState(() {
-                  widget._viewModel.cameraHelper.initializeCamera();
-                  _showingCamera = true;
-                });
-              },
+              onPressed: () => _startCamera(),
               style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
@@ -170,7 +149,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   }
 
   Widget _buildCameraPreview(Size containerSize) {
-    final cameraRatio = widget._viewModel.cameraHelper.camera.value.aspectRatio;
+    final cameraRatio = widget._viewModel.getCamera().value.aspectRatio;
 
     final size = MediaQuery.of(context).size;
     var scale = size.aspectRatio * cameraRatio;
@@ -201,7 +180,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                   bottomRight: Radius.circular(20.0),
                   bottomLeft: Radius.circular(20.0),
                 ),
-                child: Transform.scale(scale: scale, child: CameraPreview(widget._viewModel.cameraHelper.camera))
+                child: Transform.scale(scale: scale, child: CameraPreview(widget._viewModel.getCamera()))
               )
             )
           )
@@ -272,6 +251,41 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     });
   }
 
+  Widget _buildFeedback(Size containerSize) {
+    return Center(
+      child: Container(
+          width: containerSize.width * 0.89,
+          height: containerSize.height * 0.5,
+          decoration: 
+          BoxDecoration(color: Colors.white, 
+            border: Border.all(width: 5, color: Colors.white) , 
+            borderRadius: BorderRadius.all(Radius.circular(20))
+          ),
+          child: Image(image: AssetImage(_isRightAnswer ? Constants.imageAssets.happyFace : Constants.imageAssets.sadFace ))), 
+    );
+  }
+
+  void _startCamera() {
+    widget._viewModel.initializeCamera().then((value) => completer.complete()); 
+
+    widget._viewModel.getMlModelStream().listen(
+      (value) {
+        //Update results on screen
+        setState(() {
+          _handleCameraPrediction(value.first.label, value.first.confidence, this.context);
+        });
+      },
+      onDone: () {
+      },
+      onError: (error) {
+      }
+    );
+
+    setState(() {
+      _showingCamera = true;
+    });
+  }
+
   void _handleCameraPrediction(String label, double confidence, BuildContext ctx) {
       if (!widget._isSpelling) {
         _handleCameraPredictionLetter(label, confidence, ctx);
@@ -302,21 +316,6 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
       }
          
     }
-  }
-
-  Widget _buildFeedback(Size containerSize) {
-    return Center(
-      child: Container(
-          width: containerSize.width * 0.89,
-          height: containerSize.height * 0.5,
-          decoration: 
-          BoxDecoration(color: Colors.white, 
-            border: Border.all(width: 5, color: Colors.white) , 
-            borderRadius: BorderRadius.all(Radius.circular(20))
-          ),
-          child: Image(image: AssetImage(_isRightAnswer ? Constants.imageAssets.happyFace : Constants.imageAssets.sadFace ))), 
-    );
-    
   }
 
   void _finishExercise(bool rightAnswer) {
