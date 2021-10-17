@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
@@ -9,8 +8,8 @@ import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/midiaWidget
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/multiChoicesWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseScreen.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
-import 'package:duolibras/Network/Models/ExercisesCategory.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
+import 'package:duolibras/Services/Models/exercisesCategory.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseMultiChoiceScreen extends ExerciseStateful {
@@ -30,7 +29,6 @@ class ExerciseMultiChoiceScreen extends ExerciseStateful {
 }
 
 class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
-  final PreferredSizeWidget appBar = AppBarWidget();
 
   ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
   var answerPicked = "";
@@ -40,9 +38,27 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
     super.initState();
 
     widget.handleNextExercise = () {
-      handleSubmitAnswer(answerPicked, widget._exercise.correctAnswer,
-          widget._exercise.id, this.context);
+      handleSubmitAnswer(
+        answerPicked, 
+        widget._exercise.correctAnswer,
+        widget._exercise.id, 
+        this.context
+      );
     };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
+    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
+    final containerHeight = mediaQuery.size.height -
+        (appBarHeight + paddingTop + mediaQuery.padding.bottom);
+    final containerSize = Size(mediaQuery.size.width, containerHeight);
+
+    return Scaffold(
+        body: _buildBody(
+            widget._exercise, widget._viewModel, containerSize, context));
   }
 
   Widget _buildPopupDialog(BuildContext context, String title) {
@@ -69,7 +85,7 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
 
   Widget _createMultiChoiceWidget(Exercise exercise, BuildContext ctx) {
     return exercise.category == ExercisesCategory.multipleChoicesText
-        ? MultiChoicesWidget(exercise.answers, exercise.correctAnswer,
+        ? MultiChoicesWidget(exercise.answers ?? [], exercise.correctAnswer,
             (answer) {
             if (_state == ExerciseScreenState.DidAnswer) return;
             widget._viewModel.isAnswerCorrect(answer, widget._exercise.id);
@@ -79,7 +95,7 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
               widget._viewModel.showNextArrow();
             });
           })
-        : ImagesMultiChoice(exercise.answers, exercise.correctAnswer, (answer) {
+        : ImagesMultiChoice(exercise.answers ?? [], exercise.correctAnswer, (answer) {
             if (_state == ExerciseScreenState.DidAnswer) return;
             widget._viewModel.isAnswerCorrect(answer, widget._exercise.id);
             setState(() {
@@ -105,7 +121,7 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
             Container(
                 height: containerSize.height * 0.08,
                 width: containerSize.width * 0.95,
-                child: QuestionWidget(exercise.question)),
+                child: QuestionWidget(exercise.question ?? "")),
             SizedBox(height: containerSize.height * 0.05),
             Container(
                 height: containerSize.height * 0.35,
@@ -127,27 +143,11 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
     );
   }
 
-  void handleSubmitAnswer(String answer, String correctAnswer,
-      String exerciseID, BuildContext ctx) {
-    final isCorrect = widget._viewModel.isAnswerCorrect(answer, exerciseID);
+  void handleSubmitAnswer(String answer, String correctAnswer,String exerciseID, BuildContext ctx) {
     if (widget._exercise.category == ExercisesCategory.multipleChoicesText) {
       widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
     } else {
       widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
-    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    final containerHeight = mediaQuery.size.height -
-        (appBarHeight + paddingTop + mediaQuery.padding.bottom);
-    final containerSize = Size(mediaQuery.size.width, containerHeight);
-
-    return Scaffold(
-        body: _buildBody(
-            widget._exercise, widget._viewModel, containerSize, context));
   }
 }

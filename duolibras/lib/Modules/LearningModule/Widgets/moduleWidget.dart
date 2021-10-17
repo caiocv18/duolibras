@@ -1,8 +1,8 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
-import 'package:duolibras/Network/Models/Module.dart';
-import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
-import 'package:duolibras/Network/Models/User.dart';
+import 'package:duolibras/Services/Models/module.dart';
+import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

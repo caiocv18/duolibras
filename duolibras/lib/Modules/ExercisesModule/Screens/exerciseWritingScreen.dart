@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
@@ -9,16 +8,9 @@ import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/inputAnswer
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/midiaWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseScreen.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-
-abstract class ExerciseWritingViewModel {
-  void didSubmitTextAnswer(
-      String answer, String exerciseID, BuildContext context);
-
-  bool isAnswerCorrect(String answer, String exerciseID);
-}
 
 class ExerciseWritingScreen extends ExerciseStateful {
   static String routeName = "/ExerciseWritingScreen";
@@ -33,7 +25,10 @@ class ExerciseWritingScreen extends ExerciseStateful {
 }
 
 class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
-  final PreferredSizeWidget appBar = AppBarWidget();
+  ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
+  var didAnswerCorrect = null;
+  var isKeyboardActive = false;
+  final inputController = TextEditingController();
 
   @override
   void initState() {
@@ -41,27 +36,35 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
 
     widget.handleNextExercise = () {
       handleSubmitAnswer(
-                        inputController.text,
-                        widget._exercise.correctAnswer,
-                        widget._exercise.id,
-                        this.context);
+        inputController.text,
+        widget._exercise.correctAnswer,
+        widget._exercise.id,
+        this.context
+      );
     };
 
-  final keyboardVisibilityController = KeyboardVisibilityController();
-  keyboardVisibilityController.onChange.listen((bool visible) {
-    setState(() {
-        isKeyboardActive = visible;
-      });
-  });
-}
-
-  ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
-  var didAnswerCorrect = null;
-  var isKeyboardActive = false;
-  final inputController = TextEditingController();
+    final keyboardVisibilityController = KeyboardVisibilityController();
+    keyboardVisibilityController.onChange.listen((bool visible) {
+      setState(() {
+          isKeyboardActive = visible;
+        });
+    });
+  }
 
   void handleSubmitAnswer(String answer, String correctAnswer, String exerciseID, BuildContext ctx) {
     widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
+    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
+    final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop);
+    final containerSize = Size(mediaQuery.size.width, containerHeight);
+
+    return Scaffold(
+        body: _buildBody(widget._exercise, widget._viewModel, containerSize, context));
   }
 
   Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
@@ -78,7 +81,7 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
             children: [
               Container(
                   height: containerSize.height * 0.10,
-                  child: QuestionWidget(exercise.question)),
+                  child: QuestionWidget(exercise.question ?? "")),
               SizedBox(
                 height: containerSize.height * 0.05,
               ),
@@ -137,15 +140,4 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
-    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop);
-    final containerSize = Size(mediaQuery.size.width, containerHeight);
-
-    return Scaffold(
-        body: _buildBody(widget._exercise, widget._viewModel, containerSize, context));
-  }
 }

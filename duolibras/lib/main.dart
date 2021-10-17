@@ -1,9 +1,9 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 
-import 'package:duolibras/Modules/Launch/LaunchScreen.dart';
+import 'package:duolibras/Modules/Launch/launchScreen.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
-import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userProvider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -26,18 +26,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (ctx) => locator<UserModel>(),
-      child: MaterialApp(
+      child: 
+        MaterialApp(
           title: 'Flutter Demo',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
-            fontFamily: 'Nunito'
+            primarySwatch: Colors.blue
           ),
-          onGenerateRoute: (settings) =>
-              MainRouter.instance.onGenerateRoute(settings),
+          onGenerateRoute: (settings) => MainRouter.instance.onGenerateRoute(settings),
           navigatorKey: MainRouter.instance.navigatorKey,
           home: LaunchScreen(MainRouter.instance.initialLoadCompleted)
-
-          ),
+        ),
     );
   }
 }

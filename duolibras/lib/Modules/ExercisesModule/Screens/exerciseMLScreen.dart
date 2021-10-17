@@ -3,23 +3,22 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
-import 'package:duolibras/MachineLearning/Helpers/camera_helper.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/timeBar.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'exerciseScreen.dart';
-import 'package:confetti/confetti.dart';
 
 class ExerciseMLScreen extends ExerciseStateful {
   static String routeName = "/ExerciseMLScreen";
 
   final ExerciseViewModel _viewModel;
   final Exercise _exercise;
-  final bool isSpelling;
+  final bool _isSpelling;
 
-  ExerciseMLScreen(this._exercise, this._viewModel, this.isSpelling);
+  ExerciseMLScreen(this._exercise, this._viewModel, this._isSpelling);
 
   @override
   _ExerciseMLScreenState createState() => _ExerciseMLScreenState();
@@ -28,40 +27,29 @@ class ExerciseMLScreen extends ExerciseStateful {
 class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   var _showingCamera = false;
   var _finishedExercise = false;
-  late CameraHelper cameraHelper =
-      CameraHelper(widget._viewModel.mlModel, CameraLensDirection.front);
-  final completer = Completer<void>();
   var spelledText = "";
-
-  late ConfettiController controllerTopCenter;
+  var _isRightAnswer = false;
+  final completer = Completer<void>();
+  late double totalTime = widget._exercise.correctAnswer.split('').length * 15.0;
+  // late ConfettiController controllerTopCenter;
 
   @override
   void initState() {
     super.initState();
 
-    cameraHelper.completer.future.then((_) => {completer.complete()});
-
-    widget._viewModel.mlModel.tfLiteResultsController.stream.listen((value) {
-      //Update results on screen
-      setState(() {
-        _handleCameraPrediction(
-            value.first.label, value.first.confidence, this.context);
-      });
-    }, onDone: () {}, onError: (error) {});
-
     widget.handleNextExercise = () {
-      goNextExerciseFromAppBar();
+      _submitAnswer(this.context);
     };
 
     setState(() {
-      initController();
+      // initController();
     });
   }
 
-  void initController() {
-    controllerTopCenter =
-        ConfettiController(duration: const Duration(seconds: 2));
-  }
+  // void initController() {
+  //   controllerTopCenter =
+  //       ConfettiController(duration: const Duration(seconds: 2));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -83,47 +71,43 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                         containerSize, context))));
   }
 
-  Align buildConfettiWidget(controller, double blastDirection) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: ConfettiWidget(
-        maximumSize: Size(30, 30),
-        shouldLoop: false,
-        confettiController: controller,
-        blastDirection: blastDirection,
-        blastDirectionality: BlastDirectionality.directional,
-        maxBlastForce: 20, // set a lower max blast force
-        minBlastForce: 8, // set a lower min blast force
-        emissionFrequency: 1, // a lot of particles at once
-        gravity: 1,
-      ),
-    );
-  }
+  // Align buildConfettiWidget(controller, double blastDirection) {
+  //   return Align(
+  //     alignment: Alignment.topCenter,
+  //     child: ConfettiWidget(
+  //       maximumSize: Size(30, 30),
+  //       shouldLoop: false,
+  //       confettiController: controller,
+  //       blastDirection: blastDirection,
+  //       blastDirectionality: BlastDirectionality.directional,
+  //       maxBlastForce: 20, // set a lower max blast force
+  //       minBlastForce: 8, // set a lower min blast force
+  //       emissionFrequency: 1, // a lot of particles at once
+  //       gravity: 1,
+  //     ),
+  //   );
+  // }
 
-  Widget _buildOnboardingBody(Exercise exercise, ExerciseViewModel viewModel,
-      Size containerSize, BuildContext ctx) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-            height: containerSize.height * 0.10,
-            child: QuestionWidget("Faça o sinal em Libras")),
-        SizedBox(height: 15),
-        Container(
-          height: containerSize.height * 0.08,
-          width: containerSize.width * 0.7,
-          child: ElevatedButton(
-            child: Text("Abrir a Câmera"),
-            onPressed: () {
-              setState(() {
-                _showingCamera = true;
-              });
-            },
-            style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.blue)))),
+  Widget _buildOnboardingBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+              height: containerSize.height * 0.10,
+              child: QuestionWidget("Faça o sinal em Libras")),
+          SizedBox(height: 15),
+          Container(
+            height: containerSize.height * 0.08,
+            width: containerSize.width * 0.7,
+            child: ElevatedButton(
+              child: Text("Abrir a Câmera"),
+              onPressed: () => _startCamera(),
+              style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.blue)))),
+            ),
           ),
         ),
       ],
@@ -145,30 +129,9 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                     children: <Widget>[
                       _buildQuestionText(),
                       _buildAnswerText(),
-                      SizedBox(height: containerSize.height * 0.05),
-                      Container(
-                          width: containerSize.width * 0.95,
-                          height: containerSize.height * 0.63,
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(200, 205, 219, 1),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20.0),
-                            ),
-                          ),
-                          child: Center(
-                              child: Container(
-                                  width: containerSize.width * 0.91,
-                                  height: containerSize.height * 0.605,
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(20.0),
-                                        topRight: Radius.circular(20.0),
-                                        bottomRight: Radius.circular(20.0),
-                                        bottomLeft: Radius.circular(20.0),
-                                      ),
-                                      child: CameraPreview(
-                                          cameraHelper.camera))))),
-                      SizedBox(height: containerSize.height * 0.05),
+                      SizedBox(height: containerSize.height * 0.04),
+                      _finishedExercise ? _buildFeedback(containerSize) : _buildCameraPreview(containerSize),
+                      SizedBox(height: containerSize.height * 0.04),
                       _buildSpelledLetters()
                     ],
                   );
@@ -178,87 +141,165 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
               },
             ),
           ),
-          buildConfettiWidget(controllerTopCenter, 3.14 / 1),
-          buildConfettiWidget(controllerTopCenter, 3.14 / 4),
+          // buildConfettiWidget(controllerTopCenter, 3.14 / 1),
+          // buildConfettiWidget(controllerTopCenter, 3.14 / 4),
         ]),
       ],
     );
   }
 
+  Widget _buildCameraPreview(Size containerSize) {
+    final cameraRatio = widget._viewModel.getCamera().value.aspectRatio;
+
+    final size = MediaQuery.of(context).size;
+    var scale = size.aspectRatio * cameraRatio;
+
+    // to prevent scaling down, invert the value
+    if (scale < 1) scale = 1 / scale;
+
+    return Stack(
+      alignment: AlignmentDirectional.bottomStart,
+      children: [
+        Container(
+          width: containerSize.width * 0.93,
+          height: containerSize.height * 0.65,
+          decoration: BoxDecoration(
+              color: Color.fromRGBO(200, 205, 219, 1),
+              borderRadius: BorderRadius.all(
+                Radius.circular(20.0),
+              ),
+            ),
+          child: Center(
+            child: Container(
+              width: containerSize.width * 0.89,
+              height: containerSize.height * 0.63,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
+                  bottomRight: Radius.circular(20.0),
+                  bottomLeft: Radius.circular(20.0),
+                ),
+                child: Transform.scale(scale: scale, child: CameraPreview(widget._viewModel.getCamera()))
+              )
+            )
+          )
+        ),
+        TimeBar(Size(containerSize.width * 0.93, containerSize.height * 0.04), totalTime, [Color.fromRGBO(73, 130, 246, 1), Color.fromRGBO(44, 196, 252, 1)], 
+        () {
+          widget._viewModel.isAnswerCorrect("", widget._exercise.id);
+          _finishExercise(false); 
+        })
+      ]
+    );
+  }
+
   Widget _buildQuestionText() {
     final question = widget._exercise.question;
-    return Text(
-      question,
-      style: TextStyle(
-          fontSize: 24, color: Colors.black, fontWeight: FontWeight.w700),
-    );
+    return LayoutBuilder(builder: (ctx, constraint) {
+      return Container(
+        width: constraint.maxWidth * 0.89,
+        height: 33,
+        child:  Center(
+          child: Text(
+            question ?? "",
+            style: TextStyle(fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w700),
+          ),
+        )
+      );
+    });
   }
 
   Widget _buildAnswerText() {
     final answer = widget._exercise.correctAnswer;
     return LayoutBuilder(builder: (ctx, constraint) {
-      return Center(
-          child: Container(
-              width: constraint.maxWidth * 0.85,
-              height: 50,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.white),
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-              child: Center(
-                child: Text(
-                  answer,
-                  style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500),
-                ),
-              )));
+      return Container(
+        width: constraint.maxWidth * 0.89,
+        height: 54,
+        decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(20))), 
+        child: 
+          Center(
+            child: Text(
+              answer,
+              style: TextStyle(fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w500),
+            ),
+          )
+      );
     });
   }
 
   Widget _buildSpelledLetters() {
     return LayoutBuilder(builder: (ctx, constraint) {
       return Center(
-          child: Container(
-              width: constraint.maxWidth * 0.85,
-              height: 50,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.white),
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-              child: Center(
+        child: Container(
+            width: constraint.maxWidth * 0.89,
+            height: 54,
+            decoration: 
+            BoxDecoration(color: Colors.white, 
+              border: Border.all(width: 5, color: _finishedExercise ? (_isRightAnswer ? Color.fromRGBO(147, 202, 250, 1) : Color.fromRGBO(233, 112, 112, 1)) : Colors.white) , 
+              borderRadius: BorderRadius.all(Radius.circular(20))
+            ), 
+            child: 
+              Center(
                 child: Text(
                   spelledText,
-                  style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w500, letterSpacing: 2.0),
                 ),
               )));
     });
   }
 
-  void _handleCameraPrediction(
-      String label, double confidence, BuildContext ctx) {
-    if (!widget.isSpelling) {
-      _handleCameraPredictionLetter(label, confidence, ctx);
-    } else {
-      _handleCameraPredictionSpelling(label, confidence, ctx);
-    }
+  Widget _buildFeedback(Size containerSize) {
+    return Center(
+      child: Container(
+          width: containerSize.width * 0.89,
+          height: containerSize.height * 0.5,
+          decoration: 
+          BoxDecoration(color: Colors.white, 
+            border: Border.all(width: 5, color: Colors.white) , 
+            borderRadius: BorderRadius.all(Radius.circular(20))
+          ),
+          child: Image(image: AssetImage(_isRightAnswer ? Constants.imageAssets.happyFace : Constants.imageAssets.sadFace ))), 
+    );
   }
 
-  void _handleCameraPredictionLetter(
-      String label, double confidence, BuildContext ctx) {
-    if (widget._viewModel
-            .isGestureCorrect(label, confidence, widget._exercise) &&
-        !_finishedExercise) {
-      _finishedExercise = true;
-      controllerTopCenter.play();
-      setState(() {
-        spelledText = label;
-        _closeAll(ctx);
-      });
+  void _startCamera() {
+    widget._viewModel.initializeCamera().then((value) => completer.complete()); 
+
+    widget._viewModel.getMlModelStream().listen(
+      (value) {
+        //Update results on screen
+        setState(() {
+          _handleCameraPrediction(value.first.label, value.first.confidence, this.context);
+        });
+      },
+      onDone: () {
+      },
+      onError: (error) {
+      }
+    );
+
+    setState(() {
+      _showingCamera = true;
+    });
+  }
+
+  void _handleCameraPrediction(String label, double confidence, BuildContext ctx) {
+      if (!widget._isSpelling) {
+        _handleCameraPredictionLetter(label, confidence, ctx);
+      }
+      else {
+        _handleCameraPredictionSpelling(label, confidence, ctx);
+      }
+  }
+
+  void _handleCameraPredictionLetter(String label, double confidence, BuildContext ctx){
+    if (widget._viewModel.isGestureCorrect(label, confidence, widget._exercise) && !_finishedExercise) {
+        // controllerTopCenter.play();
+          setState(() {
+            spelledText = label;
+          });
+          _finishExercise(true);
     }
   }
 
@@ -270,40 +311,29 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
         spelledText = widget._viewModel.spelledLetters.join();
       });
       if (spelledText == widget._exercise.correctAnswer) {
-        _finishedExercise = true;
-        controllerTopCenter.play();
-        setState(() {
-          _closeAll(ctx);
-        });
+          // controllerTopCenter.play();
+          _finishExercise(true);
       }
     }
   }
 
-  void _closeAll(BuildContext ctx) {
-    widget._viewModel.showNextArrow();
-    widget._viewModel.mlModel.close();
-    Future.delayed(Duration(seconds: 2), () {
-      cameraHelper.dispose();
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _showingCamera = false;
-      });
+  void _finishExercise(bool rightAnswer) {
+    setState(() {
+      _finishedExercise = true;
+      _isRightAnswer = rightAnswer;
+      widget._viewModel.closeCamera();
+      widget._viewModel.showNextArrow();
     });
+  }
+
+  void _submitAnswer(BuildContext ctx) {
+    widget._viewModel.didSubmitTextAnswer(spelledText, widget._exercise.id, this.context);
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget._viewModel.mlModel.tfLiteResultsController.close();
-    _showingCamera = false;
-    cameraHelper.dispose();
   }
 
-  void goNextExerciseFromAppBar() {
-    _closeAll(this.context);
-    widget._viewModel
-        .didSubmitTextAnswer(spelledText, widget._exercise.id, this.context);
-  }
+
 }

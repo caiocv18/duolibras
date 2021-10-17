@@ -1,76 +1,53 @@
-import 'package:duolibras/Commons/ViewModel/ScreenState.dart';
+import 'dart:async';
+
+import 'package:camera/camera.dart';
+import 'package:duolibras/Commons/Utils/utils.dart';
+import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
+import 'package:duolibras/MachineLearning/Helpers/camera_helper.dart';
+import 'package:duolibras/MachineLearning/Helpers/result.dart';
 import 'package:duolibras/MachineLearning/TFLite/tflite_helper.dart';
+import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/feedbackExerciseScreen.dart';
-import 'package:duolibras/Network/Authentication/UserSession.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
-import 'package:duolibras/Network/Models/Module.dart';
-import 'package:duolibras/Network/Models/ModuleProgress.dart';
-import 'package:duolibras/Network/Models/Provaiders/userProvider.dart';
+import 'package:duolibras/Services/Models/appError.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
+import 'package:duolibras/Services/Models/module.dart';
+import 'package:duolibras/Services/Models/moduleProgress.dart';
+import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/service.dart';
 import 'package:duolibras/Network/Models/sectionProgress.dart';
-import 'package:duolibras/Network/Service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
-import '../Screens/exerciseWritingScreen.dart';
 import '../exerciseFlow.dart';
 
-class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
+class ExerciseViewModel extends BaseViewModel {
   final Tuple2<List<Exercise>, Module> exercisesAndModule;
-
-  // final void Function(Exercise? exercise) _didFinishExercise;
-  final mlModel = TFLiteHelper();
   final ExerciseFlowDelegate exerciseFlowDelegate;
-
-  List<String> spelledLetters = [];
-  //ML Exercise spelling
   late List<Exercise> exercises;
+  final _errorHandler = ErrorHandler();
 
+  //ML Exercise 
+  final CameraHelper _cameraHelper = CameraHelper(TFLiteHelper(), CameraLensDirection.front);
+  List<String> spelledLetters = [];
+ 
   ExerciseViewModel(this.exercisesAndModule, this.exerciseFlowDelegate) {
     exercises = exercisesAndModule.item1;
   }
 
   var exerciseProgressValue = 0.0;
   var totalPoints = 0.0;
-  var wrongAnswers = 0;
 
   var lifes = 3;
-
-  @override
-  void didSubmitTextAnswer(
-      String answer, String exerciseID, BuildContext context) {
-    if (answer.isEmpty) {
-      return;
-    }
-    final exercise = exercises.where((exe) => exe.id == exerciseID).first;
-
-    final isAnswerCorrect = exercise.correctAnswer == answer;
-
-    totalPoints += isAnswerCorrect ? exercise.score : 0.0;
-
-    _handleMoveToNextExercise(exerciseID, context);
-  }
-
-  bool _handleFinishModule(bool isAnswerCorrect) {
-    wrongAnswers += isAnswerCorrect ? 0 : 1;
-
-    lifes -= wrongAnswers;
-    exerciseFlowDelegate.updateNumberOfLifes(lifes);
-
-    if (lifes == 0) {
-      exerciseFlowDelegate.didFinishExercise(null, FeedbackStatus.Failed);
-      return true;
-    }
-    return false;
-  }
 
   bool isAnswerCorrect(String answer, String exerciseID) {
     if (answer.isEmpty) {
       _handleFinishModule(false);
       return false;
     }
+
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
-    _handleFinishModule(exercise.correctAnswer == answer);
+     _handleFinishModule(exercise.correctAnswer == answer);
     return exercise.correctAnswer == answer;
   }
 
@@ -78,26 +55,25 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
     return exercise.correctAnswer == label && confidence > 0.9;
   }
 
-  bool isSpellingCorrect(
-      String newLetter, double confidence, Exercise exercise) {
+  bool isSpellingCorrect(String newLetter, double confidence, Exercise exercise) {
     final splittedAnswer = exercise.correctAnswer.split("");
 
-    if (splittedAnswer[spelledLetters.length] == newLetter &&
-        confidence > 0.9) {
+    if (splittedAnswer[spelledLetters.length] == newLetter && confidence > 0.9) {
       spelledLetters.add(newLetter);
       return true;
     }
     return false;
   }
 
-  void didSubmitGesture(String label, double confidence, Exercise exercise,
-      BuildContext context) {
-    if (exercise.correctAnswer == label && confidence > 0.8) {
-      didSubmitTextAnswer(label, exercise.id, context);
-    }
+  void didSubmitTextAnswer(String answer, String exerciseID, BuildContext context) {
+    final exercise = exercises.where((exe) => exe.id == exerciseID).first;
+    final isAnswerCorrect = exercise.correctAnswer == answer;
+    totalPoints += isAnswerCorrect ? (exercise.score ?? 0) : 0.0;
+
+    _handleMoveToNextExercise(exerciseID, context);
   }
 
-  Future<void> _saveProgress(BuildContext context) async {
+  Future<void> _saveProgress(BuildContext context, {Function? exitClosure = null}) async {
     final userProvider = Provider.of<UserModel>(context, listen: false);
 
     var moduleProgressIndex = -1;
@@ -127,11 +103,27 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
           maxModuleProgress: exercisesAndModule.item2.maxProgress));
       userProvider.addSectionProgress(sectionProgress);
     }
-    await Service.instance.postSectionProgress(sectionProgress);
+    await Service.instance.postModuleProgress(moduleProgress)
+          .onError((error, stackTrace) {
+            final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
+            debugPrint("Error Exercise View Model: $appError.description");
+
+            Completer<bool> completer = Completer<bool>();
+            _errorHandler.showModal(appError, context, tryAgainClosure: () {
+              return Service.instance.postModuleProgress(moduleProgress).then((value) => completer.complete(value))
+              .onError((error, stackTrace) {
+                _errorHandler.showModal(appError, context, exitClosure: () {
+                 if (exitClosure != null)
+                    exitClosure();
+                  completer.complete(false);
+                });
+              });
+            }, exitClosure: exitClosure);
+            return completer.future;
+          });
   }
 
-  Future<void> _handleMoveToNextExercise(
-      String exerciseID, BuildContext context) async {
+  Future<void> _handleMoveToNextExercise(String exerciseID, BuildContext context) async {
     final index = exercises.indexWhere((m) => m.id == exerciseID);
 
     if (index + 1 == exercises.length) {
@@ -144,6 +136,19 @@ class ExerciseViewModel extends BaseViewModel with ExerciseWritingViewModel {
     final exercise = exercises[index + 1];
     exerciseProgressValue = index + 1;
     exerciseFlowDelegate.didFinishExercise(exercise, null);
+  }
+
+  bool _handleFinishModule(bool isAnswerCorrect) {
+    if (isAnswerCorrect) return false;
+
+    lifes -= 1;
+    exerciseFlowDelegate.updateNumberOfLifes(lifes);
+
+    if (lifes == 0) {
+      exerciseFlowDelegate.didFinishExercise(null, FeedbackStatus.Failed);
+      return true;
+    }
+    return false;
   }
 
   void showNextArrow() {
@@ -202,5 +207,22 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
     } on StateError catch (_) {
       return 1;
     }
+  }
+
+  CameraController getCamera() {
+    return _cameraHelper.camera;
+  }
+
+  Stream<List<Result>> getMlModelStream() {
+    return _cameraHelper.mlModel.tfLiteResultsController.stream;
+  }
+
+  Future<void> initializeCamera() {
+    return _cameraHelper.initializeCamera();
+  }
+
+  void closeCamera() async {
+    await _cameraHelper.close();
+    await _cameraHelper.mlModel.close();
   }
 }

@@ -1,11 +1,11 @@
-import 'package:duolibras/Modules/LoginModule/ViewModel/autheticationViewModel.dart';
+import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
+import 'package:duolibras/Services/Authentication/authenticationModel.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FirebaseSignInWidget extends StatefulWidget {
-  final FirebaseAuthenticatorProtocol _viewModel;
-
+  final LoginViewModel _viewModel;
   FirebaseSignInWidget(this._viewModel);
 
   @override
@@ -36,7 +36,7 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
               SizedBox(height: 45.0),
               emailTextfield(),
               SizedBox(height: 35.0),
-              loginButton()
+              loginButton(context)
             ],
           ),
         ),
@@ -58,7 +58,7 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
           await FirebaseDynamicLinks.instance.getInitialLink();
       if (data != null) {
         widget._viewModel
-            .handleFirebaseLink(data.link, emailTextfieldController.text)
+            .handleFirebaseEmailLinkSignIn(emailTextfieldController.text, data.link)
             .then((value) => {Navigator.of(context).pop(true)});
       }
 
@@ -67,7 +67,7 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
         if (dynamicLink != null) {
           final Uri deepLink = dynamicLink.link;
           widget._viewModel
-              .handleFirebaseLink(deepLink, emailTextfieldController.text)
+            .handleFirebaseEmailLinkSignIn(emailTextfieldController.text, deepLink)
               .then((value) => {Navigator.of(context).pop(true)});
         }
       }, onError: (OnLinkErrorException e) async {
@@ -77,8 +77,8 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
     }
   }
 
-  void signIn() async {
-    await widget._viewModel.firebaseSignIn(emailTextfieldController.text);
+  void signIn(BuildContext ctx) async {
+    await widget._viewModel.login(ctx, LoginType.Firebase, loginModel: AuthenticationModel(email: emailTextfieldController.text));
   }
 
   Widget emailTextfield() {
@@ -94,7 +94,7 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
     );
   }
 
-  Widget loginButton() {
+  Widget loginButton(BuildContext ctx) {
     return Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
@@ -103,7 +103,7 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          signIn();
+          signIn(ctx);
         },
         child: Text("Login",
             textAlign: TextAlign.center,

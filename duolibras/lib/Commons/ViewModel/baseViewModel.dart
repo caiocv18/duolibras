@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'ScreenState.dart';
+import 'screenState.dart';
 
 class BaseViewModel extends ChangeNotifier {
   ScreenState _state = ScreenState.Normal;

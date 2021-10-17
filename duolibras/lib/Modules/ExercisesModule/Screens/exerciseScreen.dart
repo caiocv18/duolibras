@@ -1,6 +1,6 @@
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/midiaWidget.dart';
-import 'package:duolibras/Network/Models/Exercise.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:flutter/material.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
 
@@ -11,8 +11,7 @@ abstract class ExerciseScreenDelegate {
   }
 }
 
-abstract class ExerciseStateless extends StatelessWidget
-    with ExerciseScreenDelegate {
+abstract class ExerciseStateless extends StatelessWidget with ExerciseScreenDelegate {
   void showFinishExerciseBottomSheet(bool isAnswerCorrect, String correctAnswer,
       BuildContext context, Function handler) {
     final button = ExerciseButton(
@@ -123,8 +122,7 @@ abstract class ExerciseStateless extends StatelessWidget
   }
 }
 
-abstract class ExerciseStateful extends StatefulWidget
-    with ExerciseScreenDelegate {
+abstract class ExerciseStateful extends StatefulWidget with ExerciseScreenDelegate {
   void showFinishExerciseBottomSheet(bool isAnswerCorrect, String correctAnswer,
       BuildContext context, Function handler) {
     final button = ExerciseButton(

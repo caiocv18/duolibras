@@ -8,12 +8,10 @@ import '../Helpers/app_helper.dart';
 import '../Helpers/result.dart';
 
 class TFLiteHelper extends MLModelProtocol {
-  StreamController<List<Result>> tfLiteResultsController = new StreamController.broadcast();
   var _outputs = <Result>[];
 
   Future<void> loadModel() async {
     AppHelper.log("loadModel", "Loading model..");
-    tfLiteResultsController = new StreamController.broadcast();
 
     return Tflite.loadModel(
             model: "assets/model.tflite",
@@ -29,6 +27,8 @@ class TFLiteHelper extends MLModelProtocol {
   }
 
   void predict(CameraImage image) async {
+    if (!isOpen || !modelsIsLoaded) return;
+    
     var recognitions = await Tflite.runModelOnFrame(
         bytesList: image.planes.map((plane) {
           return plane.bytes;
@@ -68,9 +68,8 @@ class TFLiteHelper extends MLModelProtocol {
   }
 
   @override
-  void close() {
-    Tflite.close();
-    tfLiteResultsController.close();
+  Future<void> close() async {
+    await Tflite.close();
     isOpen = false;
   }
 
