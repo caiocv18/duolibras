@@ -49,14 +49,14 @@ class FirebaseService extends ServicesProtocol {
 
     _getTrailFromFirebase()
         .collection(Constants.firebaseService.sectionsCollection)
-        .get()
+        .get(GetOptions(source: Source.server))
         .then((value) => {
               completer.complete(value.docs
                   .map((e) => Section.fromMap(e.data(), e.id))
                   .toList())
             })
         .catchError((error, stackTrace) => {
-          Future.error(FirebaseErrors.GetSectionsError)
+          completer.completeError(FirebaseErrors.GetSectionsError)
         });
 
     return completer.future;
@@ -76,7 +76,7 @@ class FirebaseService extends ServicesProtocol {
                   .toList())
             })
         .catchError((error, stackTrace) => {
-          Future.error(FirebaseErrors.GetModulesError)
+          completer.completeError(FirebaseErrors.GetModulesError)
         });
 
     return completer.future;
@@ -100,7 +100,7 @@ class FirebaseService extends ServicesProtocol {
                   .toList())
             })
         .catchError((error, stackTrace) => {
-          Future.error(FirebaseErrors.GetExercisesError)
+          completer.completeError(FirebaseErrors.GetExercisesError)
         });
 
     return completer.future;
@@ -118,7 +118,7 @@ class FirebaseService extends ServicesProtocol {
                   .toList())
             })
         .catchError((error, stackTrace) => {
-          Future.error(FirebaseErrors.GetModulesError) 
+          completer.completeError(FirebaseErrors.GetModulesError)
         });
 
     return completer.future;
@@ -137,7 +137,7 @@ class FirebaseService extends ServicesProtocol {
                   .toList())
             })
         .catchError((error, stackTrace) => {
-          Future.error(FirebaseErrors.GetRankingError) 
+          completer.completeError(FirebaseErrors.GetRankingError)
         });
     return completer.future;
   }
@@ -152,7 +152,7 @@ class FirebaseService extends ServicesProtocol {
         .set(moduleProgress.toMap(), SetOptions(merge: true))
         .then((_) => {completer.complete(true)})
         .catchError((error, stackTrace) => {
-          Future.error(FirebaseErrors.PostModuleProgressError) 
+          completer.completeError(FirebaseErrors.PostModuleProgressError) 
         });
 
     return completer.future;
@@ -183,7 +183,7 @@ class FirebaseService extends ServicesProtocol {
               })
             })
         .catchError((error, stackTrace) {
-          Future.error(FirebaseErrors.PostUserError);
+          completer.completeError(FirebaseErrors.PostUserError);
         });
 
     return completer.future;
@@ -283,7 +283,7 @@ class FirebaseService extends ServicesProtocol {
                   .toList())
             })
       .catchError((error, stackTrace) => {
-        Future.error(FirebaseErrors.GetNumberOfExercisesError)
+        completer.completeError(FirebaseErrors.GetNumberOfExercisesError)
       });
 
     return completer.future;

@@ -1,17 +1,41 @@
 import 'dart:ui';
 
+import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Services/Models/appError.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 
-class ErrorScreen extends StatelessWidget {
-  Function? exitClosure;
-  Function? tryAgainClosure;
-  AppError error;
+enum ErrorScreenState {
+  Loading, 
+  Normal
+}
 
-  ErrorScreen(this.error, this.tryAgainClosure, this.exitClosure);
+class ErrorScreen extends StatefulWidget {
+  Function? _exitClosure;
+  Function? _tryAgainClosure;
+  Function(ErrorScreenState)? changeScreenState;
+  AppError _error;
+
+  ErrorScreen(this._error, this._tryAgainClosure, this._exitClosure);
+
+  @override
+  State<ErrorScreen> createState() => _ErrorScreenState();
+}
+
+class _ErrorScreenState extends State<ErrorScreen> {
+  var state = ErrorScreenState.Normal;
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.changeScreenState = (state) {
+      setState(() {
+        this.state = state;
+      });
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +44,19 @@ class ErrorScreen extends StatelessWidget {
     final containerHeight = mediaQuery.size.height - paddingTop;
     final containerSize = Size(mediaQuery.size.width, containerHeight);
 
-      return  Material(
-        color: Colors.transparent,
-          child: Container(
-          width: double.infinity,
-          height: containerHeight * 0.9,
-          child: _buildBody(containerSize, context)));
+    return  Material(
+      color: Colors.transparent,
+        child: Container(
+        width: double.infinity,
+        height: containerHeight * 0.9,
+        child: _buildBody(containerSize, context)));
   }
 
   Widget _buildBody(Size containerSize, BuildContext ctx) {
     return Container(
       height: containerSize.height * 0.8,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color.fromRGBO(234, 234, 234, 1),
         border: Border.all(color: Colors.white),
         borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
         boxShadow: [
@@ -47,13 +71,14 @@ class ErrorScreen extends StatelessWidget {
       child: 
       Column(
         children: [
-          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0, top: 10),
-              child: _buildExitButton(ctx),
-            )
-          ]),
-          SizedBox(height: tryAgainClosure == null ? containerSize.height * 0.1 : containerSize.height * 0.04),
+          if (widget._exitClosure != null)
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0, top: 10),
+                child: _buildExitButton(ctx),
+              )
+            ]),
+            SizedBox(height: widget._tryAgainClosure == null ? containerSize.height * 0.1 : containerSize.height * 0.04),
           Container(
             width: double.infinity,
             child: Column(
@@ -62,11 +87,11 @@ class ErrorScreen extends StatelessWidget {
               _buildImage(containerSize),
               SizedBox(height: containerSize.height * 0.04),
               _buildDescriptionText(),
-              if (tryAgainClosure != null)
+              if (widget._tryAgainClosure != null)
                 Container(child: 
                   Column(children: [
                   SizedBox(height: containerSize.height * 0.1),
-                  _buildButton(containerSize)
+                  _buildTryAgainButton(containerSize)
                 ]))
             ]),
           ),
@@ -76,37 +101,15 @@ class ErrorScreen extends StatelessWidget {
   }
 
   Widget _buildExitButton(BuildContext ctx) {
-    return ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Stack(
-            children: <Widget>[
-              Positioned.fill(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.black
-                  ),
-                ),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.all(10.0),
-                  primary: Colors.white,
-                  textStyle: const TextStyle(fontSize: 20, fontFamily: "Nunito", fontWeight: FontWeight.w700),
-                ),
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                  if (exitClosure != null)
-                    exitClosure!();
-                },
-                 child: const Text('X'),
-              ),
-            ],
-          ),
-        );
+    return GestureDetector(child: Icon(Icons.close), onTap: ()  {
+      Navigator.of(ctx).pop();
+      if (widget._exitClosure != null)
+        widget._exitClosure!();
+    });
   }
 
   Widget _buildDescriptionText() {
-    final answer = error.description;
+    final answer = widget._error.description;
     return LayoutBuilder(builder: (ctx, constraint) {
       return Container(
         width: constraint.maxWidth * 0.89,
@@ -128,39 +131,47 @@ class ErrorScreen extends StatelessWidget {
           width: containerSize.width * 0.8,
           height: containerSize.height * 0.35,
           decoration: 
-          BoxDecoration(color: Colors.white, 
+          BoxDecoration(color: Colors.transparent, 
             borderRadius: BorderRadius.all(Radius.circular(20))
           ),
           child: Container(child: Image(image: AssetImage(Constants.imageAssets.sadFace))), 
     ));
   }
 
-  Widget _buildButton(Size containerSize) {
-    return ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: Stack(
-            children: <Widget>[
-              Positioned.fill(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.black
-                  ),
+  Widget _buildTryAgainButton(Size containerSize) {
+    if (state == ErrorScreenState.Normal) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Stack(
+          children: <Widget>[
+            Positioned.fill(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.black
                 ),
               ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.all(12.0),
-                  primary: Colors.white,
-                  textStyle: const TextStyle(fontSize: 20, fontFamily: "Nunito", fontWeight: FontWeight.w700),
-                ),
-                onPressed: () {
-                  if (tryAgainClosure != null)
-                    tryAgainClosure!();
-                },
-                 child: const Text('Tente novamente'),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.all(12.0),
+                primary: Colors.white,
+                textStyle: const TextStyle(fontSize: 20, fontFamily: "Nunito", fontWeight: FontWeight.w700),
               ),
-            ],
-          ),
-        );
+              onPressed: () {
+                if (widget._tryAgainClosure != null)
+                  widget._tryAgainClosure!();
+              },
+              child: const Text('Tente novamente'),
+            ),
+          ],
+        ),
+      );
+    }
+    else {
+      return Center(
+        child: CircularProgressIndicator(color: Colors.black),
+      );
+    }
   }
+
 }

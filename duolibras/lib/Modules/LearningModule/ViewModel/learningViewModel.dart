@@ -6,7 +6,6 @@ import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/sectionWidget.dart';
-import 'package:duolibras/Services/Models/appError.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
@@ -28,25 +27,17 @@ class LearningViewModel with SectionsViewModel, ModuleViewModel, LearningViewMod
     sections = _controller.stream;
   }
 
-
   @override
   Future<List<Module>> getModulesfromSection(String sectionID, BuildContext context) async {
     return Service.instance.getModulesFromSectionId(sectionID)
     .onError((error, stackTrace) {
-      final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
-      debugPrint("Error Learning View Model: $appError.description");
-
+      final appError = Utils.logAppError(error);
       Completer<List<Module>> completer = Completer<List<Module>>();
-      _errorHandler.showModal(appError, context, tryAgainClosure: () {
-        return Service.instance.getModulesFromSectionId(sectionID).then((value) => completer.complete(value))
-        .onError((error, stackTrace) {
-          _errorHandler.showModal(appError, context, exitClosure: () {
-            completer.complete([]);
-          });
-        });
-      }, exitClosure: () {
-        completer.complete([]);
-      });
+
+      _errorHandler.showModal(appError, context, enableDrag: false,
+      tryAgainClosure: () => _errorHandler.tryAgainClosure(() => 
+      Service.instance.getModulesFromSectionId(sectionID), context, completer),  
+      exitClosure: () => completer.complete([]));
       return completer.future;
     });
   }
@@ -55,24 +46,13 @@ class LearningViewModel with SectionsViewModel, ModuleViewModel, LearningViewMod
   Future<List<Section>> getSectionsFromTrail(BuildContext context) {
     return Service.instance.getSectionsFromTrail()
     .onError((error, stackTrace) {
-      final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
-      debugPrint("Error Learning View Model: $appError.description");
-
+      final appError = Utils.logAppError(error);
       Completer<List<Section>> completer = Completer<List<Section>>();
-      _errorHandler.showModal(appError, context, tryAgainClosure: () {
-        return Service.instance.getSectionsFromTrail().then((value) => completer.complete(value))
-        .onError((error, stackTrace) {
-          _errorHandler.showModal(appError, context, exitClosure: () {
-            error = true;
-            hasMore = false;
-            completer.complete([]);
-          });
-        });
-      }, exitClosure: () {
-            error = true;
-            hasMore = false;
-            completer.complete([]);
-      });
+
+      _errorHandler.showModal(appError, context, enableDrag: false,
+      tryAgainClosure: () => _errorHandler.tryAgainClosure(() => 
+      Service.instance.getSectionsFromTrail(), context, completer), 
+      );
       return completer.future;
     });
   }
@@ -90,20 +70,13 @@ class LearningViewModel with SectionsViewModel, ModuleViewModel, LearningViewMod
   Future<List<Exercise>> _getExerciseFromModule(String sectionID, String moduleID, int level, BuildContext context) {
     return Service.instance.getExercisesFromModuleId(sectionID, moduleID, level)
     .onError((error, stackTrace) {
-      final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
-      debugPrint("Error Learning View Model: $appError.description");
-
+      final appError = Utils.logAppError(error);
       Completer<List<Exercise>> completer = Completer<List<Exercise>>();
-      _errorHandler.showModal(appError, context, tryAgainClosure: () {
-        return Service.instance.getExercisesFromModuleId(sectionID, moduleID, level).then((value) => completer.complete(value))
-        .onError((error, stackTrace) {
-          _errorHandler.showModal(appError, context, exitClosure: () {
-            completer.complete([]);
-          });
-        });
-      }, exitClosure: () {
-        completer.complete([]);
-      });
+
+      _errorHandler.showModal(appError, context, 
+      tryAgainClosure: () =>  _errorHandler.tryAgainClosure(() => 
+      Service.instance.getExercisesFromModuleId(sectionID, moduleID, level), context, completer),
+      exitClosure: () => completer.complete([]));
       return completer.future;
     });
   }
@@ -112,22 +85,14 @@ class LearningViewModel with SectionsViewModel, ModuleViewModel, LearningViewMod
     return Service.instance
         .getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity)
         .onError((error, stackTrace) {
-        final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
-        debugPrint("Error Learning View Model: $appError.description");
+          final appError = Utils.logAppError(error);
+          Completer<List<Exercise>> completer = Completer<List<Exercise>>();
 
-        Completer<List<Exercise>> completer = Completer<List<Exercise>>();
-        _errorHandler.showModal(appError, context, tryAgainClosure: () {
-          return Service.instance
-          .getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity).then((value) => completer.complete(value))
-          .onError((error, stackTrace) {
-            _errorHandler.showModal(appError, context, exitClosure: () {
-              completer.complete([]);
-            });
-          });
-        }, exitClosure: () {
-          completer.complete([]);
-        });
-        return completer.future;
+          _errorHandler.showModal(appError, context, 
+          tryAgainClosure: () => _errorHandler.tryAgainClosure(() => 
+          Service.instance.getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity), context, completer),
+          exitClosure: () => completer.complete([]));
+          return completer.future;
       })
       .then((exercises) {
           exercises.shuffle();

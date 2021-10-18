@@ -4,7 +4,7 @@ import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Services/Database/databaseProtocol.dart';
 import 'package:duolibras/Services/Database/SQLite/sqliteDatabase.dart';
-import 'package:duolibras/Services/Firebase/FirebaseErrors.dart';
+import 'package:duolibras/Services/Firebase/firebaseErrors.dart';
 import 'package:duolibras/Services/Firebase/firebaseService.dart';
 import 'package:duolibras/Services/Mock/mockService.dart';
 import 'package:duolibras/Services/Models/appError.dart';
@@ -127,12 +127,12 @@ class Service {
   }
 
 //Error handling
-  Future<T> _handleFirebaseException<T>(Object error, StackTrace stackTrace) {
+  Future<T> _handleFirebaseException<T>(Object? error, StackTrace stackTrace) {
     final FirebaseErrors firebaseError = Utils.tryCast(error, fallback: FirebaseErrors.Unknown);
     return Future.error(AppError(firebaseError.type, firebaseError.errorDescription));
   }
 
-  Future<T> _handleDatabaseException<T>(Object error, StackTrace stackTrace) {
+  Future<T> _handleDatabaseException<T>(Object? error, StackTrace stackTrace) {
     final DatabaseErrors databaseError = Utils.tryCast(error, fallback: DatabaseErrors.Unknown);
     return Future.error(AppError(databaseError.type, databaseError.errorDescription));
   }

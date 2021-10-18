@@ -22,13 +22,13 @@ class AuthenticationService {
   AuthenticationService._();
 
   Future<void> appleSignIn() async {
-    return await _appleAuthenticator.signInWithApple()
+    return _appleAuthenticator.signInWithApple()
     .then((user) => _updateUserInDatabase(user))
     .catchError(_handleAuthenticationException, test: (e) => e is AuthenticationErrors);
   }
 
   Future<void> googleSignIn() async {
-    return await _googleAuthenticator.signInWithGoogle()
+    return _googleAuthenticator.signInWithGoogle()
     .then((user) => _updateUserInDatabase(user))
     .catchError(_handleAuthenticationException, test: (e) => e is AuthenticationErrors);
   }
@@ -44,7 +44,7 @@ class AuthenticationService {
   }
 
   Future<void> handleFirebaseLink(Uri link, String email) async {
-    return await _firebaseAuthenticator.signInWithEmailLink(email, link.toString())
+    return _firebaseAuthenticator.signInWithEmailLink(email, link.toString())
     .then((user) => _updateUserInDatabase(user))
     .catchError(_handleAuthenticationException, test: (e) => e is AuthenticationErrors);
   }

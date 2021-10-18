@@ -42,37 +42,21 @@ class RankingViewModel extends RankingViewModelProtocol {
       _controller.sink.add(rankings);
     })
     .catchError((error, stackTrace) {
-      final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
-      debugPrint("Error Learning View Model: $appError.description");
-
+      final appError = Utils.logAppError(error);
       Completer<void> completer = Completer<void>();
-      _errorHandler.showModal(appError, context, tryAgainClosure: () {
-        return Service.instance.getUsersRanking().then((value) => completer.complete())
-        .onError((error, stackTrace) {
-          _errorHandler.showModal(appError, context, exitClosure: () {
-            if (exitClosure != null)
-              exitClosure();
-            _exitClosureCalled();
-            completer.complete();
-          });
+
+      _errorHandler.showModal(appError, context, 
+        tryAgainClosure: () => _errorHandler.tryAgainClosure(() => Service.instance.getUsersRanking(), context, completer), 
+        exitClosure: () {
+          loading = false;
+          firstTime = false;
+          _controller.sink.add([]);
+          completer.complete();
         });
-      }, exitClosure: () {
-        if (exitClosure != null)
-          exitClosure();
-        _exitClosureCalled();
-        completer.complete();
-      });
 
       return completer.future;
     });
   }
-
-  void _exitClosureCalled() {
-    loading = false;
-    firstTime = false;
-    _controller.sink.add([]);
-  }
-
 
   @override
   String formatUserName(String name) {

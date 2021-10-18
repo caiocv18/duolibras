@@ -1,3 +1,5 @@
+import 'package:duolibras/Services/Models/appError.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 class Utils {
@@ -16,4 +18,11 @@ class Utils {
   static Future<String> loadJSON(String path) async {
     return await rootBundle.loadString('lib/Network/Mock/Json/${path}.json');
   }
+
+  static AppError logAppError(Object? error){
+    final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
+    debugPrint("Error: ${appError.description}");
+    return appError;
+  }
+  
 }

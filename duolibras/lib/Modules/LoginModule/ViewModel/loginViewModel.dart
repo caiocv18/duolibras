@@ -3,7 +3,6 @@ import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Services/Authentication/authenticationModel.dart';
-import 'package:duolibras/Services/Models/appError.dart';
 import 'package:duolibras/Services/authenticationService.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +31,7 @@ class LoginViewModel extends BaseViewModel {
     }
 
     future.onError((error, stackTrace)  {
-      final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
-      debugPrint("Error Login: $appError.description");
-      // _errorHandler.showModal(appError, ctx, exitClosure: exitClosure);
+      Utils.logAppError(error);
     });
 
     return future;

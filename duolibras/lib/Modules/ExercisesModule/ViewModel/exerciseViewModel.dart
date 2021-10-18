@@ -9,7 +9,6 @@ import 'package:duolibras/MachineLearning/Helpers/result.dart';
 import 'package:duolibras/MachineLearning/TFLite/tflite_helper.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/feedbackExerciseScreen.dart';
-import 'package:duolibras/Services/Models/appError.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/moduleProgress.dart';
@@ -72,7 +71,7 @@ class ExerciseViewModel extends BaseViewModel {
     _handleMoveToNextExercise(exerciseID, context);
   }
 
-  Future<void> _saveProgress(BuildContext context, {Function? exitClosure = null}) async {
+  Future<void> _saveProgress(BuildContext context) async {
     final userProvider = Provider.of<UserModel>(context, listen: false);
     final index = userProvider.user.modulesProgress
         .indexWhere((prog) => prog.moduleId == exercisesAndModule.item2.id);
@@ -97,23 +96,16 @@ class ExerciseViewModel extends BaseViewModel {
       userProvider.setModulesProgress(moduleProgress);
     }
     await Service.instance.postModuleProgress(moduleProgress)
-          .onError((error, stackTrace) {
-            final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
-            debugPrint("Error Exercise View Model: $appError.description");
+      .onError((error, stackTrace) {
+        final appError = Utils.logAppError(error);
+        Completer<bool> completer = Completer<bool>();
 
-            Completer<bool> completer = Completer<bool>();
-            _errorHandler.showModal(appError, context, tryAgainClosure: () {
-              return Service.instance.postModuleProgress(moduleProgress).then((value) => completer.complete(value))
-              .onError((error, stackTrace) {
-                _errorHandler.showModal(appError, context, exitClosure: () {
-                 if (exitClosure != null)
-                    exitClosure();
-                  completer.complete(false);
-                });
-              });
-            }, exitClosure: exitClosure);
-            return completer.future;
-          });
+        _errorHandler.showModal(appError, context, 
+        tryAgainClosure: () => _errorHandler.tryAgainClosure(() => Service.instance.postModuleProgress(moduleProgress), context, completer),
+        exitClosure: () => completer.complete(false));
+        
+        return completer.future;
+    });
   }
 
   Future<void> _handleMoveToNextExercise(String exerciseID, BuildContext context) async {
