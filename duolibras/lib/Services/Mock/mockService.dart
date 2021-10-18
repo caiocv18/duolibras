@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:duolibras/Commons/Utils/utils.dart';
+import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/trail.dart';
 import 'package:duolibras/Services/Models/section.dart';
@@ -106,7 +107,7 @@ class MockService extends ServicesProtocol {
   }
 
   @override
-  Future<bool> postModuleProgress(ModuleProgress moduleProgress) {
+  Future<bool> postSectionProgress(SectionProgress sectionProgress) {
     var completer = Completer<bool>();
     completer.complete(true);
 
@@ -143,5 +144,11 @@ class MockService extends ServicesProtocol {
     exercisesList.shuffle();
     completer.complete(exercisesList);
     return completer.future;
+  }
+
+  @override
+  Future<List<SectionProgress>> getSectionsProgress() {
+    // TODO: implement getSectionsProgress
+    throw UnimplementedError();
   }
 }

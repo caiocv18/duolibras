@@ -79,10 +79,31 @@ class _ProfilePageState extends State<ProfilePage> {
   final _viewModel = ProfileViewModel();
   var _userHasChanged = false;
   var _userName = locator<UserModel>().user.name;
-  
+
   @override
   void initState() {
     super.initState();
+  }
+
+  void _handleSubmitNewName(String newName) {
+    final userModel = locator<UserModel>().user;
+    var user = User(
+        name: nameTextfieldController.value.text,
+        email: userModel.email,
+        id: userModel.id,
+        currentProgress: userModel.currentProgress,
+        imageUrl: userModel.imageUrl);
+
+    user.sectionsProgress = userModel.sectionsProgress;
+
+    _viewModel.updateUser(user);
+
+    final userProvider = Provider.of<UserModel>(context, listen: false);
+    userProvider.setUserName(nameTextfieldController.value.text);
+
+    setState(() {
+      _userName = newName;
+    });
   }
 
   @override
@@ -133,26 +154,5 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ))));
-  }
-
-  void _handleSubmitNewName(String newName) {
-    final userModel = locator<UserModel>().user;
-    var user = User(
-        name: nameTextfieldController.value.text,
-        email: userModel.email,
-        id: userModel.id,
-        currentProgress: userModel.currentProgress,
-        imageUrl: userModel.imageUrl);
-
-    user.modulesProgress = userModel.modulesProgress;
-
-    _viewModel.updateUser(user);
-
-    final userProvider = Provider.of<UserModel>(context, listen: false);
-    userProvider.setUserName(nameTextfieldController.value.text);
-
-    setState(() {
-      _userName = newName;
-    });
   }
 }

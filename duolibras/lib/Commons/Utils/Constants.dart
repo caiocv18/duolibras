@@ -1,6 +1,7 @@
 class Constants {
   static DatabaseConstants database = const DatabaseConstants();
-  static FirebaseServiceConstants firebaseService = const FirebaseServiceConstants();
+  static FirebaseServiceConstants firebaseService =
+      const FirebaseServiceConstants();
   static ImageAssets imageAssets = const ImageAssets();
 }
 
@@ -11,7 +12,7 @@ class DatabaseConstants {
   String get userTable => "users";
   String get trailTable => "trails";
   String get sectionTable => "sections";
-  String get moduleProgressTable => "moduleProgress";
+  String get sectionProgressTable => "sectionProgress";
 }
 
 class FirebaseServiceConstants {
@@ -22,7 +23,7 @@ class FirebaseServiceConstants {
   String get modulesCollecion => "modules";
   String get sectionsCollection => "sections";
   String get trailsCollection => "trails";
-  String get moduleProgressCollection => "moduleProgress";
+  String get sectionProgressCollection => "sectionProgress";
 }
 
 class FirebaseAuthenticatorConstants {
@@ -37,10 +38,10 @@ class ImageAssets {
   const ImageAssets();
   final _basicPath = "assets/images/";
 
-  String get nextExerciseArrow => "${_basicPath}nextExerciseArrow/nextExerciseArrow.png";
+  String get nextExerciseArrow =>
+      "${_basicPath}nextExerciseArrow/nextExerciseArrow.png";
   String get lifeIcon => "${_basicPath}tabBar/lifeIcon.png";
   String get lifeIconEmpty => "${_basicPath}tabBar/lifeIconEmpty.png";
   String get sadFace => "${_basicPath}/sadFace.png";
   String get happyFace => "${_basicPath}/happyFace.png";
-
 }

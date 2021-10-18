@@ -1,4 +1,6 @@
+import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
+import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/Database/databaseProtocol.dart';
 import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/user.dart';
@@ -20,10 +22,13 @@ class SQLiteDatabase extends DatabaseProtocol {
     return openDatabase(
       join(await getDatabasesPath(), Constants.database.databaseName),
       onCreate: (db, version) {
-        return db.execute(
-            'CREATE TABLE ${Constants.database.userTable}(id TEXT PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL, currentProgress INTEGER NOT NULL)').then((_) => {
-              db.execute('CREATE TABLE ${Constants.database.moduleProgressTable}(id TEXT PRIMARY KEY, moduleId TEXT, moduleProgress INTEGER)')
-            });
+        return db
+            .execute(
+                'CREATE TABLE ${Constants.database.userTable}(id TEXT PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL, currentProgress INTEGER NOT NULL)')
+            .then((_) => {
+                  db.execute(
+                      'CREATE TABLE ${Constants.database.moduleProgressTable}(id TEXT PRIMARY KEY, moduleId TEXT, moduleProgress INTEGER)')
+                });
       },
       version: 1,
     );
@@ -36,7 +41,7 @@ class SQLiteDatabase extends DatabaseProtocol {
     final List<Map<String, dynamic>> maps =
         await db.query(Constants.database.userTable);
 
-    if (maps.isEmpty){
+    if (maps.isEmpty) {
       return Future.error(DatabaseErrors.GetUserError);
     }
 
@@ -78,46 +83,45 @@ class SQLiteDatabase extends DatabaseProtocol {
   }
 
   @override
-  Future<List<ModuleProgress>> getModulesProgress() async {
+  Future<void> saveSectionProgress(SectionProgress sectionProgress) async {
+    var completer = Completer<void>();
     final db = await database;
-
-    final List<Map<String, dynamic>> maps =
-        await db.query(Constants.database.moduleProgressTable);
-
-    if (maps.isEmpty){
-      return Future.error(DatabaseErrors.GetModulesProgressError);
-    }
-
-    return List.generate(maps.length, (i) {
-      return ModuleProgress.fromMap(maps[i], maps[i]['id']);
-    });
-  }
-
-  @override
-  Future<void> saveModuleProgress(ModuleProgress moduleProgress) async {
-    final db = await database;
-    final id = await db
-        .insert(Constants.database.moduleProgressTable, moduleProgress.toMap(),
-            conflictAlgorithm: ConflictAlgorithm.replace);
-
-    if (id == 0) {
-      return Future.error(DatabaseErrors.SaveModulesProgressError);
-    }
-
-    return;
+    await db
+        .insert(Constants.database.s, sectionProgress.toMap(),
+            conflictAlgorithm: ConflictAlgorithm.replace)
+        .then((value) => {completer.complete()});
+    return completer.future;
   }
 
   @override
   Future<void> cleanDatabase() async {
     final db = await database;
 
-    int changesInUserTable = await db.rawDelete('DELETE FROM ${Constants.database.userTable}');
-    int changesInModulesTable = await db.rawDelete('DELETE FROM ${Constants.database.moduleProgressTable}');
+    int changesInUserTable =
+        await db.rawDelete('DELETE FROM ${Constants.database.userTable}');
+    int changesInModulesTable = await db
+        .rawDelete('DELETE FROM ${Constants.database.moduleProgressTable}');
 
-    if (changesInUserTable == 0 || changesInModulesTable == 0){
+    if (changesInUserTable == 0 || changesInModulesTable == 0) {
       return Future.error(DatabaseErrors.CleanDatabaseError);
     }
 
     return;
+  }
+
+  @override
+  Future<List<SectionProgress>> getSectionProgress() async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> maps =
+        await db.query(Constants.database.moduleProgressTable);
+
+    if (maps.isEmpty) {
+      return Future.error(DatabaseErrors.GetModulesProgressError);
+    }
+
+    return List.generate(maps.length, (i) {
+      return SectionProgress.fromMap(maps[i], maps[i]['id']);
+    });
   }
 }

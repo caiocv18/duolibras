@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/Firebase/firebaseErrors.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Models/moduleProgress.dart';
@@ -35,13 +36,13 @@ class FirebaseService extends ServicesProtocol {
   }
 
   DocumentReference<Map<String, dynamic>> _getTrailFromFirebase() {
-    final trailId = SharedFeatures.instance.enviroment == AppEnvironment.DEV ?
-    "dimVnUtg6Solp3aJkk45" : "xv8HNGRlLC3E2ioIRr1Z";
+    final trailId = SharedFeatures.instance.enviroment == AppEnvironment.DEV
+        ? "dimVnUtg6Solp3aJkk45"
+        : "xv8HNGRlLC3E2ioIRr1Z";
 
     return firestoreInstance
         .collection(Constants.firebaseService.trailsCollection)
         .doc(trailId);
-
   }
 
   Future<List<Section>> _getSectionsFromFirebase() async {
@@ -55,9 +56,14 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Section.fromMap(e.data(), e.id))
                   .toList())
             })
+<<<<<<< HEAD
         .catchError((error, stackTrace) => {
           completer.completeError(FirebaseErrors.GetSectionsError)
         });
+=======
+        .catchError((error, stackTrace) =>
+            {Future.error(FirebaseErrors.GetSectionsError)});
+>>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
   }
@@ -75,9 +81,14 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Module.fromMap(e.data(), e.id))
                   .toList())
             })
+<<<<<<< HEAD
         .catchError((error, stackTrace) => {
           completer.completeError(FirebaseErrors.GetModulesError)
         });
+=======
+        .catchError((error, stackTrace) =>
+            {Future.error(FirebaseErrors.GetModulesError)});
+>>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
   }
@@ -99,27 +110,36 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Exercise.fromMap(e.data(), e.id))
                   .toList())
             })
+<<<<<<< HEAD
         .catchError((error, stackTrace) => {
           completer.completeError(FirebaseErrors.GetExercisesError)
         });
+=======
+        .catchError((error, stackTrace) =>
+            {Future.error(FirebaseErrors.GetExercisesError)});
+>>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
   }
 
-  Future<List<ModuleProgress>> _getModuleProgressFromFirebase() {
-    var completer = Completer<List<ModuleProgress>>();
+  Future<List<SectionProgress>> _getSectionsProgressFromFirebase() {
+    var completer = Completer<List<SectionProgress>>();
 
     _getUserFromFirebase()
-        .collection(Constants.firebaseService.moduleProgressCollection)
+        .collection(Constants.firebaseService.sectionProgressCollection)
         .get()
         .then((response) => {
               completer.complete(response.docs
-                  .map((e) => ModuleProgress.fromMap(e.data(), e.id))
+                  .map((e) => SectionProgress.fromMap(e.data(), e.id))
                   .toList())
+<<<<<<< HEAD
             })
         .catchError((error, stackTrace) => {
           completer.completeError(FirebaseErrors.GetModulesError)
         });
+=======
+            });
+>>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
   }
@@ -136,17 +156,24 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => myUser.User.fromMap(e.data(), e.id))
                   .toList())
             })
+<<<<<<< HEAD
         .catchError((error, stackTrace) => {
           completer.completeError(FirebaseErrors.GetRankingError)
         });
+=======
+        .catchError((error, stackTrace) =>
+            {Future.error(FirebaseErrors.GetRankingError)});
+>>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
     return completer.future;
   }
 
-  Future<bool> _postModuleProgressInFirebase(ModuleProgress moduleProgress) async {
+  Future<bool> _postSectionProgressInFirebase(
+      SectionProgress sectionProgress) async {
     var completer = Completer<bool>();
     final userDocument = _getUserFromFirebase();
 
     userDocument
+<<<<<<< HEAD
         .collection(Constants.firebaseService.moduleProgressCollection)
         .doc(moduleProgress.id)
         .set(moduleProgress.toMap(), SetOptions(merge: true))
@@ -154,11 +181,18 @@ class FirebaseService extends ServicesProtocol {
         .catchError((error, stackTrace) => {
           completer.completeError(FirebaseErrors.PostModuleProgressError) 
         });
+=======
+        .collection(Constants.firebaseService.sectionProgressCollection)
+        .doc(sectionProgress.id)
+        .set(sectionProgress.toMap(), SetOptions(merge: true))
+        .then((_) => {completer.complete(true)});
+>>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
   }
 
-  Future<myUser.User> _postUserInFirebase(myUser.User user, bool isNewUser) async {
+  Future<myUser.User> _postUserInFirebase(
+      myUser.User user, bool isNewUser) async {
     var completer = Completer<myUser.User>();
 
     await firestoreInstance
@@ -167,24 +201,29 @@ class FirebaseService extends ServicesProtocol {
         .set(user.toMap(), SetOptions(merge: true))
         .then((_) => {
               this.getUser().then((newUser) {
-                if (isNewUser && !user.modulesProgress.isEmpty) {
-                  user.modulesProgress.forEach((moduleProgress) async {
-                    await postModuleProgress(moduleProgress).then((value) {
-                      if (user.modulesProgress.last == moduleProgress) {
-                        newUser.modulesProgress = user.modulesProgress;
+                if (isNewUser && !user.sectionsProgress.isEmpty) {
+                  user.sectionsProgress.forEach((sectionProgress) async {
+                    await postSectionProgress(sectionProgress).then((value) {
+                      if (user.sectionsProgress.last == sectionProgress) {
+                        newUser.sectionsProgress = user.sectionsProgress;
                         completer.complete(newUser);
                       }
                     });
                   });
                 } else {
-                  newUser.modulesProgress = user.modulesProgress;
+                  newUser.sectionsProgress = user.sectionsProgress;
                   completer.complete(newUser);
                 }
               })
             })
         .catchError((error, stackTrace) {
+<<<<<<< HEAD
           completer.completeError(FirebaseErrors.PostUserError);
         });
+=======
+      Future.error(FirebaseErrors.PostUserError);
+    });
+>>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
   }
@@ -234,18 +273,9 @@ class FirebaseService extends ServicesProtocol {
   }
 
   @override
-  Future<List<Exercise>> getExercisesFromModuleId(String sectionId, String moduleId, int level) async {
+  Future<List<Exercise>> getExercisesFromModuleId(
+      String sectionId, String moduleId, int level) async {
     return _getExercisesFromFirebase(sectionId, moduleId, level);
-  }
-
-  @override
-  Future<List<ModuleProgress>> getModulesProgress() async {
-    return _getModuleProgressFromFirebase();
-  }
-
-  @override
-  Future<bool> postModuleProgress(ModuleProgress moduleProgress) async {
-    return _postModuleProgressInFirebase(moduleProgress);
   }
 
   @override
@@ -256,17 +286,18 @@ class FirebaseService extends ServicesProtocol {
   @override
   Future uploadImage(FileImage image) async {
     String fileName = basename(image.file.path);
-    final firebaseStorageRef = FirebaseStorage.instance.ref().child('ImagensTeste/$fileName');
+    final firebaseStorageRef =
+        FirebaseStorage.instance.ref().child('ImagensTeste/$fileName');
     final uploadTask = firebaseStorageRef.putFile(image.file);
     final taskSnapshot = await uploadTask;
-    taskSnapshot.ref.getDownloadURL()
-    .onError((error, stackTrace) {
+    taskSnapshot.ref.getDownloadURL().onError((error, stackTrace) {
       return Future.error(FirebaseErrors.UploadImageError);
     });
   }
 
   @override
-  Future<List<Exercise>> getANumberOfExercisesFromModuleId(String? sectionId, String moduleId, int quantity) {
+  Future<List<Exercise>> getANumberOfExercisesFromModuleId(
+      String? sectionId, String moduleId, int quantity) {
     var completer = Completer<List<Exercise>>();
 
     _getTrailFromFirebase()
@@ -282,10 +313,25 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Exercise.fromMap(e.data(), e.id))
                   .toList())
             })
+<<<<<<< HEAD
       .catchError((error, stackTrace) => {
         completer.completeError(FirebaseErrors.GetNumberOfExercisesError)
       });
+=======
+        .catchError((error, stackTrace) =>
+            {Future.error(FirebaseErrors.GetNumberOfExercisesError)});
+>>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
+  }
+
+  @override
+  Future<List<SectionProgress>> getSectionsProgress() {
+    return _getSectionsProgressFromFirebase();
+  }
+
+  @override
+  Future<bool> postSectionProgress(SectionProgress sectionProgress) {
+    return _postSectionProgressInFirebase(sectionProgress);
   }
 }

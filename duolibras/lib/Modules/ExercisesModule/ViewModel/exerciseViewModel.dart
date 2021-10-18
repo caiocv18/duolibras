@@ -14,6 +14,7 @@ import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
 import 'package:duolibras/Services/service.dart';
+import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -25,10 +26,11 @@ class ExerciseViewModel extends BaseViewModel {
   late List<Exercise> exercises;
   final _errorHandler = ErrorHandler();
 
-  //ML Exercise 
-  final CameraHelper _cameraHelper = CameraHelper(TFLiteHelper(), CameraLensDirection.front);
+  //ML Exercise
+  final CameraHelper _cameraHelper =
+      CameraHelper(TFLiteHelper(), CameraLensDirection.front);
   List<String> spelledLetters = [];
- 
+
   ExerciseViewModel(this.exercisesAndModule, this.exerciseFlowDelegate) {
     exercises = exercisesAndModule.item1;
   }
@@ -45,7 +47,7 @@ class ExerciseViewModel extends BaseViewModel {
     }
 
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
-     _handleFinishModule(exercise.correctAnswer == answer);
+    _handleFinishModule(exercise.correctAnswer == answer);
     return exercise.correctAnswer == answer;
   }
 
@@ -53,17 +55,20 @@ class ExerciseViewModel extends BaseViewModel {
     return exercise.correctAnswer == label && confidence > 0.9;
   }
 
-  bool isSpellingCorrect(String newLetter, double confidence, Exercise exercise) {
+  bool isSpellingCorrect(
+      String newLetter, double confidence, Exercise exercise) {
     final splittedAnswer = exercise.correctAnswer.split("");
 
-    if (splittedAnswer[spelledLetters.length] == newLetter && confidence > 0.9) {
+    if (splittedAnswer[spelledLetters.length] == newLetter &&
+        confidence > 0.9) {
       spelledLetters.add(newLetter);
       return true;
     }
     return false;
   }
 
-  void didSubmitTextAnswer(String answer, String exerciseID, BuildContext context) {
+  void didSubmitTextAnswer(
+      String answer, String exerciseID, BuildContext context) {
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
     final isAnswerCorrect = exercise.correctAnswer == answer;
     totalPoints += isAnswerCorrect ? (exercise.score ?? 0) : 0.0;
@@ -71,44 +76,54 @@ class ExerciseViewModel extends BaseViewModel {
     _handleMoveToNextExercise(exerciseID, context);
   }
 
-  Future<void> _saveProgress(BuildContext context) async {
+  Future<void> _saveProgress(BuildContext context,
+      {Function? exitClosure = null}) async {
     final userProvider = Provider.of<UserModel>(context, listen: false);
-    final index = userProvider.user.modulesProgress
-        .indexWhere((prog) => prog.moduleId == exercisesAndModule.item2.id);
 
-    ModuleProgress moduleProgress;
+    var moduleProgressIndex = -1;
+    var sectionsProgressIndex = -1;
 
-    if (index != -1) {
-      if (userProvider.user.modulesProgress[index].progress >=
-          exercisesAndModule.item2.maxProgress) return;
+    try {
+      sectionsProgressIndex = userProvider.user.sectionsProgress
+          .indexWhere((s) => s.sectionId == exerciseFlowDelegate.sectionID);
+    } on StateError catch (_) {
+      sectionsProgressIndex = -1;
+    }
+    late SectionProgress? sectionProgress;
 
-      final progress = userProvider.user.modulesProgress[index].progress + 1;
-      final id = userProvider.user.modulesProgress[index].id;
-
-      moduleProgress = ModuleProgress(
-          id: id, moduleId: exercisesAndModule.item2.id, progress: progress);
-      userProvider.setModulesProgress(moduleProgress);
+    if (sectionsProgressIndex != -1) {
+      sectionProgress = userProvider.incrementModulesProgress(
+          exerciseFlowDelegate.sectionID,
+          exercisesAndModule.item2.id,
+          exercisesAndModule.item2.maxProgress);
     } else {
-      moduleProgress = ModuleProgress(
+      sectionProgress = SectionProgress(
+          id: UniqueKey().toString(),
+          sectionId: exerciseFlowDelegate.sectionID,
+          progress: 1,
+          modulesProgress: []);
+      sectionProgress.modulesProgress.add(ModuleProgress(
           id: UniqueKey().toString(),
           moduleId: exercisesAndModule.item2.id,
-          progress: 1);
-      userProvider.setModulesProgress(moduleProgress);
+          progress: 1,
+          maxModuleProgress: exercisesAndModule.item2.maxProgress));
+      userProvider.addSectionProgress(sectionProgress);
     }
-    await Service.instance.postModuleProgress(moduleProgress)
+    await Service.instance.postSectionProgress(sectionProgress!)
       .onError((error, stackTrace) {
         final appError = Utils.logAppError(error);
         Completer<bool> completer = Completer<bool>();
 
         _errorHandler.showModal(appError, context, 
-        tryAgainClosure: () => _errorHandler.tryAgainClosure(() => Service.instance.postModuleProgress(moduleProgress), context, completer),
+        tryAgainClosure: () => _errorHandler.tryAgainClosure(() => Service.instance.postSectionProgress(sectionProgress!), context, completer),
         exitClosure: () => completer.complete(false));
         
         return completer.future;
     });
   }
 
-  Future<void> _handleMoveToNextExercise(String exerciseID, BuildContext context) async {
+  Future<void> _handleMoveToNextExercise(
+      String exerciseID, BuildContext context) async {
     final index = exercises.indexWhere((m) => m.id == exerciseID);
 
     if (index + 1 == exercises.length) {
@@ -184,7 +199,9 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
     final user = Provider.of<UserModel>(ctx, listen: false).user;
 
     try {
-      final module = user.modulesProgress
+      final module = user.sectionsProgress
+          .firstWhere((s) => s.sectionId == exerciseFlowDelegate.sectionID)
+          .modulesProgress
           .firstWhere((element) => element.moduleId == moduleID);
       return module.progress;
     } on StateError catch (_) {
