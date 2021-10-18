@@ -1,7 +1,6 @@
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/Database/databaseProtocol.dart';
-import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'dart:async';
 
@@ -26,7 +25,10 @@ class SQLiteDatabase extends DatabaseProtocol {
                 'CREATE TABLE ${Constants.database.userTable}(id TEXT PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL, currentProgress INTEGER NOT NULL)')
             .then((_) => {
                   db.execute(
-                      'CREATE TABLE ${Constants.database.sectionProgressTable}(id TEXT PRIMARY KEY, moduleId TEXT, moduleProgress INTEGER)')
+                      'CREATE TABLE ${Constants.database.sectionProgressTable}(id TEXT PRIMARY KEY, sectionId TEXT NOT NULL, progress INTEGER)')
+                }).then((value) => {
+                  db.execute(
+                      'CREATE TABLE ${Constants.database.modulesProgressTable}(id TEXT PRIMARY KEY, moduleId TEXT NOT NULL, moduleProgress INTEGER, sectionId TEXT NOT NULL, FOREIGN KEY (sectionId) REFERENCES ${Constants.database.sectionProgressTable} (sectionId) ON DELETE CASCADE ON UPDATE CASCADE)')
                 });
       },
       version: 1,
@@ -86,9 +88,13 @@ class SQLiteDatabase extends DatabaseProtocol {
     var completer = Completer<void>();
     final db = await database;
     await db
-        .insert(Constants.database.sectionProgressTable, sectionProgress.toMap(),
+        .insert(Constants.database.sectionProgressTable, sectionProgress.toMapLocal(),
             conflictAlgorithm: ConflictAlgorithm.replace)
-        .then((value) => {completer.complete()});
+            .then((_) => {
+              Future.sync(() => sectionProgress.modulesProgressToMap().forEach((moduleMap) async { 
+                await db.insert(Constants.database.modulesProgressTable, moduleMap);
+              })).then((_) => completer.complete())
+            });
     return completer.future;
   }
 
@@ -112,15 +118,20 @@ class SQLiteDatabase extends DatabaseProtocol {
   Future<List<SectionProgress>> getSectionProgress() async {
     final db = await database;
 
-    final List<Map<String, dynamic>> maps =
+    final List<Map<String, dynamic>> sectionsMaps =
         await db.query(Constants.database.sectionProgressTable);
+    
+    final List<Map<String, dynamic>> modulesMaps =
+        await db.query(Constants.database.modulesProgressTable);
 
-    if (maps.isEmpty) {
+    if (sectionsMaps.isEmpty || modulesMaps.isEmpty) {
       return Future.error(DatabaseErrors.GetModulesProgressError);
     }
 
-    return List.generate(maps.length, (i) {
-      return SectionProgress.fromMap(maps[i], maps[i]['id']);
+    return List.generate(sectionsMaps.length, (i) {
+      final moduleProgressMapList = modulesMaps.where((element) => element["sectionId"] == sectionsMaps[i]["sectionId"]);
+
+      return SectionProgress.fromMapLocal(sectionsMaps[i], moduleProgressMapList.toList(), sectionsMaps[i]['id']);
     });
   }
 }

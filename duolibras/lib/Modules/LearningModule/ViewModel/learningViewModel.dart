@@ -83,8 +83,7 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
 
       _errorHandler.showModal(appError, context, enableDrag: false,
       tryAgainClosure: () => _errorHandler.tryAgainClosure(() => 
-      Service.instance.getModulesFromSectionId(sectionID), context, completer),  
-      exitClosure: () => completer.complete([]));
+      Service.instance.getModulesFromSectionId(sectionID), context, completer));
       return completer.future;
     });
   }
@@ -213,6 +212,5 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
   @override
   void disposeStreams() {
     _controller.close();
-    _controllerModules.close();
   }
 }
