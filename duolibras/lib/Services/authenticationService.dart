@@ -22,7 +22,6 @@ class AuthenticationService {
   AuthenticationService._();
 
   Future<void> appleSignIn() async {
-<<<<<<< HEAD
     return _appleAuthenticator.signInWithApple()
     .then((user) => _updateUserInDatabase(user))
     .catchError(_handleAuthenticationException, test: (e) => e is AuthenticationErrors);
@@ -32,21 +31,6 @@ class AuthenticationService {
     return _googleAuthenticator.signInWithGoogle()
     .then((user) => _updateUserInDatabase(user))
     .catchError(_handleAuthenticationException, test: (e) => e is AuthenticationErrors);
-=======
-    return await _appleAuthenticator
-        .signInWithApple()
-        .then((user) => _updateUserInDatabase(user))
-        .catchError(_handleAuthenticationException,
-            test: (e) => e is AuthenticationErrors);
-  }
-
-  Future<void> googleSignIn() async {
-    return await _googleAuthenticator
-        .signInWithGoogle()
-        .then((user) => _updateUserInDatabase(user))
-        .catchError(_handleAuthenticationException,
-            test: (e) => e is AuthenticationErrors);
->>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
   }
 
   Future<void> firebaseSignIn(String email) async {
@@ -62,17 +46,9 @@ class AuthenticationService {
   }
 
   Future<void> handleFirebaseLink(Uri link, String email) async {
-<<<<<<< HEAD
     return _firebaseAuthenticator.signInWithEmailLink(email, link.toString())
     .then((user) => _updateUserInDatabase(user))
     .catchError(_handleAuthenticationException, test: (e) => e is AuthenticationErrors);
-=======
-    return await _firebaseAuthenticator
-        .signInWithEmailLink(email, link.toString())
-        .then((user) => _updateUserInDatabase(user))
-        .catchError(_handleAuthenticationException,
-            test: (e) => e is AuthenticationErrors);
->>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
   }
 
   Future<void> _updateUserInDatabase(fireUser.User? user) async {

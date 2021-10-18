@@ -1,4 +1,3 @@
-import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/Database/databaseProtocol.dart';
@@ -27,7 +26,7 @@ class SQLiteDatabase extends DatabaseProtocol {
                 'CREATE TABLE ${Constants.database.userTable}(id TEXT PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL, currentProgress INTEGER NOT NULL)')
             .then((_) => {
                   db.execute(
-                      'CREATE TABLE ${Constants.database.moduleProgressTable}(id TEXT PRIMARY KEY, moduleId TEXT, moduleProgress INTEGER)')
+                      'CREATE TABLE ${Constants.database.sectionProgressTable}(id TEXT PRIMARY KEY, moduleId TEXT, moduleProgress INTEGER)')
                 });
       },
       version: 1,
@@ -87,7 +86,7 @@ class SQLiteDatabase extends DatabaseProtocol {
     var completer = Completer<void>();
     final db = await database;
     await db
-        .insert(Constants.database.s, sectionProgress.toMap(),
+        .insert(Constants.database.sectionProgressTable, sectionProgress.toMap(),
             conflictAlgorithm: ConflictAlgorithm.replace)
         .then((value) => {completer.complete()});
     return completer.future;
@@ -100,7 +99,7 @@ class SQLiteDatabase extends DatabaseProtocol {
     int changesInUserTable =
         await db.rawDelete('DELETE FROM ${Constants.database.userTable}');
     int changesInModulesTable = await db
-        .rawDelete('DELETE FROM ${Constants.database.moduleProgressTable}');
+        .rawDelete('DELETE FROM ${Constants.database.sectionProgressTable}');
 
     if (changesInUserTable == 0 || changesInModulesTable == 0) {
       return Future.error(DatabaseErrors.CleanDatabaseError);
@@ -114,7 +113,7 @@ class SQLiteDatabase extends DatabaseProtocol {
     final db = await database;
 
     final List<Map<String, dynamic>> maps =
-        await db.query(Constants.database.moduleProgressTable);
+        await db.query(Constants.database.sectionProgressTable);
 
     if (maps.isEmpty) {
       return Future.error(DatabaseErrors.GetModulesProgressError);

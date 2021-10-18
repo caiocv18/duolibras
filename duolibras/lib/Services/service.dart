@@ -9,7 +9,6 @@ import 'package:duolibras/Services/Firebase/firebaseService.dart';
 import 'package:duolibras/Services/Mock/mockService.dart';
 import 'package:duolibras/Services/Models/appError.dart';
 import 'package:duolibras/Services/Models/module.dart';
-import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/section.dart';
 import 'package:duolibras/Services/Models/trail.dart';
 import 'package:duolibras/Services/Models/user.dart';
@@ -135,7 +134,6 @@ class Service {
   }
 
 //Error handling
-<<<<<<< HEAD
   Future<T> _handleFirebaseException<T>(Object? error, StackTrace stackTrace) {
     final FirebaseErrors firebaseError = Utils.tryCast(error, fallback: FirebaseErrors.Unknown);
     return Future.error(AppError(firebaseError.type, firebaseError.errorDescription));
@@ -144,19 +142,5 @@ class Service {
   Future<T> _handleDatabaseException<T>(Object? error, StackTrace stackTrace) {
     final DatabaseErrors databaseError = Utils.tryCast(error, fallback: DatabaseErrors.Unknown);
     return Future.error(AppError(databaseError.type, databaseError.errorDescription));
-=======
-  Future<T> _handleFirebaseException<T>(Object error, StackTrace stackTrace) {
-    final FirebaseErrors firebaseError =
-        Utils.tryCast(error, fallback: FirebaseErrors.Unknown);
-    return Future.error(
-        AppError(firebaseError.type, firebaseError.errorDescription));
-  }
-
-  Future<T> _handleDatabaseException<T>(Object error, StackTrace stackTrace) {
-    final DatabaseErrors databaseError =
-        Utils.tryCast(error, fallback: DatabaseErrors.Unknown);
-    return Future.error(
-        AppError(databaseError.type, databaseError.errorDescription));
->>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
   }
 }

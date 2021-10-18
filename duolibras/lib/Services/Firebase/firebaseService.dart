@@ -6,7 +6,6 @@ import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/Firebase/firebaseErrors.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
-import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/trail.dart';
 import 'package:duolibras/Services/Models/section.dart';
 import 'package:duolibras/Services/Models/module.dart';
@@ -56,14 +55,9 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Section.fromMap(e.data(), e.id))
                   .toList())
             })
-<<<<<<< HEAD
         .catchError((error, stackTrace) => {
           completer.completeError(FirebaseErrors.GetSectionsError)
         });
-=======
-        .catchError((error, stackTrace) =>
-            {Future.error(FirebaseErrors.GetSectionsError)});
->>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
   }
@@ -81,14 +75,9 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Module.fromMap(e.data(), e.id))
                   .toList())
             })
-<<<<<<< HEAD
         .catchError((error, stackTrace) => {
           completer.completeError(FirebaseErrors.GetModulesError)
         });
-=======
-        .catchError((error, stackTrace) =>
-            {Future.error(FirebaseErrors.GetModulesError)});
->>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
   }
@@ -110,14 +99,9 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Exercise.fromMap(e.data(), e.id))
                   .toList())
             })
-<<<<<<< HEAD
         .catchError((error, stackTrace) => {
           completer.completeError(FirebaseErrors.GetExercisesError)
         });
-=======
-        .catchError((error, stackTrace) =>
-            {Future.error(FirebaseErrors.GetExercisesError)});
->>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
   }
@@ -132,15 +116,10 @@ class FirebaseService extends ServicesProtocol {
               completer.complete(response.docs
                   .map((e) => SectionProgress.fromMap(e.data(), e.id))
                   .toList())
-<<<<<<< HEAD
             })
         .catchError((error, stackTrace) => {
           completer.completeError(FirebaseErrors.GetModulesError)
         });
-=======
-            });
->>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
-
     return completer.future;
   }
 
@@ -156,14 +135,9 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => myUser.User.fromMap(e.data(), e.id))
                   .toList())
             })
-<<<<<<< HEAD
         .catchError((error, stackTrace) => {
           completer.completeError(FirebaseErrors.GetRankingError)
         });
-=======
-        .catchError((error, stackTrace) =>
-            {Future.error(FirebaseErrors.GetRankingError)});
->>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
     return completer.future;
   }
 
@@ -173,20 +147,10 @@ class FirebaseService extends ServicesProtocol {
     final userDocument = _getUserFromFirebase();
 
     userDocument
-<<<<<<< HEAD
-        .collection(Constants.firebaseService.moduleProgressCollection)
-        .doc(moduleProgress.id)
-        .set(moduleProgress.toMap(), SetOptions(merge: true))
-        .then((_) => {completer.complete(true)})
-        .catchError((error, stackTrace) => {
-          completer.completeError(FirebaseErrors.PostModuleProgressError) 
-        });
-=======
         .collection(Constants.firebaseService.sectionProgressCollection)
         .doc(sectionProgress.id)
         .set(sectionProgress.toMap(), SetOptions(merge: true))
         .then((_) => {completer.complete(true)});
->>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
   }
@@ -217,13 +181,8 @@ class FirebaseService extends ServicesProtocol {
               })
             })
         .catchError((error, stackTrace) {
-<<<<<<< HEAD
           completer.completeError(FirebaseErrors.PostUserError);
-        });
-=======
-      Future.error(FirebaseErrors.PostUserError);
-    });
->>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
+      });
 
     return completer.future;
   }
@@ -313,14 +272,9 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Exercise.fromMap(e.data(), e.id))
                   .toList())
             })
-<<<<<<< HEAD
       .catchError((error, stackTrace) => {
         completer.completeError(FirebaseErrors.GetNumberOfExercisesError)
       });
-=======
-        .catchError((error, stackTrace) =>
-            {Future.error(FirebaseErrors.GetNumberOfExercisesError)});
->>>>>>> 5e9019efc0dc1991851067e89026733c7c05eae7
 
     return completer.future;
   }
