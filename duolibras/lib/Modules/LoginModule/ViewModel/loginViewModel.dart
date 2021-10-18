@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
@@ -17,24 +19,25 @@ class LoginViewModel extends BaseViewModel {
   final _errorHandler = ErrorHandler();
 
   Future<void> login(BuildContext ctx, LoginType method, {AuthenticationModel? loginModel = null, Function? exitClosure = null}) {
-    Future<void> future;
+    Completer<void> completer = Completer();
     switch (method) {
       case LoginType.Google:
-        future = _authenticationService.googleSignIn();
+        completer.complete(_authenticationService.googleSignIn());
         break;
       case LoginType.Apple:
-        future = _authenticationService.appleSignIn();
+        completer.complete(_authenticationService.appleSignIn());
         break;
       case LoginType.Firebase:
-        future = _authenticationService.firebaseSignIn(loginModel?.email ?? "");
+        completer.complete(_authenticationService.firebaseSignIn(loginModel?.email ?? ""));
         break;
     }
 
-    future.onError((error, stackTrace)  {
+    completer.future.onError((error, stackTrace)  {
       Utils.logAppError(error);
+      completer.complete();
     });
 
-    return future;
+    return completer.future;
   }
 
   Future<void> handleFirebaseEmailLinkSignIn(String email, Uri link) {

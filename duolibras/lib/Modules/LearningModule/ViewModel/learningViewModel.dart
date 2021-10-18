@@ -6,7 +6,6 @@ import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/sectionPage.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
-import 'package:duolibras/Modules/LearningModule/Widgets/sectionWidget.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
@@ -33,14 +32,11 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
     pages = _controllerModules.stream;
   }
 
-  BehaviorSubject<WrapperSectionPage> _controllerModules =
-      BehaviorSubject<WrapperSectionPage>();
+  BehaviorSubject<WrapperSectionPage> _controllerModules = BehaviorSubject<WrapperSectionPage>();
   WrapperSectionPage _wrapperSectionPage = WrapperSectionPage([]);
 
-  Future<void> _getModules(
-      List<Section> newSections, BuildContext context) async {
-    final sectionsProgress =
-        Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
+  Future<void> _getModules(List<Section> newSections, BuildContext context) async {
+    final sectionsProgress = Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
 
     for (var i = 0; i < newSections.length; i++) {
       await getModulesfromSection(newSections[i].id, context).then((modules) {
@@ -78,8 +74,7 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
     _controllerModules.sink.add(_wrapperSectionPage);
   }
 
-  Future<List<Module>> getModulesfromSection(
-      String sectionID, BuildContext context) async {
+  Future<List<Module>> getModulesfromSection(String sectionID, BuildContext context) async {
     return Service.instance
         .getModulesFromSectionId(sectionID)
         .onError((error, stackTrace) {
@@ -218,5 +213,6 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
   @override
   void disposeStreams() {
     _controller.close();
+    _controllerModules.close();
   }
 }

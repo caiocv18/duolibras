@@ -8,7 +8,8 @@ enum FirebaseErrors {
   GetTrailsError,
   GetRankingError,
   GetNumberOfExercisesError,
-  PostModuleProgressError,
+  GetSectionProgressError,
+  PostSectionProgressError,
   PostUserError,
   UploadImageError,
   Unknown
@@ -33,8 +34,10 @@ extension Exception on FirebaseErrors {
         return "Ops, erro ao buscar o ranking";
       case FirebaseErrors.GetNumberOfExercisesError:
         return "Ops, erro ao buscar a quantidade de exercícios";
-      case FirebaseErrors.PostModuleProgressError:
-        return "Ops, erro ao enviar o progresso do módulo";
+      case FirebaseErrors.GetSectionProgressError:
+        return "Ops, erro ao buscar o progresso das sections";
+      case FirebaseErrors.PostSectionProgressError:
+        return "Ops, erro ao enviar o progresso das sections";
       case FirebaseErrors.PostUserError:
         return "Ops, erro ao cadastrar o usuário";
       case FirebaseErrors.UploadImageError:

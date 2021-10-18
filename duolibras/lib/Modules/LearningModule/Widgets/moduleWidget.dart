@@ -1,4 +1,3 @@
-import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';

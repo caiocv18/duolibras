@@ -118,7 +118,7 @@ class FirebaseService extends ServicesProtocol {
                   .toList())
             })
         .catchError((error, stackTrace) => {
-          completer.completeError(FirebaseErrors.GetModulesError)
+          completer.completeError(FirebaseErrors.GetSectionProgressError)
         });
     return completer.future;
   }
@@ -150,8 +150,10 @@ class FirebaseService extends ServicesProtocol {
         .collection(Constants.firebaseService.sectionProgressCollection)
         .doc(sectionProgress.id)
         .set(sectionProgress.toMap(), SetOptions(merge: true))
-        .then((_) => {completer.complete(true)});
-
+        .then((_) => {completer.complete(true)})
+        .catchError((error, stackTrace) => {
+          completer.completeError(FirebaseErrors.PostSectionProgressError)
+        });
     return completer.future;
   }
 
@@ -165,7 +167,7 @@ class FirebaseService extends ServicesProtocol {
         .set(user.toMap(), SetOptions(merge: true))
         .then((_) => {
               this.getUser().then((newUser) {
-                if (isNewUser && !user.sectionsProgress.isEmpty) {
+                if (isNewUser && user.sectionsProgress.isNotEmpty) {
                   user.sectionsProgress.forEach((sectionProgress) async {
                     await postSectionProgress(sectionProgress).then((value) {
                       if (user.sectionsProgress.last == sectionProgress) {
@@ -249,7 +251,7 @@ class FirebaseService extends ServicesProtocol {
         FirebaseStorage.instance.ref().child('ImagensTeste/$fileName');
     final uploadTask = firebaseStorageRef.putFile(image.file);
     final taskSnapshot = await uploadTask;
-    taskSnapshot.ref.getDownloadURL().onError((error, stackTrace) {
+    return taskSnapshot.ref.getDownloadURL().onError((error, stackTrace) {
       return Future.error(FirebaseErrors.UploadImageError);
     });
   }

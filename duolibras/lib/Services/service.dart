@@ -94,17 +94,21 @@ class Service {
 
   Future<List<SectionProgress>> getSectionsProgress() {
     if (SharedFeatures.instance.isLoggedIn) {
-      return _service.getSectionsProgress();
+      return _service.getSectionsProgress()
+      .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
     } else {
-      return _database.getSectionProgress();
+      return _database.getSectionProgress()
+      .onError(_handleDatabaseException, test: (e) => e is DatabaseErrors);
     }
   }
 
   Future<bool> postSectionProgress(SectionProgress sectionProgress) async {
     if (SharedFeatures.instance.isLoggedIn) {
-      return _service.postSectionProgress(sectionProgress);
+      return _service.postSectionProgress(sectionProgress)
+      .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
     } else {
-      return _database.saveSectionProgress(sectionProgress).then((_) => true);
+      return _database.saveSectionProgress(sectionProgress).then((_) => true)
+      .onError(_handleDatabaseException, test: (e) => e is DatabaseErrors);
     }
   }
 

@@ -4,7 +4,6 @@ import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/sectionPage.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/trailPath.dart';
-import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/section.dart';
 import 'package:flutter/material.dart';
 

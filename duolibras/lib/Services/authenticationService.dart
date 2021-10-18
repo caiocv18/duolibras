@@ -34,15 +34,13 @@ class AuthenticationService {
   }
 
   Future<void> firebaseSignIn(String email) async {
-    return _firebaseAuthenticator.signInWithEmail(email).onError(
-        _handleAuthenticationException,
-        test: (e) => e is AuthenticationErrors);
+    return _firebaseAuthenticator.signInWithEmail(email).onError(_handleAuthenticationException,
+    test: (e) => e is AuthenticationErrors);
   }
 
   Future<void> signOut() {
-    return _firebaseAuthenticator.signOut().onError(
-        _handleAuthenticationException,
-        test: (e) => e is AuthenticationErrors);
+    return _firebaseAuthenticator.signOut().onError(_handleAuthenticationException,
+    test: (e) => e is AuthenticationErrors);
   }
 
   Future<void> handleFirebaseLink(Uri link, String email) async {
@@ -93,11 +91,8 @@ class AuthenticationService {
   }
 
   //Error handling
-  Future<dynamic> _handleAuthenticationException(
-      Object error, StackTrace stackTrace) {
-    final AuthenticationErrors firebaseError =
-        Utils.tryCast(error, fallback: AuthenticationErrors.Unknown);
-    return Future.error(
-        AppError(firebaseError.type, firebaseError.errorDescription));
+  Future<dynamic> _handleAuthenticationException(Object error, StackTrace stackTrace) {
+    final AuthenticationErrors firebaseError = Utils.tryCast(error, fallback: AuthenticationErrors.Unknown);
+    return Future.error(AppError(firebaseError.type, firebaseError.errorDescription));
   }
 }

@@ -2,11 +2,9 @@ import 'dart:async';
 
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
-import 'package:duolibras/Services/Models/appError.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart';
 import 'package:rxdart/subjects.dart';
 
 abstract class RankingViewModelProtocol {
