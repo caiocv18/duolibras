@@ -16,8 +16,10 @@ class MaduleWidget extends StatefulWidget {
   final ModuleViewModel _viewModel;
   final String sectionID;
   final MainAxisAlignment _rowAlignment;
-  MaduleWidget(
-      this._module, this.sectionID, this._viewModel, this._rowAlignment);
+  final Function _handleFinishExercises;
+  final bool _isAvaiable;
+  MaduleWidget(this._module, this.sectionID, this._viewModel,
+      this._rowAlignment, this._handleFinishExercises, this._isAvaiable);
 
   @override
   _MaduleWidgetState createState() => _MaduleWidgetState();
@@ -29,23 +31,28 @@ class _MaduleWidgetState extends State<MaduleWidget> {
 
     var sectionProgress = user.sectionsProgress;
 
-    final moduleProgress = sectionProgress
-        .firstWhere((s) => s.sectionId == widget.sectionID)
-        .modulesProgress;
+    try {
+      final moduleProgress = sectionProgress
+          .firstWhere((s) => s.sectionId == widget.sectionID)
+          .modulesProgress;
 
-    if (moduleProgress.isEmpty) return 0;
+      if (moduleProgress.isEmpty) return 0;
 
-    return moduleProgress
-            .firstWhere((m) => m.moduleId == widget._module.id)
-            .progress /
-        widget._module.maxProgress;
+      return moduleProgress
+              .firstWhere((m) => m.moduleId == widget._module.id)
+              .progress /
+          widget._module.maxProgress;
+    } on StateError catch (_) {
+      return 0;
+    }
   }
 
   void _handleCompleModule(bool? completed) {
     if (completed == null) return;
 
     if (completed) {
-      setState(() {});
+      widget._handleFinishExercises();
+      // setState(() {});
     }
   }
 
@@ -118,8 +125,7 @@ class _MaduleWidgetState extends State<MaduleWidget> {
                             ? Colors.transparent
                             : Colors.transparent,
                   ),
-                  if (widget._module.minProgress >
-                      SharedFeatures.instance.userProgress)
+                  if (!widget._isAvaiable)
                     Stack(alignment: Alignment.center, children: [
                       CircleAvatar(
                         backgroundColor: Colors.grey,
@@ -183,8 +189,7 @@ class _MaduleWidgetState extends State<MaduleWidget> {
                             ? Color.fromRGBO(255, 215, 0, 1)
                             : Colors.blue[400],
                   ),
-                  if (widget._module.minProgress >
-                      SharedFeatures.instance.userProgress)
+                  if (!widget._isAvaiable)
                     Stack(alignment: Alignment.center, children: [
                       CircleAvatar(
                         backgroundColor: Colors.grey,

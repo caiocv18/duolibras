@@ -15,7 +15,7 @@ import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
 import 'package:duolibras/Services/service.dart';
-import 'package:duolibras/Network/Models/sectionProgress.dart';
+import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -27,10 +27,11 @@ class ExerciseViewModel extends BaseViewModel {
   late List<Exercise> exercises;
   final _errorHandler = ErrorHandler();
 
-  //ML Exercise 
-  final CameraHelper _cameraHelper = CameraHelper(TFLiteHelper(), CameraLensDirection.front);
+  //ML Exercise
+  final CameraHelper _cameraHelper =
+      CameraHelper(TFLiteHelper(), CameraLensDirection.front);
   List<String> spelledLetters = [];
- 
+
   ExerciseViewModel(this.exercisesAndModule, this.exerciseFlowDelegate) {
     exercises = exercisesAndModule.item1;
   }
@@ -47,7 +48,7 @@ class ExerciseViewModel extends BaseViewModel {
     }
 
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
-     _handleFinishModule(exercise.correctAnswer == answer);
+    _handleFinishModule(exercise.correctAnswer == answer);
     return exercise.correctAnswer == answer;
   }
 
@@ -55,17 +56,20 @@ class ExerciseViewModel extends BaseViewModel {
     return exercise.correctAnswer == label && confidence > 0.9;
   }
 
-  bool isSpellingCorrect(String newLetter, double confidence, Exercise exercise) {
+  bool isSpellingCorrect(
+      String newLetter, double confidence, Exercise exercise) {
     final splittedAnswer = exercise.correctAnswer.split("");
 
-    if (splittedAnswer[spelledLetters.length] == newLetter && confidence > 0.9) {
+    if (splittedAnswer[spelledLetters.length] == newLetter &&
+        confidence > 0.9) {
       spelledLetters.add(newLetter);
       return true;
     }
     return false;
   }
 
-  void didSubmitTextAnswer(String answer, String exerciseID, BuildContext context) {
+  void didSubmitTextAnswer(
+      String answer, String exerciseID, BuildContext context) {
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
     final isAnswerCorrect = exercise.correctAnswer == answer;
     totalPoints += isAnswerCorrect ? (exercise.score ?? 0) : 0.0;
@@ -73,7 +77,8 @@ class ExerciseViewModel extends BaseViewModel {
     _handleMoveToNextExercise(exerciseID, context);
   }
 
-  Future<void> _saveProgress(BuildContext context, {Function? exitClosure = null}) async {
+  Future<void> _saveProgress(BuildContext context,
+      {Function? exitClosure = null}) async {
     final userProvider = Provider.of<UserModel>(context, listen: false);
 
     var moduleProgressIndex = -1;
@@ -85,11 +90,13 @@ class ExerciseViewModel extends BaseViewModel {
     } on StateError catch (_) {
       sectionsProgressIndex = -1;
     }
-    late SectionProgress sectionProgress;
+    late SectionProgress? sectionProgress;
 
     if (sectionsProgressIndex != -1) {
-      userProvider.incrementModulesProgress(exerciseFlowDelegate.sectionID,
-          exercisesAndModule.item2.id, exercisesAndModule.item2.maxProgress);
+      sectionProgress = userProvider.incrementModulesProgress(
+          exerciseFlowDelegate.sectionID,
+          exercisesAndModule.item2.id,
+          exercisesAndModule.item2.maxProgress);
     } else {
       sectionProgress = SectionProgress(
           id: UniqueKey().toString(),
@@ -103,27 +110,36 @@ class ExerciseViewModel extends BaseViewModel {
           maxModuleProgress: exercisesAndModule.item2.maxProgress));
       userProvider.addSectionProgress(sectionProgress);
     }
-    await Service.instance.postModuleProgress(moduleProgress)
-          .onError((error, stackTrace) {
-            final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
-            debugPrint("Error Exercise View Model: $appError.description");
 
-            Completer<bool> completer = Completer<bool>();
-            _errorHandler.showModal(appError, context, tryAgainClosure: () {
-              return Service.instance.postModuleProgress(moduleProgress).then((value) => completer.complete(value))
-              .onError((error, stackTrace) {
-                _errorHandler.showModal(appError, context, exitClosure: () {
-                 if (exitClosure != null)
-                    exitClosure();
-                  completer.complete(false);
-                });
-              });
-            }, exitClosure: exitClosure);
-            return completer.future;
+    if (sectionProgress == null) {
+      return;
+    }
+
+    await Service.instance
+        .postSectionProgress(sectionProgress)
+        .onError((error, stackTrace) {
+      final AppError appError = Utils.tryCast(error,
+          fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
+      debugPrint("Error Exercise View Model: $appError.description");
+
+      Completer<bool> completer = Completer<bool>();
+      _errorHandler.showModal(appError, context, tryAgainClosure: () {
+        return Service.instance
+            .postSectionProgress(sectionProgress!)
+            .then((value) => completer.complete(value))
+            .onError((error, stackTrace) {
+          _errorHandler.showModal(appError, context, exitClosure: () {
+            if (exitClosure != null) exitClosure();
+            completer.complete(false);
           });
+        });
+      }, exitClosure: exitClosure);
+      return completer.future;
+    });
   }
 
-  Future<void> _handleMoveToNextExercise(String exerciseID, BuildContext context) async {
+  Future<void> _handleMoveToNextExercise(
+      String exerciseID, BuildContext context) async {
     final index = exercises.indexWhere((m) => m.id == exerciseID);
 
     if (index + 1 == exercises.length) {

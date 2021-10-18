@@ -3,6 +3,9 @@ class ModuleProgress {
   final String moduleId;
   int progress;
   final int maxModuleProgress;
+
+  bool isAvaiable = false;
+
   bool get isCompleted {
     return progress == maxModuleProgress;
   }

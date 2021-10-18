@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
+import 'package:duolibras/Modules/LearningModule/ViewModel/sectionPage.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/sectionWidget.dart';
@@ -10,7 +11,9 @@ import 'package:duolibras/Services/Models/appError.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/section.dart';
+import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -18,16 +21,7 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:duolibras/Commons/Extensions/list_extension.dart';
 
-  @override
-  Future<List<Module>> getModulesfromSection(String sectionID) async {
-    return Service.instance.getModulesFromSectionId(sectionID);
-  }
-
-  @override
-  Future<List<Section>> getSectionsFromTrail(String id) {
-    return Service.instance.getSectionsFromTrail();
-  }
-
+class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
   final _errorHandler = ErrorHandler();
   List<String> allSectionsID = [];
   BehaviorSubject<List<Section>> _controller = BehaviorSubject<List<Section>>();
@@ -37,36 +31,69 @@ import 'package:duolibras/Commons/Extensions/list_extension.dart';
   Map<Color, int> colorForModules = {};
   LearningViewModel() {
     sections = _controller.stream;
-    modules = _controllerModules.stream;
+    pages = _controllerModules.stream;
   }
 
-  BehaviorSubject<List<Module>> _controllerModules =
-      BehaviorSubject<List<Module>>();
-  List<Module> allModules = [];
+  BehaviorSubject<WrapperSectionPage> _controllerModules =
+      BehaviorSubject<WrapperSectionPage>();
+  WrapperSectionPage _wrapperSectionPage = WrapperSectionPage([]);
 
-  Future<void> _getModules(List<Section> newSections) async {
+  Future<void> _getModules(
+      List<Section> newSections, BuildContext context) async {
+    final sectionsProgress =
+        Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
+
     for (var i = 0; i < newSections.length; i++) {
-      await getModulesfromSection(newSections[i].id).then((modules) {
-        allModules.addAll(modules);
+      await getModulesfromSection(newSections[i].id, context).then((modules) {
+        _wrapperSectionPage.pages.add(SectionPage(newSections[i], modules));
         Color color = modules.first.color;
         colorForModules.addAll({color: modules.length});
       });
     }
 
-    _controllerModules.sink.add(allModules);
+    if (sectionsProgress.length != newSections.length) {
+      _wrapperSectionPage.pages.forEach((page) {
+        var contains = false;
+        sectionsProgress.forEach((progress) {
+          if (progress.sectionId == page.section.id) {
+            contains = true;
+          }
+        });
+
+        if (!contains) {
+          sectionsProgress.add(SectionProgress(
+              id: UniqueKey().toString(),
+              sectionId: page.section.id,
+              progress: 0,
+              modulesProgress: page.modules
+                  .map((m) => ModuleProgress(
+                      id: UniqueKey().toString(),
+                      moduleId: m.id,
+                      progress: 0,
+                      maxModuleProgress: m.maxProgress))
+                  .toList()));
+        }
+      });
+    }
+
+    _controllerModules.sink.add(_wrapperSectionPage);
   }
 
-  @override
-  Future<List<Module>> getModulesfromSection(String sectionID, BuildContext context) async {
-    return Service.instance.getModulesFromSectionId(sectionID)
-    .onError((error, stackTrace) {
-      final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
+  Future<List<Module>> getModulesfromSection(
+      String sectionID, BuildContext context) async {
+    return Service.instance
+        .getModulesFromSectionId(sectionID)
+        .onError((error, stackTrace) {
+      final AppError appError = Utils.tryCast(error,
+          fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
       debugPrint("Error Learning View Model: $appError.description");
 
       Completer<List<Module>> completer = Completer<List<Module>>();
       _errorHandler.showModal(appError, context, tryAgainClosure: () {
-        return Service.instance.getModulesFromSectionId(sectionID).then((value) => completer.complete(value))
-        .onError((error, stackTrace) {
+        return Service.instance
+            .getModulesFromSectionId(sectionID)
+            .then((value) => completer.complete(value))
+            .onError((error, stackTrace) {
           _errorHandler.showModal(appError, context, exitClosure: () {
             completer.complete([]);
           });
@@ -78,17 +105,18 @@ import 'package:duolibras/Commons/Extensions/list_extension.dart';
     });
   }
 
-  @override
   Future<List<Section>> getSectionsFromTrail(BuildContext context) {
-    return Service.instance.getSectionsFromTrail()
-    .onError((error, stackTrace) {
-      final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
+    return Service.instance.getSectionsFromTrail().onError((error, stackTrace) {
+      final AppError appError = Utils.tryCast(error,
+          fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
       debugPrint("Error Learning View Model: $appError.description");
 
       Completer<List<Section>> completer = Completer<List<Section>>();
       _errorHandler.showModal(appError, context, tryAgainClosure: () {
-        return Service.instance.getSectionsFromTrail().then((value) => completer.complete(value))
-        .onError((error, stackTrace) {
+        return Service.instance
+            .getSectionsFromTrail()
+            .then((value) => completer.complete(value))
+            .onError((error, stackTrace) {
           _errorHandler.showModal(appError, context, exitClosure: () {
             error = true;
             hasMore = false;
@@ -96,9 +124,9 @@ import 'package:duolibras/Commons/Extensions/list_extension.dart';
           });
         });
       }, exitClosure: () {
-            error = true;
-            hasMore = false;
-            completer.complete([]);
+        error = true;
+        hasMore = false;
+        completer.complete([]);
       });
       return completer.future;
     });
@@ -110,20 +138,26 @@ import 'package:duolibras/Commons/Extensions/list_extension.dart';
     await getSectionsFromTrail(context).then((newSections) {
       hasMore = false;
       loading = false;
+      _getModules(newSections, context);
       // _controller.sink.add(newSections);
     });
   }
 
-  Future<List<Exercise>> _getExerciseFromModule(String sectionID, String moduleID, int level, BuildContext context) {
-    return Service.instance.getExercisesFromModuleId(sectionID, moduleID, level)
-    .onError((error, stackTrace) {
-      final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
+  Future<List<Exercise>> _getExerciseFromModule(
+      String sectionID, String moduleID, int level, BuildContext context) {
+    return Service.instance
+        .getExercisesFromModuleId(sectionID, moduleID, level)
+        .onError((error, stackTrace) {
+      final AppError appError = Utils.tryCast(error,
+          fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
       debugPrint("Error Learning View Model: $appError.description");
 
       Completer<List<Exercise>> completer = Completer<List<Exercise>>();
       _errorHandler.showModal(appError, context, tryAgainClosure: () {
-        return Service.instance.getExercisesFromModuleId(sectionID, moduleID, level).then((value) => completer.complete(value))
-        .onError((error, stackTrace) {
+        return Service.instance
+            .getExercisesFromModuleId(sectionID, moduleID, level)
+            .then((value) => completer.complete(value))
+            .onError((error, stackTrace) {
           _errorHandler.showModal(appError, context, exitClosure: () {
             completer.complete([]);
           });
@@ -135,30 +169,32 @@ import 'package:duolibras/Commons/Extensions/list_extension.dart';
     });
   }
 
-  Future<List<Exercise>> _getANumberExerciseFromModule(String sectionID, String moduleID, int quantity, BuildContext context) {
+  Future<List<Exercise>> _getANumberExerciseFromModule(
+      String sectionID, String moduleID, int quantity, BuildContext context) {
     return Service.instance
         .getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity)
         .onError((error, stackTrace) {
-        final AppError appError = Utils.tryCast(error, fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
-        debugPrint("Error Learning View Model: $appError.description");
+      final AppError appError = Utils.tryCast(error,
+          fallback: AppError(AppErrorType.Unknown, "Erro desconhecido"));
+      debugPrint("Error Learning View Model: $appError.description");
 
-        Completer<List<Exercise>> completer = Completer<List<Exercise>>();
-        _errorHandler.showModal(appError, context, tryAgainClosure: () {
-          return Service.instance
-          .getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity).then((value) => completer.complete(value))
-          .onError((error, stackTrace) {
-            _errorHandler.showModal(appError, context, exitClosure: () {
-              completer.complete([]);
-            });
+      Completer<List<Exercise>> completer = Completer<List<Exercise>>();
+      _errorHandler.showModal(appError, context, tryAgainClosure: () {
+        return Service.instance
+            .getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity)
+            .then((value) => completer.complete(value))
+            .onError((error, stackTrace) {
+          _errorHandler.showModal(appError, context, exitClosure: () {
+            completer.complete([]);
           });
-        }, exitClosure: () {
-          completer.complete([]);
         });
-        return completer.future;
-      })
-      .then((exercises) {
-          exercises.shuffle();
-          List<Exercise> newExercises = [];
+      }, exitClosure: () {
+        completer.complete([]);
+      });
+      return completer.future;
+    }).then((exercises) {
+      exercises.shuffle();
+      List<Exercise> newExercises = [];
 
       for (var i = 0; i < 15; i++) {
         if (!exercises.containsAt(i)) {
@@ -170,7 +206,6 @@ import 'package:duolibras/Commons/Extensions/list_extension.dart';
       return newExercises;
     });
   }
-  
 
   @override
   Future<void> didSelectModule(String sectionID, Module module,
@@ -178,12 +213,16 @@ import 'package:duolibras/Commons/Extensions/list_extension.dart';
     final level = _getUserModuleLevel(context, sectionID, module);
 
     if (level == module.maxProgress) {
-      _getANumberExerciseFromModule(sectionID, module.id, 30, context).then((exercises) {
-        _navigateToExercisesModule(sectionID, module, context, exercises, handler);
+      _getANumberExerciseFromModule(sectionID, module.id, 30, context)
+          .then((exercises) {
+        _navigateToExercisesModule(
+            sectionID, module, context, exercises, handler);
       });
     } else {
-      _getExerciseFromModule(sectionID, module.id, level, context).then((exercises) {
-        _navigateToExercisesModule(sectionID, module, context, exercises, handler);
+      _getExerciseFromModule(sectionID, module.id, level, context)
+          .then((exercises) {
+        _navigateToExercisesModule(
+            sectionID, module, context, exercises, handler);
       });
     }
   }

@@ -11,6 +11,10 @@ class TrailPath extends CustomPainter {
 
   var lastPosition = _Position.Left;
 
+  int get maxLevelProgress {
+    return mainPath.computeMetrics().length;
+  }
+
   TrailPath(
       this.mainPath, this._animationController, this.colorForRows, this.index)
       : super(repaint: _animationController);

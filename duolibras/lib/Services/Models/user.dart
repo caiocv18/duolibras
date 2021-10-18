@@ -1,10 +1,10 @@
-import 'package:duolibras/Services/Models/moduleProgress.dart';
+import 'package:duolibras/Services/Models/sectionProgress.dart';
 
 class User {
   String name;
   String? email;
   final String id;
-  List<ModuleProgress> modulesProgress = [];
+  List<SectionProgress> sectionsProgress = [];
   final int currentProgress;
   String? imageUrl;
 

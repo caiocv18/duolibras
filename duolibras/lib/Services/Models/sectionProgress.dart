@@ -1,5 +1,6 @@
-import 'package:duolibras/Network/Models/ModuleProgress.dart';
 import 'dart:convert';
+
+import 'moduleProgress.dart';
 
 class SectionProgress {
   final String id;
@@ -27,11 +28,15 @@ class SectionProgress {
     return SectionProgress(
         sectionId: parsedJson["sectionId"],
         progress: parsedJson["progress"],
-        modulesProgress: parsedJson["modulesProgress"]
-            ? []
-            : List<ModuleProgress>.from(parsedJson["modulesProgress"]
-                .map((x) => ModuleProgress.fromMap(x, "dfasd"))),
+        modulesProgress: _modulesProgressFrom(parsedJson["modulesProgress"]),
         id: docId);
+  }
+
+  static List<ModuleProgress> _modulesProgressFrom(List<dynamic> result) {
+    List<ModuleProgress> modules =
+        result.map((f) => ModuleProgress.fromMap(f, f["id"])).toList();
+
+    return modules;
   }
 
   Map<String, dynamic> toMap() {

@@ -30,7 +30,8 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   var spelledText = "";
   var _isRightAnswer = false;
   final completer = Completer<void>();
-  late double totalTime = widget._exercise.correctAnswer.split('').length * 15.0;
+  late double totalTime =
+      widget._exercise.correctAnswer.split('').length * 15.0;
   // late ConfettiController controllerTopCenter;
 
   @override
@@ -88,26 +89,26 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   //   );
   // }
 
-  Widget _buildOnboardingBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-              height: containerSize.height * 0.10,
-              child: QuestionWidget("Faça o sinal em Libras")),
-          SizedBox(height: 15),
-          Container(
-            height: containerSize.height * 0.08,
-            width: containerSize.width * 0.7,
-            child: ElevatedButton(
-              child: Text("Abrir a Câmera"),
-              onPressed: () => _startCamera(),
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          side: BorderSide(color: Colors.blue)))),
-            ),
+  Widget _buildOnboardingBody(Exercise exercise, ExerciseViewModel viewModel,
+      Size containerSize, BuildContext ctx) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+            height: containerSize.height * 0.10,
+            child: QuestionWidget("Faça o sinal em Libras")),
+        SizedBox(height: 15),
+        Container(
+          height: containerSize.height * 0.08,
+          width: containerSize.width * 0.7,
+          child: ElevatedButton(
+            child: Text("Abrir a Câmera"),
+            onPressed: () => _startCamera(),
+            style: ButtonStyle(
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: BorderSide(color: Colors.blue)))),
           ),
         ),
       ],
@@ -130,7 +131,9 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                       _buildQuestionText(),
                       _buildAnswerText(),
                       SizedBox(height: containerSize.height * 0.04),
-                      _finishedExercise ? _buildFeedback(containerSize) : _buildCameraPreview(containerSize),
+                      _finishedExercise
+                          ? _buildFeedback(containerSize)
+                          : _buildCameraPreview(containerSize),
                       SizedBox(height: containerSize.height * 0.04),
                       _buildSpelledLetters()
                     ],
@@ -157,56 +160,57 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     // to prevent scaling down, invert the value
     if (scale < 1) scale = 1 / scale;
 
-    return Stack(
-      alignment: AlignmentDirectional.bottomStart,
-      children: [
-        Container(
+    return Stack(alignment: AlignmentDirectional.bottomStart, children: [
+      Container(
           width: containerSize.width * 0.93,
           height: containerSize.height * 0.65,
           decoration: BoxDecoration(
-              color: Color.fromRGBO(200, 205, 219, 1),
-              borderRadius: BorderRadius.all(
-                Radius.circular(20.0),
-              ),
+            color: Color.fromRGBO(200, 205, 219, 1),
+            borderRadius: BorderRadius.all(
+              Radius.circular(20.0),
             ),
+          ),
           child: Center(
-            child: Container(
-              width: containerSize.width * 0.89,
-              height: containerSize.height * 0.63,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  topRight: Radius.circular(20.0),
-                  bottomRight: Radius.circular(20.0),
-                  bottomLeft: Radius.circular(20.0),
-                ),
-                child: Transform.scale(scale: scale, child: CameraPreview(widget._viewModel.getCamera()))
-              )
-            )
-          )
-        ),
-        TimeBar(Size(containerSize.width * 0.93, containerSize.height * 0.04), totalTime, [Color.fromRGBO(73, 130, 246, 1), Color.fromRGBO(44, 196, 252, 1)], 
-        () {
-          widget._viewModel.isAnswerCorrect("", widget._exercise.id);
-          _finishExercise(false); 
-        })
-      ]
-    );
+              child: Container(
+                  width: containerSize.width * 0.89,
+                  height: containerSize.height * 0.63,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                        bottomLeft: Radius.circular(20.0),
+                      ),
+                      child: Transform.scale(
+                          scale: scale,
+                          child:
+                              CameraPreview(widget._viewModel.getCamera())))))),
+      TimeBar(
+          Size(containerSize.width * 0.93, containerSize.height * 0.04),
+          totalTime,
+          [Color.fromRGBO(73, 130, 246, 1), Color.fromRGBO(44, 196, 252, 1)],
+          () {
+        widget._viewModel.isAnswerCorrect("", widget._exercise.id);
+        _finishExercise(false);
+      })
+    ]);
   }
 
   Widget _buildQuestionText() {
     final question = widget._exercise.question;
     return LayoutBuilder(builder: (ctx, constraint) {
       return Container(
-        width: constraint.maxWidth * 0.89,
-        height: 33,
-        child:  Center(
-          child: Text(
-            question ?? "",
-            style: TextStyle(fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w700),
-          ),
-        )
-      );
+          width: constraint.maxWidth * 0.89,
+          height: 33,
+          child: Center(
+            child: Text(
+              question ?? "",
+              style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: "Nunito",
+                  fontWeight: FontWeight.w700),
+            ),
+          ));
     });
   }
 
@@ -214,36 +218,48 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     final answer = widget._exercise.correctAnswer;
     return LayoutBuilder(builder: (ctx, constraint) {
       return Container(
-        width: constraint.maxWidth * 0.89,
-        height: 54,
-        decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(20))), 
-        child: 
-          Center(
+          width: constraint.maxWidth * 0.89,
+          height: 54,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.white),
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          child: Center(
             child: Text(
               answer,
-              style: TextStyle(fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: "Nunito",
+                  fontWeight: FontWeight.w500),
             ),
-          )
-      );
+          ));
     });
   }
 
   Widget _buildSpelledLetters() {
     return LayoutBuilder(builder: (ctx, constraint) {
       return Center(
-        child: Container(
-            width: constraint.maxWidth * 0.89,
-            height: 54,
-            decoration: 
-            BoxDecoration(color: Colors.white, 
-              border: Border.all(width: 5, color: _finishedExercise ? (_isRightAnswer ? Color.fromRGBO(147, 202, 250, 1) : Color.fromRGBO(233, 112, 112, 1)) : Colors.white) , 
-              borderRadius: BorderRadius.all(Radius.circular(20))
-            ), 
-            child: 
-              Center(
+          child: Container(
+              width: constraint.maxWidth * 0.89,
+              height: 54,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                      width: 5,
+                      color: _finishedExercise
+                          ? (_isRightAnswer
+                              ? Color.fromRGBO(147, 202, 250, 1)
+                              : Color.fromRGBO(233, 112, 112, 1))
+                          : Colors.white),
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              child: Center(
                 child: Text(
                   spelledText,
-                  style: TextStyle(fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w500, letterSpacing: 2.0),
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontFamily: "Nunito",
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 2.0),
                 ),
               )));
     });
@@ -254,52 +270,52 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
       child: Container(
           width: containerSize.width * 0.89,
           height: containerSize.height * 0.5,
-          decoration: 
-          BoxDecoration(color: Colors.white, 
-            border: Border.all(width: 5, color: Colors.white) , 
-            borderRadius: BorderRadius.all(Radius.circular(20))
-          ),
-          child: Image(image: AssetImage(_isRightAnswer ? Constants.imageAssets.happyFace : Constants.imageAssets.sadFace ))), 
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(width: 5, color: Colors.white),
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          child: Image(
+              image: AssetImage(_isRightAnswer
+                  ? Constants.imageAssets.happyFace
+                  : Constants.imageAssets.sadFace))),
     );
   }
 
   void _startCamera() {
-    widget._viewModel.initializeCamera().then((value) => completer.complete()); 
+    widget._viewModel.initializeCamera().then((value) => completer.complete());
 
-    widget._viewModel.getMlModelStream().listen(
-      (value) {
-        //Update results on screen
-        setState(() {
-          _handleCameraPrediction(value.first.label, value.first.confidence, this.context);
-        });
-      },
-      onDone: () {
-      },
-      onError: (error) {
-      }
-    );
+    widget._viewModel.getMlModelStream().listen((value) {
+      //Update results on screen
+      setState(() {
+        _handleCameraPrediction(
+            value.first.label, value.first.confidence, this.context);
+      });
+    }, onDone: () {}, onError: (error) {});
 
     setState(() {
       _showingCamera = true;
     });
   }
 
-  void _handleCameraPrediction(String label, double confidence, BuildContext ctx) {
-      if (!widget._isSpelling) {
-        _handleCameraPredictionLetter(label, confidence, ctx);
-      }
-      else {
-        _handleCameraPredictionSpelling(label, confidence, ctx);
-      }
+  void _handleCameraPrediction(
+      String label, double confidence, BuildContext ctx) {
+    if (!widget._isSpelling) {
+      _handleCameraPredictionLetter(label, confidence, ctx);
+    } else {
+      _handleCameraPredictionSpelling(label, confidence, ctx);
+    }
   }
 
-  void _handleCameraPredictionLetter(String label, double confidence, BuildContext ctx){
-    if (widget._viewModel.isGestureCorrect(label, confidence, widget._exercise) && !_finishedExercise) {
-        // controllerTopCenter.play();
-          setState(() {
-            spelledText = label;
-          });
-          _finishExercise(true);
+  void _handleCameraPredictionLetter(
+      String label, double confidence, BuildContext ctx) {
+    if (widget._viewModel
+            .isGestureCorrect(label, confidence, widget._exercise) &&
+        !_finishedExercise) {
+      // controllerTopCenter.play();
+      setState(() {
+        spelledText = label;
+      });
+      _finishExercise(true);
     }
   }
 
@@ -311,8 +327,8 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
         spelledText = widget._viewModel.spelledLetters.join();
       });
       if (spelledText == widget._exercise.correctAnswer) {
-          // controllerTopCenter.play();
-          _finishExercise(true);
+        // controllerTopCenter.play();
+        _finishExercise(true);
       }
     }
   }
@@ -327,13 +343,12 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   }
 
   void _submitAnswer(BuildContext ctx) {
-    widget._viewModel.didSubmitTextAnswer(spelledText, widget._exercise.id, this.context);
+    widget._viewModel
+        .didSubmitTextAnswer(spelledText, widget._exercise.id, this.context);
   }
 
   @override
   void dispose() {
     super.dispose();
   }
-
-
 }
