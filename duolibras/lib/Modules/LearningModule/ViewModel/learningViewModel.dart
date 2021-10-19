@@ -32,11 +32,14 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
     pages = _controllerModules.stream;
   }
 
-  BehaviorSubject<WrapperSectionPage> _controllerModules = BehaviorSubject<WrapperSectionPage>();
+  BehaviorSubject<WrapperSectionPage> _controllerModules =
+      BehaviorSubject<WrapperSectionPage>();
   WrapperSectionPage _wrapperSectionPage = WrapperSectionPage([]);
 
-  Future<void> _getModules(List<Section> newSections, BuildContext context) async {
-    final sectionsProgress = Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
+  Future<void> _getModules(
+      List<Section> newSections, BuildContext context) async {
+    final sectionsProgress =
+        Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
 
     for (var i = 0; i < newSections.length; i++) {
       await getModulesfromSection(newSections[i].id, context).then((modules) {
@@ -74,30 +77,35 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
     _controllerModules.sink.add(_wrapperSectionPage);
   }
 
-  Future<List<Module>> getModulesfromSection(String sectionID, BuildContext context) async {
+  Future<List<Module>> getModulesfromSection(
+      String sectionID, BuildContext context) async {
     return Service.instance
         .getModulesFromSectionId(sectionID)
         .onError((error, stackTrace) {
       final appError = Utils.logAppError(error);
       Completer<List<Module>> completer = Completer<List<Module>>();
 
-      _errorHandler.showModal(appError, context, enableDrag: false,
-      tryAgainClosure: () => _errorHandler.tryAgainClosure(() => 
-      Service.instance.getModulesFromSectionId(sectionID), context, completer));
+      _errorHandler.showModal(appError, context,
+          enableDrag: false,
+          tryAgainClosure: () => _errorHandler.tryAgainClosure(
+              () => Service.instance.getModulesFromSectionId(sectionID),
+              context,
+              completer));
       return completer.future;
     });
   }
 
   Future<List<Section>> getSectionsFromTrail(BuildContext context) {
-    return Service.instance.getSectionsFromTrail()
-    .onError((error, stackTrace) {
+    return Service.instance.getSectionsFromTrail().onError((error, stackTrace) {
       final appError = Utils.logAppError(error);
       Completer<List<Section>> completer = Completer<List<Section>>();
 
-      _errorHandler.showModal(appError, context, enableDrag: false,
-      tryAgainClosure: () => _errorHandler.tryAgainClosure(() => 
-      Service.instance.getSectionsFromTrail(), context, completer)
-      );
+      _errorHandler.showModal(appError, context,
+          enableDrag: false,
+          tryAgainClosure: () => _errorHandler.tryAgainClosure(
+              () => Service.instance.getSectionsFromTrail(),
+              context,
+              completer));
       return completer.future;
     });
   }
@@ -113,16 +121,21 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
     });
   }
 
-  Future<List<Exercise>> _getExerciseFromModule(String sectionID, String moduleID, int level, BuildContext context) {
-    return Service.instance.getExercisesFromModuleId(sectionID, moduleID, level)
-    .onError((error, stackTrace) {
+  Future<List<Exercise>> _getExerciseFromModule(
+      String sectionID, String moduleID, int level, BuildContext context) {
+    return Service.instance
+        .getExercisesFromModuleId(sectionID, moduleID, level)
+        .onError((error, stackTrace) {
       final appError = Utils.logAppError(error);
       Completer<List<Exercise>> completer = Completer<List<Exercise>>();
 
-      _errorHandler.showModal(appError, context, 
-      tryAgainClosure: () =>  _errorHandler.tryAgainClosure(() => 
-      Service.instance.getExercisesFromModuleId(sectionID, moduleID, level), context, completer),
-      exitClosure: () => completer.complete([]));
+      _errorHandler.showModal(appError, context,
+          tryAgainClosure: () => _errorHandler.tryAgainClosure(
+              () => Service.instance
+                  .getExercisesFromModuleId(sectionID, moduleID, level),
+              context,
+              completer),
+          exitClosure: () => completer.complete([]));
       return completer.future;
     });
   }
@@ -132,26 +145,28 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
     return Service.instance
         .getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity)
         .onError((error, stackTrace) {
-          final appError = Utils.logAppError(error);
-          Completer<List<Exercise>> completer = Completer<List<Exercise>>();
+      final appError = Utils.logAppError(error);
+      Completer<List<Exercise>> completer = Completer<List<Exercise>>();
 
-          _errorHandler.showModal(appError, context, 
-          tryAgainClosure: () => _errorHandler.tryAgainClosure(() => 
-          Service.instance.getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity), context, completer),
+      _errorHandler.showModal(appError, context,
+          tryAgainClosure: () => _errorHandler.tryAgainClosure(
+              () => Service.instance.getANumberOfExercisesFromModuleId(
+                  sectionID, moduleID, quantity),
+              context,
+              completer),
           exitClosure: () => completer.complete([]));
-          return completer.future;
-      })
-      .then((exercises) {
-          exercises.shuffle();
-          List<Exercise> newExercises = [];
+      return completer.future;
+    }).then((exercises) {
+      exercises.shuffle();
+      List<Exercise> newExercises = [];
 
-          for (var i = 0; i < 15; i++) {
-            if (!exercises.containsAt(i)) {
-              return newExercises;
-            } else {
-              newExercises.add(exercises[i]);
-            }
-          }
+      for (var i = 0; i < 15; i++) {
+        if (!exercises.containsAt(i)) {
+          return newExercises;
+        } else {
+          newExercises.add(exercises[i]);
+        }
+      }
       return newExercises;
     });
   }

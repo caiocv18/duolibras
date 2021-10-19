@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
 class ExerciseButton extends StatefulWidget {
-  const ExerciseButton({
-    Key? key,
-    required this.child,
-    required this.size,
-    required this.color,
-    this.duration = const Duration(milliseconds: 160),
-    this.onPressed,
-  }) : super(key: key);
+  const ExerciseButton(
+      {Key? key,
+      required this.child,
+      required this.size,
+      required this.color,
+      this.duration = const Duration(milliseconds: 160),
+      this.onPressed,
+      this.backgroundColor = Colors.white})
+      : super(key: key);
 
   final Widget child;
   final Color color;
   final Duration duration;
   final VoidCallback? onPressed;
+  final Color backgroundColor;
 
   final double size;
 
@@ -133,7 +135,7 @@ class _ExerciseButtonState extends State<ExerciseButton>
                           children: <Widget>[
                             DecoratedBox(
                               decoration: BoxDecoration(
-                                color: _hslRelativeColor(l: 0.06),
+                                color: widget.backgroundColor,
                                 borderRadius: radius,
                               ),
                               child: SizedBox.expand(),
@@ -142,7 +144,7 @@ class _ExerciseButtonState extends State<ExerciseButton>
                               offset: Offset(0.0, vertPadding * 2),
                               child: DecoratedBox(
                                 decoration: BoxDecoration(
-                                  color: _hslRelativeColor(),
+                                  color: widget.backgroundColor,
                                   borderRadius: radius,
                                 ),
                                 child: SizedBox.expand(),

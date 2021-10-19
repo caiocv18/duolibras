@@ -1,3 +1,4 @@
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
@@ -74,7 +75,7 @@ class _MaduleWidgetState extends State<MaduleWidget> {
         children: [
           Center(
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.6,
+              width: MediaQuery.of(context).size.width * 0.7,
               child: Row(
                 mainAxisAlignment: widget._rowAlignment,
                 children: _createRowContent(),
@@ -99,7 +100,7 @@ class _MaduleWidgetState extends State<MaduleWidget> {
                 children: [
                   Consumer(builder: (ctx, UserModel userProvider, _) {
                     return CircularProgressIndicator(
-                      backgroundColor: Colors.grey[600],
+                      backgroundColor: HexColor.fromHex("D2D7E4"),
                       valueColor: AlwaysStoppedAnimation<Color>(
                           Color.fromRGBO(255, 215, 0, 1)),
                       value: _getModulerProgress(userProvider.user),
@@ -127,13 +128,18 @@ class _MaduleWidgetState extends State<MaduleWidget> {
                   if (!widget._isAvaiable)
                     Stack(alignment: Alignment.center, children: [
                       CircleAvatar(
-                        backgroundColor: Colors.grey,
+                        backgroundColor: HexColor.fromHex("D2D7E4"),
                         radius: 50,
                       ),
                       CircleAvatar(
-                        child: Container(height: 50, child: Icon(Icons.lock)),
+                        child: Container(
+                            height: 50,
+                            child: Icon(
+                              Icons.lock,
+                              color: HexColor.fromHex("4982F6"),
+                            )),
                         radius: 35,
-                        backgroundColor: Colors.grey,
+                        backgroundColor: HexColor.fromHex("D2D7E4"),
                       )
                     ])
                 ],
@@ -167,7 +173,7 @@ class _MaduleWidgetState extends State<MaduleWidget> {
                 children: [
                   Consumer(builder: (ctx, UserModel userProvider, _) {
                     return CircularProgressIndicator(
-                      backgroundColor: Colors.grey[600],
+                      backgroundColor: HexColor.fromHex("D2D7E4"),
                       valueColor: AlwaysStoppedAnimation<Color>(
                           Color.fromRGBO(255, 215, 0, 1)),
                       value: _getModulerProgress(userProvider.user),
@@ -177,6 +183,10 @@ class _MaduleWidgetState extends State<MaduleWidget> {
                   CircleAvatar(
                     backgroundColor: Colors.white,
                     radius: 40,
+                    child: Container(
+                        // height: 50,
+                        child:
+                            Image.network(widget._module.backgroundImageUrl)),
                   ),
                   CircleAvatar(
                     child: Container(
@@ -185,19 +195,24 @@ class _MaduleWidgetState extends State<MaduleWidget> {
                     radius: 35,
                     backgroundColor:
                         1 == _getModulerProgress(locator<UserModel>().user)
-                            ? Color.fromRGBO(255, 215, 0, 1)
-                            : Colors.blue[400],
+                            ? Colors.transparent
+                            : Colors.transparent,
                   ),
                   if (!widget._isAvaiable)
                     Stack(alignment: Alignment.center, children: [
                       CircleAvatar(
-                        backgroundColor: Colors.grey,
+                        backgroundColor: HexColor.fromHex("D2D7E4"),
                         radius: 50,
                       ),
                       CircleAvatar(
-                        child: Container(height: 50, child: Icon(Icons.lock)),
+                        child: Container(
+                            height: 50,
+                            child: Icon(
+                              Icons.lock,
+                              color: HexColor.fromHex("4982F6"),
+                            )),
                         radius: 35,
-                        backgroundColor: Colors.grey,
+                        backgroundColor: HexColor.fromHex("D2D7E4"),
                       )
                     ])
                 ],

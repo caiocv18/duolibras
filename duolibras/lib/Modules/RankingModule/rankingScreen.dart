@@ -1,3 +1,6 @@
+import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
+import 'package:duolibras/Commons/Components/exerciseButton.dart';
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
 import 'package:duolibras/Modules/RankingModule/ViewModel/rankingViewModel.dart';
@@ -41,6 +44,7 @@ class _RankingScreenState extends State<RankingScreen> {
         (kBottomNavigationBarHeight +
             _mediaQuery.padding.bottom +
             _mediaQuery.padding.top +
+            AppBar().preferredSize.height +
             20);
 
     return widget._viewModel.loading
@@ -49,18 +53,11 @@ class _RankingScreenState extends State<RankingScreen> {
           )
         : Column(
             children: [
-              SizedBox(height: 10),
-              Text("Ranking Mundial",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                      color: Theme.of(context).primaryColor),
-                  textAlign: TextAlign.center),
               SizedBox(height: 15),
               Container(
-                height: _containerHeight * 0.8,
+                height: _containerHeight * 0.84,
                 child: ListView.builder(
-                    padding: EdgeInsets.only(bottom: 10),
+                    padding: EdgeInsets.only(bottom: 12),
                     itemCount: usersRank.length,
                     itemBuilder: (ctx, index) {
                       return RankingTile(
@@ -73,30 +70,47 @@ class _RankingScreenState extends State<RankingScreen> {
           );
   }
 
-  Widget createUnllogedBody() {
+  Widget createUnllogedBody(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-              SharedFeatures.instance.isLoggedIn ? "Loagado" : "precisa logar"),
-          SizedBox(height: 15),
-          ElevatedButton(
-            child: Text("Sign In"),
-            onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(MainRouter.routeSignIn)
-                  .then((value) {
-                setState(() {});
-                ;
-              });
-            },
-            style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.blue)))),
-          )
+            SharedFeatures.instance.isLoggedIn ? "Loagado" : "Precisa Logar",
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 22,
+                fontFamily: "Nunito",
+                fontWeight: FontWeight.w600),
+          ),
+          SizedBox(height: 20),
+          Container(
+            width: screenSize.width * 0.25,
+            height: screenSize.height * 0.045,
+            child: ExerciseButton(
+              child: Center(
+                child: Text(
+                  "Sign In",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: "Nunito",
+                      fontWeight: FontWeight.w400),
+                ),
+              ),
+              size: 20,
+              color: HexColor.fromHex("93CAFA"),
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(MainRouter.routeSignIn)
+                    .then((value) {
+                  setState(() {});
+                });
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -105,9 +119,11 @@ class _RankingScreenState extends State<RankingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SharedFeatures.instance.isLoggedIn
-          ? createRankingBody(context)
-          : createUnllogedBody(),
+      body: Container(
+          child: SharedFeatures.instance.isLoggedIn
+              ? createRankingBody(context)
+              : createUnllogedBody(context),
+          color: HexColor.fromHex("E5E5E5")),
     );
   }
 }

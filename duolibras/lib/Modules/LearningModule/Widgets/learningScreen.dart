@@ -73,8 +73,9 @@ class _LearningScreenState extends State<LearningScreen>
 
     animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 3));
-    pathScrollController.addListener(() {
-      listViewScrollController.jumpTo(pathScrollController.offset);
+
+    listViewScrollController.addListener(() {
+      pathScrollController.jumpTo(listViewScrollController.offset);
     });
 
     animation = Tween(begin: 0.0, end: 1.0).animate(animationController);
@@ -133,7 +134,7 @@ class _LearningScreenState extends State<LearningScreen>
               _mediaQuery.padding.bottom +
               appBar.preferredSize.height +
               _mediaQuery.padding.top +
-              85);
+              100);
       return Center(
         child: Column(
           children: [_buildContentWidgets(maxHeight)],
@@ -146,11 +147,11 @@ class _LearningScreenState extends State<LearningScreen>
 
   void handleFinishExercise() {
     setState(() {
-      index = 0;
+      // index = 0;
     });
-    Future.delayed(Duration(seconds: 1)).then((value) {
-      animationController.forward(from: 0.0);
-    });
+    // Future.delayed(Duration(seconds: 1)).then((value) {
+    //   animationController.forward(from: 0.0);
+    // });
   }
 
   Widget _buildContentWidgets(double maxHeight) {
@@ -175,6 +176,7 @@ class _LearningScreenState extends State<LearningScreen>
           Container(
               height: maxHeight,
               child: ListView.builder(
+                  controller: listViewScrollController,
                   padding: EdgeInsets.only(bottom: 10),
                   itemCount: pages.total + (widget._viewModel.hasMore ? 1 : 0),
                   itemBuilder: (ctx, index) {

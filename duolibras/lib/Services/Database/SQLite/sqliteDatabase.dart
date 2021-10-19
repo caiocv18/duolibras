@@ -26,9 +26,10 @@ class SQLiteDatabase extends DatabaseProtocol {
             .then((_) => {
                   db.execute(
                       'CREATE TABLE ${Constants.database.sectionProgressTable}(id TEXT PRIMARY KEY, sectionId TEXT NOT NULL, progress INTEGER)')
-                }).then((value) => {
+                })
+            .then((value) => {
                   db.execute(
-                      'CREATE TABLE ${Constants.database.modulesProgressTable}(id TEXT PRIMARY KEY, moduleId TEXT NOT NULL, moduleProgress INTEGER, sectionId TEXT NOT NULL, FOREIGN KEY (sectionId) REFERENCES ${Constants.database.sectionProgressTable} (sectionId) ON DELETE CASCADE ON UPDATE CASCADE)')
+                      'CREATE TABLE ${Constants.database.modulesProgressTable}(id TEXT PRIMARY KEY, maxModuleProgress INTEGER NOT NULL, moduleId TEXT NOT NULL, moduleProgress INTEGER, sectionId TEXT NOT NULL, FOREIGN KEY (sectionId) REFERENCES ${Constants.database.sectionProgressTable} (sectionId) ON DELETE CASCADE ON UPDATE CASCADE)')
                 });
       },
       version: 1,
@@ -88,12 +89,17 @@ class SQLiteDatabase extends DatabaseProtocol {
     var completer = Completer<void>();
     final db = await database;
     await db
-        .insert(Constants.database.sectionProgressTable, sectionProgress.toMapLocal(),
+        .insert(Constants.database.sectionProgressTable,
+            sectionProgress.toMapLocal(),
             conflictAlgorithm: ConflictAlgorithm.replace)
-            .then((_) => {
-              Future.sync(() => sectionProgress.modulesProgressToMap().forEach((moduleMap) async { 
-                await db.insert(Constants.database.modulesProgressTable, moduleMap);
-              })).then((_) => completer.complete())
+        .then((_) => {
+              Future.sync(() => sectionProgress
+                      .modulesProgressToMap()
+                      .forEach((moduleMap) async {
+                    await db.insert(
+                        Constants.database.modulesProgressTable, moduleMap,
+                        conflictAlgorithm: ConflictAlgorithm.replace);
+                  })).then((_) => completer.complete())
             });
     return completer.future;
   }
@@ -120,7 +126,7 @@ class SQLiteDatabase extends DatabaseProtocol {
 
     final List<Map<String, dynamic>> sectionsMaps =
         await db.query(Constants.database.sectionProgressTable);
-    
+
     final List<Map<String, dynamic>> modulesMaps =
         await db.query(Constants.database.modulesProgressTable);
 
@@ -129,9 +135,11 @@ class SQLiteDatabase extends DatabaseProtocol {
     }
 
     return List.generate(sectionsMaps.length, (i) {
-      final moduleProgressMapList = modulesMaps.where((element) => element["sectionId"] == sectionsMaps[i]["sectionId"]);
+      final moduleProgressMapList = modulesMaps.where(
+          (element) => element["sectionId"] == sectionsMaps[i]["sectionId"]);
 
-      return SectionProgress.fromMapLocal(sectionsMaps[i], moduleProgressMapList.toList(), sectionsMaps[i]['id']);
+      return SectionProgress.fromMapLocal(sectionsMaps[i],
+          moduleProgressMapList.toList(), sectionsMaps[i]['id']);
     });
   }
 }

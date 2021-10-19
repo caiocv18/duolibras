@@ -23,7 +23,8 @@ class SectionProgress {
       required this.progress,
       required this.modulesProgress});
 
-  factory SectionProgress.fromMap(Map<String, dynamic> parsedJson, String docId) {
+  factory SectionProgress.fromMap(
+      Map<String, dynamic> parsedJson, String docId) {
     return SectionProgress(
         sectionId: parsedJson["sectionId"],
         progress: parsedJson["progress"],
@@ -38,7 +39,8 @@ class SectionProgress {
     return modules;
   }
 
-  factory SectionProgress.fromMapLocal(Map<String, dynamic> sectionJson, List<Map<String, dynamic>> modulesJson, String docId) {
+  factory SectionProgress.fromMapLocal(Map<String, dynamic> sectionJson,
+      List<Map<String, dynamic>> modulesJson, String docId) {
     return SectionProgress(
         sectionId: sectionJson["sectionId"],
         progress: sectionJson["progress"],
@@ -57,20 +59,17 @@ class SectionProgress {
   }
 
   Map<String, dynamic> toMapLocal() {
-    return {
-      'id': id,
-      'sectionId': sectionId,
-      "progress": progress
-    };
+    return {'id': id, 'sectionId': sectionId, "progress": progress};
   }
 
   List<Map<String, dynamic>> modulesProgressToMap() {
     return List<Map<String, dynamic>>.from(modulesProgress.map((modProgress) {
       return {
-      "id": modProgress.id,
-      "moduleId": modProgress.moduleId,
-      "moduleProgress": modProgress.progress,
-      "sectionId": this.sectionId
+        "id": modProgress.id,
+        "moduleId": modProgress.moduleId,
+        "moduleProgress": modProgress.progress,
+        "sectionId": this.sectionId,
+        "maxModuleProgress": modProgress.maxModuleProgress
       };
     }));
   }
