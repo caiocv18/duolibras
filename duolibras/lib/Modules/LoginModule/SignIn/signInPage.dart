@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:duolibras/Commons/Components/baseScreen.dart';
+import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
 import 'package:flutter/material.dart';
 
@@ -9,17 +12,38 @@ import 'firebaseSignInWidget.dart';
 class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
+    final containerHeight = mediaQuery.size.height - (paddingTop);
+    final containerSize = Size(mediaQuery.size.width, containerHeight);
     return BaseScreen<LoginViewModel>(
         builder: (_, viewModel, __) => Container(
-              height: 100,
+              height: containerSize.height,
+              color: Color.fromRGBO(234, 234, 234, 1),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 40),
-                  FirebaseSignInWidget(viewModel),
-                  Container(child: AppleSignInWidget(viewModel), width: 300),
+                  SizedBox(height: containerHeight * 0.08),
+                  Container(
+                      height: containerSize.height * 0.10,
+                      child: QuestionWidget(
+                          "Bem-vindo ao Duolibras! \bVamos começar? ")),
+                  SizedBox(height: containerHeight * 0.12),
+                  Container(
+                      child: FirebaseSignInWidget(viewModel),
+                      width: containerSize.width * 0.8),
+                  SizedBox(height: containerHeight * 0.08),
+                  Container(
+                    child: AppleSignInWidget(viewModel),
+                    width: containerSize.width * 0.8,
+                    height: containerSize.height * 0.05,
+                  ),
                   SizedBox(height: 15.0),
-                  Container(child: GoogleSignInButton(viewModel), width: 300)
+                  Container(
+                    child: GoogleSignInButton(viewModel),
+                    width: containerSize.width * 0.8,
+                    height: containerSize.height * 0.07,
+                  )
                 ],
               ),
             ));
