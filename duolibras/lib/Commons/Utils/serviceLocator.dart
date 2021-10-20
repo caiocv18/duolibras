@@ -1,5 +1,6 @@
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
+import 'package:duolibras/Modules/Launch/launchViewModel.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Models/module.dart';
@@ -13,6 +14,9 @@ GetIt locator = GetIt.asNewInstance();
 void setupLocator() {
   //Authetication
   locator.registerFactory<LoginViewModel>(() => LoginViewModel());
+
+//Launch
+  locator.registerSingleton(LaunchViewModel());
 
   //user
   locator.registerSingleton(UserModel());

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 
-import 'result.dart';
+import 'Helpers/result.dart';
 
 abstract class MLModelProtocol {
   bool modelsIsLoaded = false;

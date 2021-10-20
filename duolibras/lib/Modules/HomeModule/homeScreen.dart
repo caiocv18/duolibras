@@ -1,5 +1,5 @@
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
-import 'package:duolibras/Commons/Utils/Constants.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';

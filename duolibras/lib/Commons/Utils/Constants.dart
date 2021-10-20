@@ -25,6 +25,7 @@ class FirebaseServiceConstants {
   String get sectionsCollection => "sections";
   String get trailsCollection => "trails";
   String get sectionProgressCollection => "sectionProgress";
+  String get dynamicAssetsCollection => "dynamicAssets";
 }
 
 class FirebaseAuthenticatorConstants {

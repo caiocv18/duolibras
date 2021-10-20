@@ -8,6 +8,7 @@ import 'package:duolibras/Services/Firebase/firebaseErrors.dart';
 import 'package:duolibras/Services/Firebase/firebaseService.dart';
 import 'package:duolibras/Services/Mock/mockService.dart';
 import 'package:duolibras/Services/Models/appError.dart';
+import 'package:duolibras/Services/Models/dynamicAsset.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/section.dart';
 import 'package:duolibras/Services/Models/trail.dart';
@@ -129,6 +130,11 @@ class Service {
     return _service
         .getANumberOfExercisesFromModuleId(sectionId, moduleId, quantity)
         .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
+  }
+
+  Future<List<DynamicAsset>> getDynamicAssets() {
+    return _service.getDynamicAssets()
+    .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
   }
 
   Future<void> cleanDatabase() {

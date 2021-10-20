@@ -2,6 +2,7 @@ enum AppErrorType {
   FirebaseError,
   DatabaseError,
   AuthenticationError,
+  FileServiceError,
   Unknown
 }
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
+import 'package:duolibras/Services/Models/dynamicAsset.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/Firebase/firebaseErrors.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
@@ -189,6 +190,24 @@ class FirebaseService extends ServicesProtocol {
     return completer.future;
   }
 
+  Future<List<DynamicAsset>> _getDynamicAssetsFromFirebase() {
+    var completer = Completer<List<DynamicAsset>>();
+
+    firestoreInstance
+        .collection(Constants.firebaseService.dynamicAssetsCollection)
+        .get()
+        .then((value) => {
+              completer.complete(value.docs
+                  .map((e) => DynamicAsset.fromMap(e.data(), e.id))
+                  .toList())
+            })
+        .catchError((error, stackTrace) {
+          completer.completeError(FirebaseErrors.GetDynamicAssetsError);
+        });
+
+    return completer.future;
+  }
+
 //Public methods
   @override
   Future<myUser.User> getUser() async {
@@ -289,5 +308,10 @@ class FirebaseService extends ServicesProtocol {
   @override
   Future<bool> postSectionProgress(SectionProgress sectionProgress) {
     return _postSectionProgressInFirebase(sectionProgress);
+  }
+
+  @override
+  Future<List<DynamicAsset>> getDynamicAssets() {
+    return _getDynamicAssetsFromFirebase();
   }
 }

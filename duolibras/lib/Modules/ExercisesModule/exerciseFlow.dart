@@ -204,20 +204,6 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
     if (exerciseAppBar != null) {
       if (exerciseAppBar.showContentTabBar != null) exerciseAppBar.showContentTabBar!(TabType.ExerciseBar);
     }
-    // final index = widget.exercises.indexOf(widget._currentExercise);
-    // if (widget.exercises.length > index + 1){
-    //   final nextExercise = widget.exercises[index + 1];
-    //   widget._currentExercise = nextExercise;
-    // } else {
-    //   didFinishExercise(null, FeedbackStatus.Success);
-    //   return;
-    // }
-
-    // final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
-    // if (exerciseAppBar != null) {
-    //   if (exerciseAppBar.showContentTabBar != null) exerciseAppBar.showContentTabBar!(TabType.ExerciseBar);
-    // }
-    // didFinishExercise(widget._currentExercise, null);
   }
 
   void _sortExercisesList() {

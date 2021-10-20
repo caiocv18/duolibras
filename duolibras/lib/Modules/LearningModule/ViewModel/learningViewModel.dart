@@ -36,16 +36,20 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
       BehaviorSubject<WrapperSectionPage>();
   WrapperSectionPage _wrapperSectionPage = WrapperSectionPage([]);
 
-  Future<void> _getModules(
-      List<Section> newSections, BuildContext context) async {
-    final sectionsProgress =
-        Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
+  Future<void> _getModules(List<Section> newSections, BuildContext context) async {
+    final sectionsProgress = Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
 
     for (var i = 0; i < newSections.length; i++) {
-      await getModulesfromSection(newSections[i].id, context).then((modules) {
-        _wrapperSectionPage.pages.add(SectionPage(newSections[i], modules));
-        Color color = modules.first.color;
-        colorForModules.addAll({color: modules.length});
+      await getModulesfromSection(newSections[i].id, context)
+      .then((modules) {
+          _wrapperSectionPage.pages.add(SectionPage(newSections[i], modules));
+          Color color = modules.first.color;
+          colorForModules.addAll({color: modules.length});
+
+          modules.forEach((element) {
+            element.mlModelName = newSections[i].mlModelName ?? "";
+            element.mlLabelsName = newSections[i].mlLabelsName ?? "";
+          });
       });
     }
 
@@ -126,17 +130,16 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
     return Service.instance
         .getExercisesFromModuleId(sectionID, moduleID, level)
         .onError((error, stackTrace) {
-      final appError = Utils.logAppError(error);
-      Completer<List<Exercise>> completer = Completer<List<Exercise>>();
+          final appError = Utils.logAppError(error);
+          Completer<List<Exercise>> completer = Completer<List<Exercise>>();
 
-      _errorHandler.showModal(appError, context,
-          tryAgainClosure: () => _errorHandler.tryAgainClosure(
-              () => Service.instance
-                  .getExercisesFromModuleId(sectionID, moduleID, level),
-              context,
-              completer),
-          exitClosure: () => completer.complete([]));
-      return completer.future;
+          _errorHandler.showModal(appError, context,
+              tryAgainClosure: () => _errorHandler.tryAgainClosure(
+                  () => Service.instance.getExercisesFromModuleId(sectionID, moduleID, level),
+                  context,
+                  completer),
+              exitClosure: () => completer.complete([]));
+          return completer.future;
     });
   }
 

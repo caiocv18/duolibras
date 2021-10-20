@@ -28,10 +28,6 @@ class FeedbackExerciseScreen extends ExerciseStateful {
 }
 
 class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
-  // @override
-  // initState() {
-  //   locator<ExerciseViewModel>().hasMoreExercises();
-  // }
   var hasMoreExercises = true;
 
   @override

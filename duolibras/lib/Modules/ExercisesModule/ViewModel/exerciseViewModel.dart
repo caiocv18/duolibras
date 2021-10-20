@@ -4,9 +4,9 @@ import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
-import 'package:duolibras/MachineLearning/Helpers/camera_helper.dart';
+import 'package:duolibras/MachineLearning/mlCamera.dart';
 import 'package:duolibras/MachineLearning/Helpers/result.dart';
-import 'package:duolibras/MachineLearning/TFLite/tflite_helper.dart';
+import 'package:duolibras/MachineLearning/tfliteModel.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/feedbackExerciseScreen.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
@@ -27,8 +27,8 @@ class ExerciseViewModel extends BaseViewModel {
   final _errorHandler = ErrorHandler();
 
   //ML Exercise
-  final CameraHelper _cameraHelper =
-      CameraHelper(TFLiteHelper(), CameraLensDirection.front);
+  late MLCamera _cameraHelper =
+      MLCamera(TFLiteModel(exercisesAndModule.item2.mlModelName, exercisesAndModule.item2.mlLabelsName), CameraLensDirection.front);
   List<String> spelledLetters = [];
 
   ExerciseViewModel(this.exercisesAndModule, this.exerciseFlowDelegate) {

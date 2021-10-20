@@ -213,7 +213,7 @@ class _LearningScreenState extends State<LearningScreen>
                     rowAlignment = rowAlignment == MainAxisAlignment.end
                         ? MainAxisAlignment.start
                         : MainAxisAlignment.end;
-                    return MaduleWidget(
+                    return ModuleWidget(
                         module,
                         pages.sectionAtIndex(index)?.id ?? "",
                         widget._viewModel as ModuleViewModel,

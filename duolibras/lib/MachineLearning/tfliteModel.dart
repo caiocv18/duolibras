@@ -1,21 +1,26 @@
 import 'dart:async';
 
 import 'package:camera/camera.dart';
-import 'package:duolibras/MachineLearning/Helpers/mlModelProtocol.dart';
+import 'package:download_assets/download_assets.dart';
+import 'package:duolibras/MachineLearning/mlModelProtocol.dart';
 import 'package:tflite/tflite.dart';
 
-import '../Helpers/app_helper.dart';
-import '../Helpers/result.dart';
+import 'Helpers/app_helper.dart';
+import 'Helpers/result.dart';
 
-class TFLiteHelper extends MLModelProtocol {
+class TFLiteModel extends MLModelProtocol {
   var _outputs = <Result>[];
+  final String modelPath;
+  final String labelsPath;
+
+  TFLiteModel(this.modelPath, this.labelsPath);
 
   Future<void> loadModel() async {
     AppHelper.log("loadModel", "Loading model..");
 
     return Tflite.loadModel(
-            model: "assets/model.tflite",
-            labels: "assets/labels.txt",
+            model: "${DownloadAssetsController.assetsDir}/$modelPath",
+            labels: "${DownloadAssetsController.assetsDir}/$labelsPath",
             useGpuDelegate: false)
         .then((value) {
           print(value == "success");

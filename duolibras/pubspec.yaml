@@ -37,6 +37,7 @@ dependencies:
   flutter_keyboard_visibility: ^5.0.3
   smooth_page_indicator: ^1.0.0+2
   modal_bottom_sheet: ^2.0.0
+  download_assets: ^2.0.0
   
 dev_dependencies:
   flutter_test:

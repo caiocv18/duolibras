@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:duolibras/Commons/Utils/utils.dart';
+import 'package:duolibras/Services/Models/dynamicAsset.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/Models/trail.dart';
 import 'package:duolibras/Services/Models/section.dart';
@@ -133,6 +134,11 @@ class MockService extends ServicesProtocol {
 
   @override
   Future<List<SectionProgress>> getSectionsProgress() {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<DynamicAsset>> getDynamicAssets() {
     throw UnimplementedError();
   }
 }
