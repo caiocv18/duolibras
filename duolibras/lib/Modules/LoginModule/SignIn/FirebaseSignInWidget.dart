@@ -1,3 +1,8 @@
+import 'dart:ui';
+
+import 'package:duolibras/Commons/Components/exerciseButton.dart';
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
+import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/inputAnswerWidget.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
 import 'package:duolibras/Services/Authentication/authenticationModel.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
@@ -25,18 +30,29 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
+    final containerHeight = mediaQuery.size.height - (paddingTop);
+    final containerSize = Size(mediaQuery.size.width, containerHeight);
+
     return Center(
       child: Container(
         child: Padding(
-          padding: const EdgeInsets.all(36.0),
+          padding: const EdgeInsets.all(0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SizedBox(height: 45.0),
-              emailTextfield(),
+              Container(
+                  child: emailTextfield(),
+                  height: containerSize.height * 0.08,
+                  width: containerSize.width * 0.8),
               SizedBox(height: 35.0),
-              loginButton(context)
+              Container(
+                  child: loginButton(context),
+                  height: containerSize.height * 0.05,
+                  width: containerSize.width * 0.8)
             ],
           ),
         ),
@@ -58,7 +74,8 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
           await FirebaseDynamicLinks.instance.getInitialLink();
       if (data != null) {
         widget._viewModel
-            .handleFirebaseEmailLinkSignIn(emailTextfieldController.text, data.link)
+            .handleFirebaseEmailLinkSignIn(
+                emailTextfieldController.text, data.link)
             .then((value) => {Navigator.of(context).pop(true)});
       }
 
@@ -67,7 +84,8 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
         if (dynamicLink != null) {
           final Uri deepLink = dynamicLink.link;
           widget._viewModel
-            .handleFirebaseEmailLinkSignIn(emailTextfieldController.text, deepLink)
+              .handleFirebaseEmailLinkSignIn(
+                  emailTextfieldController.text, deepLink)
               .then((value) => {Navigator.of(context).pop(true)});
         }
       }, onError: (OnLinkErrorException e) async {
@@ -78,38 +96,26 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
   }
 
   void signIn(BuildContext ctx) async {
-    await widget._viewModel.login(ctx, LoginType.Firebase, loginModel: AuthenticationModel(email: emailTextfieldController.text));
+    await widget._viewModel.login(ctx, LoginType.Firebase,
+        loginModel: AuthenticationModel(email: emailTextfieldController.text));
   }
 
   Widget emailTextfield() {
-    return TextField(
-      controller: emailTextfieldController,
-      obscureText: false,
-      style: style,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Email",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-    );
+    return InputAnswerWidget(emailTextfieldController, true, "Email");
   }
 
   Widget loginButton(BuildContext ctx) {
-    return Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff01A0C7),
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          signIn(ctx);
-        },
-        child: Text("Login",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
-    );
+    return ExerciseButton(
+        child: Center(
+          child: Text("Log In",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 22,
+                  fontFamily: "Nunito",
+                  fontWeight: FontWeight.w600),
+              textAlign: TextAlign.left),
+        ),
+        size: 20,
+        color: HexColor.fromHex("93CAFA"));
   }
 }

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class InputAnswerWidget extends StatefulWidget {
   final TextEditingController inputController;
   final bool isEnable;
-  InputAnswerWidget(this.inputController, this.isEnable);
+  final String placeHolder;
+  InputAnswerWidget(this.inputController, this.isEnable, this.placeHolder);
 
   @override
   State<InputAnswerWidget> createState() => _InputAnswerWidgetState();
@@ -37,7 +38,7 @@ class _InputAnswerWidgetState extends State<InputAnswerWidget> {
               ),
               filled: true,
               hintStyle: TextStyle(color: Colors.grey[800]),
-              hintText: "Sua Resposta",
+              hintText: widget.placeHolder,
               focusColor: Colors.white,
               fillColor: Colors.white70),
         ),

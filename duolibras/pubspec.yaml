@@ -53,6 +53,7 @@ flutter:
     - lib/Services/Mock/
     - assets/images/nextExerciseArrow/
     - assets/images/tabBar/
+    - assets/images/google_icon.png
   fonts:
     - family: Nunito
       fonts:

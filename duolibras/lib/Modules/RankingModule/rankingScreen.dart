@@ -80,10 +80,11 @@ class _RankingScreenState extends State<RankingScreen> {
           Text(
             SharedFeatures.instance.isLoggedIn ? "Loagado" : "Precisa Logar",
             style: TextStyle(
-                color: Colors.black,
-                fontSize: 22,
-                fontFamily: "Nunito",
-                fontWeight: FontWeight.w600),
+              color: Colors.black,
+              fontSize: 22,
+              fontFamily: "Nunito",
+              fontWeight: FontWeight.w600,
+            ),
           ),
           SizedBox(height: 20),
           Container(
