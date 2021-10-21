@@ -7,6 +7,7 @@ import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
 import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 import 'package:duolibras/Modules/RankingModule/rankingScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool isLoading = false;
   bool isSwitched = false;
   int _currentIndex = 1;
   var _pages = [
@@ -70,39 +72,39 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
       appBar: AppBar(
-          backgroundColor: HexColor.fromHex("4982F6"),
+          backgroundColor: Colors.white,
           title: Container(
               child: Column(
                 children: [
-                  Text(_currentIndex == 0 ? "Ranking Mundial" : "Dibras"),
-                  Container(
-                    height: 20,
-                    child: Switch(
-                      value: isSwitched,
-                      onChanged: (value) {
-                        loadingNewLearningScreen();
-                      },
-                      activeTrackColor: Colors.lightGreenAccent,
-                      activeColor: Colors.green,
-                    ),
-                  )
+                  Text(_currentIndex == 0 ? "Ranking Mundial" : "Dibras", 
+                  style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700, color: Colors.black)),
                 ],
-          ))),
+          )
+        ),
+        leading: GestureDetector(onLongPress: () {
+           setState(() {
+            isSwitched = !isSwitched;
+            isLoading = true;
+          });
+          loadingNewLearningScreen(isSwitched);
+        }),
+        elevation: 1,
+      ),
       bottomNavigationBar: bottomNavigationBar,
-      body: SafeArea(child: _page),
+      body: isLoading ? Center(child: CircularProgressIndicator()) : SafeArea(child: _page),
     );
   }
 
-  Future loadingNewLearningScreen() {
-    return Future.delayed(Duration(seconds: 2)).then((value) => {
+  Future loadingNewLearningScreen(bool newValue) {
+    return Future.delayed(Duration(seconds: 1)).then((value) => {
       setState(() {
-        _changeEnvironment(value);
+        _changeEnvironment(newValue);
       })
     });
   }
 
   void _changeEnvironment(bool newValue) {
-    isSwitched = newValue;
+    isLoading = false;
     if (isSwitched) {
       SharedFeatures.instance.enviroment = AppEnvironment.PROD;
     } else {

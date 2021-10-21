@@ -25,7 +25,7 @@ abstract class LearningViewModelProtocol {
 
 class LearningScreen extends StatefulWidget {
   static String routeName = "/LearningScreen";
-  final LearningViewModelProtocol _viewModel;
+  final LearningViewModel _viewModel;
   LearningScreen(this._viewModel);
 
   @override
@@ -40,6 +40,11 @@ class _LearningScreenState extends State<LearningScreen>with SingleTickerProvide
   late AnimationController animationController;
   Path mainPath = Path();
   var index = 0;
+  var isLoadingPath = true;
+  late var customPath = CustomPaint(
+                    painter: TrailPath(mainPath, animationController,
+                        widget._viewModel.colorForModules, index),
+                    size: new Size(428, 212 * widget._viewModel.wrapperSectionPage.total.toDouble()));
 
   @override
   initState() {
@@ -62,17 +67,16 @@ class _LearningScreenState extends State<LearningScreen>with SingleTickerProvide
         }
       });
     });
+
+    Future.delayed(Duration(milliseconds: 800)).then((value) => {
+      setState(() {
+        isLoadingPath = false;
+      })
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // if (pages.isEmpty) {
-    //   if (widget._viewModel.firstFetch) {
-    //     widget._viewModel.firstFetch = false;
-    //     widget._viewModel.fetchSections(context);
-    //   }
-    // }
-
     return  BaseScreen<LearningViewModel>(
         onModelReady: (viewModel) => {viewModel.fetchSections(context)},
         builder: (_, viewModel, __) => LayoutBuilder(
@@ -92,69 +96,79 @@ class _LearningScreenState extends State<LearningScreen>with SingleTickerProvide
   }
 
   Widget _buildContentWidgets(double maxHeight, LearningViewModel viewModel) {
-    final pagesTotal = viewModel.wrapperSectionPage.total;
-    var rowAlignment = MainAxisAlignment.end;
-
-    maxHeight -= 15;
-    return Column(
-      children: [
-        SizedBox(height: 15),
-        Stack(children: [
-          Container(
-              height: maxHeight,
-              // width: double.infinity,
-              child: SingleChildScrollView(
-                  controller: pathScrollController,
-                  scrollDirection: Axis.vertical,
-                  child: new CustomPaint(
-                    painter: TrailPath(mainPath, animationController,
-                        widget._viewModel.colorForModules, index),
-                    size: new Size(428, 212 * pagesTotal.toDouble()),
-                  ))),
-          Container(
-              height: maxHeight,
-              child: ListView.builder(
-                  controller: listViewScrollController,
-                  padding: EdgeInsets.only(bottom: 10),
-                  itemCount: pagesTotal ,
-                  itemBuilder: (ctx, index) {
-                    if (index == pagesTotal - 1 && widget._viewModel.hasMore) {
-                      widget._viewModel.fetchSections(ctx);
-                    }
-
-                    if (index == pagesTotal) {
-                      if (viewModel.state == ScreenState.Loading)
-                      return Center(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: CircularProgressIndicator(),
-                      ));
-                    }
-                    
-                    final module = viewModel.wrapperSectionPage.moduleAtIndex(index);
-                    rowAlignment = rowAlignment == MainAxisAlignment.end
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.end;
-                    return ModuleWidget(
-                          module,
-                          viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
-                          widget._viewModel as ModuleViewModel,
-                          rowAlignment,
-                          handleFinishExercise,
-                          index == 0
-                              ? true
-                              : viewModel.wrapperSectionPage.isModuleAvaiable(
-                                  viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
-                                  module.id,
-                                  ctx
-                                )
-                      );
-                  })),
-        ]),
-      ],
+    maxHeight -= 20;
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 850),
+      opacity: isLoadingPath ? 0.0 : 1.0,
+      child: Column(
+        children: [
+          SizedBox(height: 20),
+          Stack(children: [
+            _buildBackground(maxHeight),
+            _buildTrail(maxHeight, viewModel)
+          ]),
+        ],
+      ),
     );
   }
 
+Widget _buildBackground(double maxHeight) {
+  return  Container(
+            height: maxHeight,
+            // width: double.infinity,
+            child: SingleChildScrollView(
+                controller: pathScrollController,
+                scrollDirection: Axis.vertical,
+                child: customPath,
+                )
+        );
+}
+
+Widget _buildTrail(double maxHeight, LearningViewModel viewModel) {
+  final pagesTotal = viewModel.wrapperSectionPage.total;
+  var rowAlignment = MainAxisAlignment.end;
+
+  return Container(
+      height: maxHeight,
+      child: ListView.builder(
+          controller: listViewScrollController,
+          padding: EdgeInsets.only(bottom: 10),
+          itemCount: pagesTotal,
+          itemBuilder: (ctx, index) {
+            if (index == pagesTotal - 1 && widget._viewModel.hasMore) {
+              widget._viewModel.fetchSections(ctx);
+            }
+
+            if (index == pagesTotal) {
+              if (viewModel.state == ScreenState.Loading)
+              return Center(
+                  child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: CircularProgressIndicator(),
+              ));
+            }
+            
+            final module = viewModel.wrapperSectionPage.moduleAtIndex(index);
+            rowAlignment = rowAlignment == MainAxisAlignment.end
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.end;
+            return ModuleWidget(
+                  module,
+                  viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
+                  widget._viewModel as ModuleViewModel,
+                  rowAlignment,
+                  handleFinishExercise,
+                  index == 0
+                      ? true
+                      : viewModel.wrapperSectionPage.isModuleAvaiable(
+                          viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
+                          module.id,
+                          ctx
+                        )
+              );
+          })
+  );
+}
 
   void handleFinishExercise() {
     setState(() {

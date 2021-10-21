@@ -8,7 +8,6 @@ class TrailPath extends CustomPainter {
   AnimationController _animationController;
   Map<Color, int> colorForRows;
   int index;
-
   var lastPosition = _Position.Left;
 
   int get maxLevelProgress {
@@ -19,8 +18,58 @@ class TrailPath extends CustomPainter {
       this.mainPath, this._animationController, this.colorForRows, this.index)
       : super(repaint: _animationController);
 
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 8.0;
+
+    var initialPosition = 00.0;
+
+    for (var i = 0; i < colorForRows.entries.length; i++) {
+      paint.color = colorForRows.entries.elementAt(i).key;
+      final numberOfRows = colorForRows.entries.elementAt(i).value;
+
+      initialPosition = drawPathLines(lastPosition, initialPosition, numberOfRows, canvas, paint, size);
+
+      if (i + 1 != colorForRows.entries.length) {
+        final pathLine =
+            createNewModuleLine(initialPosition, size, lastPosition, canvas, [
+          colorForRows.entries.elementAt(i).key,
+          colorForRows.entries.elementAt(i + 1).key,
+        ]);
+        mainPath.extendWithPath(pathLine, const Offset(0, 0));
+      }
+    }
+
+    Paint paintball = Paint();
+    paintball.color = Colors.amber;
+    paintball.strokeWidth = 8.0;
+    paintball.style = PaintingStyle.fill;
+
+    if (lastPosition != _Position.Right) {
+      canvas.drawCircle(
+          Offset(size.width * 0.7, initialPosition), 12, paintball);
+    } else {
+      canvas.drawCircle(
+          Offset(size.width * 0.3, initialPosition), 12, paintball);
+    }
+
+    canvas.drawCircle(
+      ui.Offset(calculate(_animationController.value, index).dx,
+          calculate(_animationController.value, index).dy),
+      12.0,
+      paintball);
+
+  }
+
   double drawPathLines(_Position initialPosition, double initialHeight,
       int numberOfModules, Canvas canvas, Paint paint, Size size) {
+
     var shouldDrawLine = true;
     Path tempPath = Path();
     for (var i = 1; i <= numberOfModules; i++) {
@@ -123,7 +172,6 @@ class TrailPath extends CustomPainter {
   }
 
   Offset calculate(value, pathIndex) {
-    
     try {
         ui.PathMetrics pathMetrics = mainPath.computeMetrics();
         ui.PathMetric pathMetric = pathMetrics.elementAt(pathIndex);
@@ -133,7 +181,6 @@ class TrailPath extends CustomPainter {
     } catch (e) {
       return Offset(0, 0);
     }
-
   }
 
   Offset calculateLastPosition(value) {
@@ -145,52 +192,4 @@ class TrailPath extends CustomPainter {
     return pos.position;
   }
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 8.0;
-
-    var initialPosition = 00.0;
-
-    for (var i = 0; i < colorForRows.entries.length; i++) {
-      paint.color = colorForRows.entries.elementAt(i).key;
-      final numberOfRows = colorForRows.entries.elementAt(i).value;
-
-      initialPosition = drawPathLines(
-          lastPosition, initialPosition, numberOfRows, canvas, paint, size);
-
-      if (i + 1 != colorForRows.entries.length) {
-        final pathLine =
-            createNewModuleLine(initialPosition, size, lastPosition, canvas, [
-          colorForRows.entries.elementAt(i).key,
-          colorForRows.entries.elementAt(i + 1).key,
-        ]);
-        mainPath.extendWithPath(pathLine, const Offset(0, 0));
-      }
-    }
-
-    Paint paintball = Paint();
-    paintball.color = Colors.amber;
-    paintball.strokeWidth = 8.0;
-    paintball.style = PaintingStyle.fill;
-
-    if (lastPosition != _Position.Right) {
-      canvas.drawCircle(
-          Offset(size.width * 0.7, initialPosition), 12, paintball);
-    } else {
-      canvas.drawCircle(
-          Offset(size.width * 0.3, initialPosition), 12, paintball);
-    }
-
-    canvas.drawCircle(
-        ui.Offset(calculate(_animationController.value, index).dx,
-            calculate(_animationController.value, index).dy),
-        12.0,
-        paintball);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }

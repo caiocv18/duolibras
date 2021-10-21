@@ -28,16 +28,6 @@ class LearningViewModel extends BaseViewModel with ModuleViewModel, LearningView
   Map<Color, int> colorForModules = {};
   WrapperSectionPage wrapperSectionPage = WrapperSectionPage([]);
 
-  // BehaviorSubject<List<Section>> _controller = BehaviorSubject<List<Section>>();
-  // BehaviorSubject<WrapperSectionPage> _controllerModules = BehaviorSubject<WrapperSectionPage>();
-
-  // LearningViewModel() {
-  //   _controllerModules.
-  //   sections = _controller.stream;
-  //   pages = _controllerModules.stream;
-  // }
-
-
   Future<void> _getModules(List<Section> newSections, BuildContext context) async {
     final sectionsProgress = Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
 
@@ -87,21 +77,22 @@ class LearningViewModel extends BaseViewModel with ModuleViewModel, LearningView
     return Service.instance
         .getModulesFromSectionId(sectionID)
         .onError((error, stackTrace) {
-      final appError = Utils.logAppError(error);
-      Completer<List<Module>> completer = Completer<List<Module>>();
+          final appError = Utils.logAppError(error);
+          Completer<List<Module>> completer = Completer<List<Module>>();
 
-      _errorHandler.showModal(appError, context,
-          enableDrag: false,
-          tryAgainClosure: () => _errorHandler.tryAgainClosure(
-              () => Service.instance.getModulesFromSectionId(sectionID),
-              context,
-              completer));
-      return completer.future;
-    });
+          _errorHandler.showModal(appError, context,
+              enableDrag: false,
+              tryAgainClosure: () => _errorHandler.tryAgainClosure(
+                  () => Service.instance.getModulesFromSectionId(sectionID),
+                  context,
+                  completer));
+          return completer.future;
+        });
   }
 
   Future<List<Section>> getSectionsFromTrail(BuildContext context) {
-    return Service.instance.getSectionsFromTrail().onError((error, stackTrace) {
+    return Service.instance.getSectionsFromTrail()
+    .onError((error, stackTrace) {
       final appError = Utils.logAppError(error);
       Completer<List<Section>> completer = Completer<List<Section>>();
 
@@ -109,7 +100,7 @@ class LearningViewModel extends BaseViewModel with ModuleViewModel, LearningView
           enableDrag: false,
           tryAgainClosure: () => _errorHandler.tryAgainClosure(
               () => Service.instance.getSectionsFromTrail(),
-              context,
+              context, 
               completer));
       return completer.future;
     });
@@ -146,30 +137,30 @@ class LearningViewModel extends BaseViewModel with ModuleViewModel, LearningView
     return Service.instance
         .getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity)
         .onError((error, stackTrace) {
-      final appError = Utils.logAppError(error);
-      Completer<List<Exercise>> completer = Completer<List<Exercise>>();
+            final appError = Utils.logAppError(error);
+            Completer<List<Exercise>> completer = Completer<List<Exercise>>();
 
-      _errorHandler.showModal(appError, context,
-          tryAgainClosure: () => _errorHandler.tryAgainClosure(
-              () => Service.instance.getANumberOfExercisesFromModuleId(
-                  sectionID, moduleID, quantity),
-              context,
-              completer),
-          exitClosure: () => completer.complete([]));
-      return completer.future;
-    }).then((exercises) {
-      exercises.shuffle();
-      List<Exercise> newExercises = [];
+            _errorHandler.showModal(appError, context,
+                tryAgainClosure: () => _errorHandler.tryAgainClosure(
+                    () => Service.instance.getANumberOfExercisesFromModuleId(
+                        sectionID, moduleID, quantity),
+                    context,
+                    completer),
+                exitClosure: () => completer.complete([]));
+            return completer.future;
+        }).then((exercises) {
+          exercises.shuffle();
+          List<Exercise> newExercises = [];
 
-      for (var i = 0; i < 15; i++) {
-        if (!exercises.containsAt(i)) {
+          for (var i = 0; i < 15; i++) {
+            if (!exercises.containsAt(i)) {
+              return newExercises;
+            } else {
+              newExercises.add(exercises[i]);
+            }
+          }
           return newExercises;
-        } else {
-          newExercises.add(exercises[i]);
-        }
-      }
-      return newExercises;
-    });
+        });
   }
 
   @override
