@@ -109,4 +109,11 @@ class UserModel extends BaseViewModel {
       setState(ScreenState.Normal);
     }
   }
+
+  void incrementUserProgress(int amount) {
+    if (_user != null) {
+      _user!.currentProgress += amount;
+      setState(ScreenState.Normal);
+    }
+  }
 }

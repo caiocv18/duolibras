@@ -5,7 +5,7 @@ class User {
   String? email;
   final String id;
   List<SectionProgress> sectionsProgress = [];
-  final int currentProgress;
+  int currentProgress;
   String? imageUrl;
 
   User(

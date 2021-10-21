@@ -49,4 +49,6 @@ class ImageAssets {
   String get rankingIcon => "${_basicPath}tabBar/ranking_icon.png";
   String get trailIcon => "${_basicPath}tabBar/trail_icon.png";
   String get googleIcon => "${_basicPath}google_icon.png";
+  String get camera_button => "${_basicPath}camera_button/camera_button.png";
+  String get edit_button => "${_basicPath}edit_button/edit_button.png";
 }

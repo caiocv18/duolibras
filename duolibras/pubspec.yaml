@@ -52,6 +52,8 @@ flutter:
     - assets/images/sadFace.png
     - lib/Services/Mock/
     - assets/images/nextExerciseArrow/
+    - assets/images/camera_button/
+    - assets/images/edit_button/
     - assets/images/tabBar/
     - assets/images/google_icon.png
   fonts:

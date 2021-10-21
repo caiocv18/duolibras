@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
+import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/ProfileModule/profileViewModel.dart';
 import 'package:duolibras/Modules/ProfileModule/takePictureScreen.dart';
@@ -32,36 +34,46 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
             clipBehavior: Clip.hardEdge,
             children: [
               CircleAvatar(
+                  backgroundColor: HexColor.fromHex("4982F6"),
                   radius: 70,
                   child: imageUrl != null
-                      ? Container(
-                          width: 190.0,
-                          height: 190.0,
-                          decoration: new BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: new DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: FileImage(File(imageUrl!)))))
-                      : Container(
-                          child: Icon(
-                          Icons.person_outline_rounded,
-                          color: Colors.white,
-                          size: 70,
-                          semanticLabel:
-                              'Text to announce in accessibility modes',
-                        ))),
+                      ? CircleAvatar(
+                          backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+                          radius: 66,
+                          child: Container(
+                              width: 190.0,
+                              height: 190.0,
+                              decoration: new BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: new DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: FileImage(File(imageUrl!))))),
+                        )
+                      : CircleAvatar(
+                          backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+                          radius: 66,
+                          child: Container(
+                              child: Icon(
+                            Icons.person_outline_rounded,
+                            color: Colors.white,
+                            size: 67,
+                            semanticLabel:
+                                'Text to announce in accessibility modes',
+                          )),
+                        )),
               Positioned(child: cameraButton(context), bottom: -15)
             ])));
   }
 
-  Widget cameraButton(BuildContext context){
+  Widget cameraButton(BuildContext context) {
     return MaterialButton(
       onPressed: () => widget.isEnabled ? _openCamera(context) : null,
       color: Colors.blue,
       textColor: Colors.white,
-      child: Icon(
-        Icons.camera_alt,
-        size: 12,
+      child: Image.asset(
+        Constants.imageAssets.camera_button,
+        height: 20,
+        width: 20,
       ),
       padding: EdgeInsets.all(16),
       shape: CircleBorder(),

@@ -1,3 +1,7 @@
+import 'dart:ui';
+
+import 'package:duolibras/Commons/Components/exerciseButton.dart';
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/LoginModule/SignIn/signInPage.dart';
@@ -108,51 +112,108 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
+    final containerHeight =
+        mediaQuery.size.height - (AppBar().preferredSize.height + paddingTop);
+    final containerSize = Size(mediaQuery.size.width, containerHeight);
+
     return WillPopScope(
         onWillPop: () async {
           Navigator.of(context).pop(_userHasChanged);
           return true;
         },
-        child: Container(
-            alignment: Alignment.center,
-            color: Colors.white,
-            child: Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 20),
-                ProfileImageButton(isLogged, _viewModel),
-                SizedBox(height: 40),
-                Container(
-                    child: CustomTextfield(nameTextfieldController, _userName,
-                        isLogged, _handleSubmitNewName),
-                    width: 200),
-                SizedBox(height: 60),
-                Container(
-                    child: ProgressWidget(
-                        locator<UserModel>().user.currentProgress / 100)),
-                SizedBox(height: 200),
-                ElevatedButton(
-                  child: Text(isLogged ? "Log out" : "Login"),
-                  onPressed: () {
-                    if (isLogged) {
-                      _viewModel.signOut().then((_) {
-                        setState(() {
-                          _userHasChanged = true;
-                        });
-                      });
-                    } else {
-                      Navigator.of(context).pushNamed(ProfileFlow.routeSignIn);
-                    }
-                  },
-                  style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(color: Colors.blue)))),
-                ),
-              ],
-            ))));
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+                height: containerHeight,
+                alignment: Alignment.center,
+                color: Color.fromRGBO(234, 234, 234, 1),
+                child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 20),
+                    ProfileImageButton(isLogged, _viewModel),
+                    SizedBox(height: 60),
+                    Container(
+                        child: CustomTextfield(nameTextfieldController,
+                            _userName, isLogged, _handleSubmitNewName),
+                        width: containerSize.width * 0.8),
+                    SizedBox(height: 60),
+                    _createProgressWidget(),
+                    SizedBox(height: containerHeight * 0.1),
+                    Container(
+                        width: containerSize.width * 0.4,
+                        height: containerHeight * 0.05,
+                        child: ExerciseButton(
+                          child: Center(
+                            child: Text("Log In"),
+                          ),
+                          size: 20,
+                          color: HexColor.fromHex("4982F6"),
+                          onPressed: () {
+                            if (isLogged) {
+                              _viewModel.signOut().then((_) {
+                                setState(() {
+                                  _userHasChanged = true;
+                                });
+                              });
+                            } else {
+                              Navigator.of(context)
+                                  .pushNamed(ProfileFlow.routeSignIn);
+                            }
+                          },
+                        )),
+                  ],
+                ))),
+          ),
+        ));
+  }
+
+  Widget _createProgressWidget() {
+    return Stack(alignment: Alignment.center, children: [
+      Consumer(builder: (ctx, UserModel userProvider, _) {
+        return CircularProgressIndicator(
+          backgroundColor: HexColor.fromHex("D2D7E4"),
+          valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("4982F6")),
+          value: userProvider.user.currentProgress / 100,
+          strokeWidth: 150,
+        );
+      }),
+      CircleAvatar(
+        backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+        radius: 80,
+      ),
+      Consumer(builder: (ctx, UserModel userProvider, _) {
+        return _createProgressTextWidget(
+            userProvider.user.currentProgress / 100);
+      })
+    ]);
+  }
+
+  Widget _createProgressTextWidget(double progress) {
+    return Column(children: [
+      Text(_getLevelTextByProgress(progress),
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black)),
+      SizedBox(
+        height: 4,
+      ),
+      Text("${progress * 100} %",
+          style: TextStyle(
+              fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black)),
+    ]);
+  }
+
+  String _getLevelTextByProgress(double progress) {
+    if (progress < 0.4) {
+      return "Iniciante";
+    } else if (progress < 0.8) {
+      return "Intermediário";
+    } else {
+      return "Avançado";
+    }
   }
 }

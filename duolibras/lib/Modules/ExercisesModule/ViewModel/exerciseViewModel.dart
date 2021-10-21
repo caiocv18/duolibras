@@ -109,16 +109,21 @@ class ExerciseViewModel extends BaseViewModel {
           maxModuleProgress: exercisesAndModule.item2.maxProgress));
       userProvider.addSectionProgress(sectionProgress);
     }
-    await Service.instance.postSectionProgress(sectionProgress!)
-      .onError((error, stackTrace) {
-        final appError = Utils.logAppError(error);
-        Completer<bool> completer = Completer<bool>();
+    userProvider.incrementUserProgress(10);
+    await Service.instance
+        .postSectionProgress(sectionProgress!)
+        .onError((error, stackTrace) {
+      final appError = Utils.logAppError(error);
+      Completer<bool> completer = Completer<bool>();
 
-        _errorHandler.showModal(appError, context, 
-        tryAgainClosure: () => _errorHandler.tryAgainClosure(() => Service.instance.postSectionProgress(sectionProgress!), context, completer),
-        exitClosure: () => completer.complete(false));
-        
-        return completer.future;
+      _errorHandler.showModal(appError, context,
+          tryAgainClosure: () => _errorHandler.tryAgainClosure(
+              () => Service.instance.postSectionProgress(sectionProgress!),
+              context,
+              completer),
+          exitClosure: () => completer.complete(false));
+
+      return completer.future;
     });
   }
 

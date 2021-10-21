@@ -35,23 +35,20 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
     super.initState();
 
     widget.handleNextExercise = () {
-      handleSubmitAnswer(
-        inputController.text,
-        widget._exercise.correctAnswer,
-        widget._exercise.id,
-        this.context
-      );
+      handleSubmitAnswer(inputController.text, widget._exercise.correctAnswer,
+          widget._exercise.id, this.context);
     };
 
     final keyboardVisibilityController = KeyboardVisibilityController();
     keyboardVisibilityController.onChange.listen((bool visible) {
       setState(() {
-          isKeyboardActive = visible;
-        });
+        isKeyboardActive = visible;
+      });
     });
   }
 
-  void handleSubmitAnswer(String answer, String correctAnswer, String exerciseID, BuildContext ctx) {
+  void handleSubmitAnswer(String answer, String correctAnswer,
+      String exerciseID, BuildContext ctx) {
     widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
   }
 
@@ -60,14 +57,17 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
     final mediaQuery = MediaQuery.of(context);
     final appBarHeight = ExerciseAppBarWidget.appBarHeight;
     final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop);
+    final containerHeight =
+        mediaQuery.size.height - (appBarHeight + paddingTop);
     final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Scaffold(
-        body: _buildBody(widget._exercise, widget._viewModel, containerSize, context));
+        body: _buildBody(
+            widget._exercise, widget._viewModel, containerSize, context));
   }
 
-  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
+  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel,
+      Size containerSize, BuildContext ctx) {
     return Container(
       height: containerSize.height,
       color: Color.fromRGBO(234, 234, 234, 1),
@@ -97,8 +97,10 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
                 children: [
                   Container(
                       height: containerSize.height * 0.1,
-                      child: InputAnswerWidget(inputController,
-                          _state == ExerciseScreenState.NotAnswered)),
+                      child: InputAnswerWidget(
+                          inputController,
+                          _state == ExerciseScreenState.NotAnswered,
+                          "Sua Resposta")),
                   SizedBox(height: containerSize.height * 0.05),
                   Container(
                       height: containerSize.height * 0.08,
@@ -120,24 +122,25 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
                             ? Colors.grey
                             : didAnswerCorrect
                                 ? Colors.green
-                                : Colors.red, //Colors.white, //Color(0xFFCA3034),
+                                : Colors
+                                    .red, //Colors.white, //Color(0xFFCA3034),
                         onPressed: () {
                           if (_state == ExerciseScreenState.DidAnswer) return;
                           setState(() {
                             _state = ExerciseScreenState.DidAnswer;
-                            didAnswerCorrect = widget._viewModel.isAnswerCorrect(inputController.text, widget._exercise.id);
+                            didAnswerCorrect = widget._viewModel
+                                .isAnswerCorrect(
+                                    inputController.text, widget._exercise.id);
                             widget._viewModel.showNextArrow();
                           });
                         },
-                      )
-                  ),
+                      )),
+                ],
+              ),
             ],
           ),
-          ],
         ),
-      ),
       ),
     );
   }
-
 }
