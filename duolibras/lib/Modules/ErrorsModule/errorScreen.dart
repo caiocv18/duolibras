@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Services/Models/appError.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,7 +43,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
     final containerHeight = mediaQuery.size.height - paddingTop;
     final containerSize = Size(mediaQuery.size.width, containerHeight);
 
-    return  Material(
+    return Material(
       color: Colors.transparent,
         child: Container(
         width: double.infinity,
@@ -117,6 +116,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
           Center(
             child: Text(
               answer,
+              textAlign: TextAlign.center,
               maxLines: 2,
               style: TextStyle(fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w700),
             ),

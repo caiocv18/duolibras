@@ -5,18 +5,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'mlModelProtocol.dart';
-import 'app_helper.dart';
+import 'Helpers/app_helper.dart';
 
-class CameraHelper {
+class MLCamera {
   bool isDetecting = false;
   CameraLensDirection _direction;
+  
   MLModelProtocol _mlModel;
   MLModelProtocol get mlModel => _mlModel;
 
   late CameraController _camera;
   CameraController get camera => _camera;
 
-  CameraHelper(this._mlModel, this._direction) {}
+  MLCamera(this._mlModel, this._direction) {}
 
   Future<CameraDescription> _getCamera(CameraLensDirection dir) async {
     return await availableCameras().then(

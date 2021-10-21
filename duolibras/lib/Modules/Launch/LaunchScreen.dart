@@ -1,13 +1,17 @@
+import 'dart:ui';
+
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
-import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
+import 'package:duolibras/Modules/Launch/launchViewModel.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:flutter/material.dart';
 
+
 class LaunchScreen extends StatefulWidget {
   final Function _loadCompleted;
+  final viewModel = LaunchViewModel();
 
-  const LaunchScreen(this._loadCompleted);
+  LaunchScreen(this._loadCompleted);
 
   @override
   _LaunchScreenState createState() => _LaunchScreenState();
@@ -15,9 +19,8 @@ class LaunchScreen extends StatefulWidget {
 
 class _LaunchScreenState extends State<LaunchScreen> {
   var animated = false;
-
   var isGettingUser = false;
-  final _navigatorKey = GlobalKey<NavigatorState>();
+  var isDownloaded = false;
 
   @override
   void initState() {
@@ -26,44 +29,33 @@ class _LaunchScreenState extends State<LaunchScreen> {
   }
 
   void getUser() {
-    Service.instance.getUser().then((user) {
-      print("Colocou o user");
-      locator<UserModel>().setNewUser(user);
-      widget._loadCompleted();
-    }).onError((error, stackTrace) {
-      print("error: ${error}: stackTrace ${stackTrace}");
-      widget._loadCompleted();
+    widget.viewModel.getInitialData(this.context).then((value) => {
+      widget._loadCompleted()
     });
-  }
-
-  void _goHome() {
-    _navigatorKey.currentState!.pushReplacementNamed(MainRouter.routeHome);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      alignment: Alignment.center,
-      child: Center(
-          child: AnimatedDefaultTextStyle(
-        child: Text('Initializing...'),
-        style: animated
-            ? TextStyle(
-                color: Colors.blue,
-                fontSize: 26,
-              )
-            : TextStyle(
-                color: Colors.deepOrange,
-                fontSize: 14,
-              ),
-        duration: Duration(milliseconds: 200),
-        onEnd: () {
-          setState(() {
-            animated = !animated;
-          });
-        },
-      )),
-    );
+    return 
+    Scaffold(
+      backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+      body: 
+        SafeArea(
+          child: 
+            Center(
+                child: 
+                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                      Text("Preparando o ambiente...", 
+                      style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700, fontSize: 20)),
+                    SizedBox(height: 15),
+                    CircularProgressIndicator(color: Colors.black)
+                  ],
+                )
+            ),
+          ),
+      );
   }
+    
 }

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:duolibras/Commons/Utils/utils.dart';
+import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
+import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/sectionPage.dart';
@@ -19,38 +21,42 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:duolibras/Commons/Extensions/list_extension.dart';
 
-class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
+class LearningViewModel extends BaseViewModel with ModuleViewModel, LearningViewModelProtocol {
   final _errorHandler = ErrorHandler();
   List<String> allSectionsID = [];
-  BehaviorSubject<List<Section>> _controller = BehaviorSubject<List<Section>>();
-
   List<Section> allSections = [];
-
   Map<Color, int> colorForModules = {};
-  LearningViewModel() {
-    sections = _controller.stream;
-    pages = _controllerModules.stream;
-  }
+  WrapperSectionPage wrapperSectionPage = WrapperSectionPage([]);
 
-  BehaviorSubject<WrapperSectionPage> _controllerModules =
-      BehaviorSubject<WrapperSectionPage>();
-  WrapperSectionPage _wrapperSectionPage = WrapperSectionPage([]);
+  // BehaviorSubject<List<Section>> _controller = BehaviorSubject<List<Section>>();
+  // BehaviorSubject<WrapperSectionPage> _controllerModules = BehaviorSubject<WrapperSectionPage>();
 
-  Future<void> _getModules(
-      List<Section> newSections, BuildContext context) async {
-    final sectionsProgress =
-        Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
+  // LearningViewModel() {
+  //   _controllerModules.
+  //   sections = _controller.stream;
+  //   pages = _controllerModules.stream;
+  // }
+
+
+  Future<void> _getModules(List<Section> newSections, BuildContext context) async {
+    final sectionsProgress = Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
 
     for (var i = 0; i < newSections.length; i++) {
-      await getModulesfromSection(newSections[i].id, context).then((modules) {
-        _wrapperSectionPage.pages.add(SectionPage(newSections[i], modules));
-        Color color = modules.first.color;
-        colorForModules.addAll({color: modules.length});
+      await getModulesfromSection(newSections[i].id, context)
+      .then((modules) {
+          wrapperSectionPage.pages.add(SectionPage(newSections[i], modules));
+          Color color = modules.first.color;
+          colorForModules.addAll({color: modules.length});
+
+          modules.forEach((element) {
+            element.mlModelPath = newSections[i].mlModelPath ?? "";
+            element.mlLabelsPath = newSections[i].mlLabelsPath ?? "";
+          });
       });
     }
 
     if (sectionsProgress.length != newSections.length) {
-      _wrapperSectionPage.pages.forEach((page) {
+      wrapperSectionPage.pages.forEach((page) {
         var contains = false;
         sectionsProgress.forEach((progress) {
           if (progress.sectionId == page.section.id) {
@@ -74,11 +80,10 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
       });
     }
 
-    _controllerModules.sink.add(_wrapperSectionPage);
+    setState(ScreenState.Normal);
   }
 
-  Future<List<Module>> getModulesfromSection(
-      String sectionID, BuildContext context) async {
+  Future<List<Module>> getModulesfromSection(String sectionID, BuildContext context) async {
     return Service.instance
         .getModulesFromSectionId(sectionID)
         .onError((error, stackTrace) {
@@ -112,36 +117,32 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
 
   @override
   Future<void> fetchSections(BuildContext context) async {
-    loading = false;
+    setState(ScreenState.Loading);
+
     await getSectionsFromTrail(context).then((newSections) {
       hasMore = false;
-      loading = false;
       _getModules(newSections, context);
-      // _controller.sink.add(newSections);
     });
   }
 
-  Future<List<Exercise>> _getExerciseFromModule(
-      String sectionID, String moduleID, int level, BuildContext context) {
+  Future<List<Exercise>> _getExerciseFromModule(String sectionID, String moduleID, int level, BuildContext context) {
     return Service.instance
         .getExercisesFromModuleId(sectionID, moduleID, level)
         .onError((error, stackTrace) {
-      final appError = Utils.logAppError(error);
-      Completer<List<Exercise>> completer = Completer<List<Exercise>>();
+          final appError = Utils.logAppError(error);
+          Completer<List<Exercise>> completer = Completer<List<Exercise>>();
 
-      _errorHandler.showModal(appError, context,
-          tryAgainClosure: () => _errorHandler.tryAgainClosure(
-              () => Service.instance
-                  .getExercisesFromModuleId(sectionID, moduleID, level),
-              context,
-              completer),
-          exitClosure: () => completer.complete([]));
-      return completer.future;
+          _errorHandler.showModal(appError, context,
+              tryAgainClosure: () => _errorHandler.tryAgainClosure(
+                  () => Service.instance.getExercisesFromModuleId(sectionID, moduleID, level),
+                  context,
+                  completer),
+              exitClosure: () => completer.complete([]));
+          return completer.future;
     });
   }
 
-  Future<List<Exercise>> _getANumberExerciseFromModule(
-      String sectionID, String moduleID, int quantity, BuildContext context) {
+  Future<List<Exercise>> _getANumberExerciseFromModule(String sectionID, String moduleID, int quantity, BuildContext context) {
     return Service.instance
         .getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity)
         .onError((error, stackTrace) {
@@ -224,8 +225,8 @@ class LearningViewModel with ModuleViewModel, LearningViewModelProtocol {
     }
   }
 
-  @override
-  void disposeStreams() {
-    _controller.close();
-  }
+  // void disposeStreams() {
+  //   _controller.close();
+  //   _controllerModules.close();
+  // }
 }

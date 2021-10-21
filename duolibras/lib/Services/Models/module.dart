@@ -9,15 +9,18 @@ class Module {
   final String iconUrl;
   final String backgroundImageUrl;
   final Color color;
+  late String mlModelPath;
+  late String mlLabelsPath;
 
-  const Module(
+   Module(
       {required this.title,
       required this.minProgress,
       required this.maxProgress,
       required this.id,
       required this.iconUrl,
       required this.backgroundImageUrl,
-      required this.color});
+      required this.color
+    });
 
   factory Module.fromMap(Map<String, dynamic> parsedJson, String docId) {
     return Module(
@@ -27,7 +30,7 @@ class Module {
       id: docId,
       iconUrl: parsedJson["iconUrl"],
       backgroundImageUrl: parsedJson["backgroundImageUrl"],
-      color: HexColor.fromHex(parsedJson["color"]),
+      color: HexColor.fromHex(parsedJson["color"])
     );
   }
 }

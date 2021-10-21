@@ -9,6 +9,7 @@ enum FirebaseErrors {
   GetRankingError,
   GetNumberOfExercisesError,
   GetSectionProgressError,
+  GetDynamicAssetsError,
   PostSectionProgressError,
   PostUserError,
   UploadImageError,
@@ -36,6 +37,8 @@ extension Exception on FirebaseErrors {
         return "Ops, erro ao buscar a quantidade de exercícios";
       case FirebaseErrors.GetSectionProgressError:
         return "Ops, erro ao buscar o progresso das sections";
+      case FirebaseErrors.GetDynamicAssetsError:
+        return "Ops, erro ao buscar assets dinâmicos";
       case FirebaseErrors.PostSectionProgressError:
         return "Ops, erro ao enviar o progresso das sections";
       case FirebaseErrors.PostUserError:

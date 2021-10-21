@@ -123,12 +123,17 @@ class TrailPath extends CustomPainter {
   }
 
   Offset calculate(value, pathIndex) {
-    ui.PathMetrics pathMetrics = mainPath.computeMetrics();
+    
+    try {
+        ui.PathMetrics pathMetrics = mainPath.computeMetrics();
+        ui.PathMetric pathMetric = pathMetrics.elementAt(pathIndex);
+        value = pathMetric.length * value;
+        ui.Tangent pos = pathMetric.getTangentForOffset(value)!;
+        return pos.position;
+    } catch (e) {
+      return Offset(0, 0);
+    }
 
-    ui.PathMetric pathMetric = pathMetrics.elementAt(pathIndex);
-    value = pathMetric.length * value;
-    ui.Tangent pos = pathMetric.getTangentForOffset(value)!;
-    return pos.position;
   }
 
   Offset calculateLastPosition(value) {

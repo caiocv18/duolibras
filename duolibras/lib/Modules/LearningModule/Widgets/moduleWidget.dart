@@ -11,21 +11,21 @@ abstract class ModuleViewModel {
       String sectionID, Module module, BuildContext context, Function? handler);
 }
 
-class MaduleWidget extends StatefulWidget {
+class ModuleWidget extends StatefulWidget {
   final Module _module;
   final ModuleViewModel _viewModel;
   final String sectionID;
   final MainAxisAlignment _rowAlignment;
   final Function _handleFinishExercises;
   final bool _isAvaiable;
-  MaduleWidget(this._module, this.sectionID, this._viewModel,
+  ModuleWidget(this._module, this.sectionID, this._viewModel,
       this._rowAlignment, this._handleFinishExercises, this._isAvaiable);
 
   @override
-  _MaduleWidgetState createState() => _MaduleWidgetState();
+  _ModuleWidgetState createState() => _ModuleWidgetState();
 }
 
-class _MaduleWidgetState extends State<MaduleWidget> {
+class _ModuleWidgetState extends State<ModuleWidget> {
   double _getModulerProgress(User user) {
     if (user.sectionsProgress.isEmpty) return 0;
 
@@ -165,8 +165,10 @@ class _MaduleWidgetState extends State<MaduleWidget> {
             SizedBox(width: 20),
             GestureDetector(
               onTap: () {
-                widget._viewModel.didSelectModule(widget.sectionID,
+                if (widget._isAvaiable) {
+                  widget._viewModel.didSelectModule(widget.sectionID,
                     widget._module, context, _handleCompleModule);
+                }
               },
               child: Stack(
                 alignment: Alignment.center,
