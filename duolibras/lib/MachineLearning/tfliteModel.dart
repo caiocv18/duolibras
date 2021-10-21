@@ -21,7 +21,8 @@ class TFLiteModel extends MLModelProtocol {
     return Tflite.loadModel(
             model: "${DownloadAssetsController.assetsDir}/$modelPath",
             labels: "${DownloadAssetsController.assetsDir}/$labelsPath",
-            useGpuDelegate: false)
+            useGpuDelegate: false,
+            isAsset: false)
         .then((value) {
           print(value == "success");
           if (value == "success") {
@@ -38,7 +39,6 @@ class TFLiteModel extends MLModelProtocol {
         bytesList: image.planes.map((plane) {
           return plane.bytes;
         }).toList(), // required
-        // model: "SSDMobileNet",
         imageHeight: image.height,
         imageWidth: image.width,
         imageMean: 127.5, // defaults to 127.5

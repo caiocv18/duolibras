@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:ui';
 
-import 'package:duolibras/Commons/Components/appBarWidget.dart';
+import 'package:duolibras/Commons/Components/baseScreen.dart';
+import 'package:duolibras/Commons/ViewModel/screenState.dart';
+import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/sectionPage.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/trailPath.dart';
@@ -15,41 +18,22 @@ abstract class LearningViewModelProtocol {
   bool hasMore = true;
   int numberOfSectionsForRequest = 4;
   int currentPage = 0;
-  bool error = false;
-  bool loading = false;
   bool firstFetch = true;
 
   Future<void> fetchSections(BuildContext context);
-  void disposeStreams();
 }
 
 class LearningScreen extends StatefulWidget {
   static String routeName = "/LearningScreen";
-
   final LearningViewModelProtocol _viewModel;
-
   LearningScreen(this._viewModel);
 
   @override
   _LearningScreenState createState() => _LearningScreenState();
 }
 
-class _LearningScreenState extends State<LearningScreen>
-    with SingleTickerProviderStateMixin {
-  final bottomNavigationBar = BottomNavigationBar(
-    items: [
-      BottomNavigationBarItem(icon: Icon(Icons.home), title: Container()),
-      BottomNavigationBarItem(icon: Icon(Icons.score), title: Container())
-    ],
-  );
-
-  final PreferredSizeWidget appBar = AppBarWidget();
-
-  List<Section> sections = [];
-  WrapperSectionPage pages = WrapperSectionPage([]);
-
+class _LearningScreenState extends State<LearningScreen>with SingleTickerProviderStateMixin {
   final pathScrollController = ScrollController();
-
   final listViewScrollController = ScrollController();
 
   late Animation<double> animation;
@@ -59,18 +43,7 @@ class _LearningScreenState extends State<LearningScreen>
 
   @override
   initState() {
-    widget._viewModel.sections!.asBroadcastStream().listen((newSections) {
-      setState(() {
-        this.sections = newSections;
-      });
-    });
-
-    widget._viewModel.pages!.asBroadcastStream().listen((newPages) {
-      setState(() {
-        this.pages = newPages;
-      });
-    });
-
+    super.initState();
     animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 3));
 
@@ -92,69 +65,34 @@ class _LearningScreenState extends State<LearningScreen>
   }
 
   @override
-  void dispose() {
-    widget._viewModel.disposeStreams();
-    super.dispose();
-  }
+  Widget build(BuildContext context) {
+    // if (pages.isEmpty) {
+    //   if (widget._viewModel.firstFetch) {
+    //     widget._viewModel.firstFetch = false;
+    //     widget._viewModel.fetchSections(context);
+    //   }
+    // }
 
-  Widget _buildBody(BuildContext context) {
-    final _mediaQuery = MediaQuery.of(context);
-    if (pages.isEmpty) {
-      if (widget._viewModel.firstFetch) {
-        widget._viewModel.firstFetch = false;
-        widget._viewModel.loading = true;
-        widget._viewModel.fetchSections(context);
-      }
-
-      if (widget._viewModel.loading) {
-        return Center(
-            child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: CircularProgressIndicator(),
-        ));
-      } else if (widget._viewModel.error) {
-        return Center(
-            child: InkWell(
-          onTap: () {
-            setState(() {
-              widget._viewModel.loading = true;
-              widget._viewModel.error = false;
-              widget._viewModel.fetchSections(context);
-            });
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text("Error while loading Sections, tap to try agin"),
+    return  BaseScreen<LearningViewModel>(
+        onModelReady: (viewModel) => {viewModel.fetchSections(context)},
+        builder: (_, viewModel, __) => LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return Container(
+                  height: constraints.maxHeight,
+                  color: Color.fromRGBO(234, 234, 234, 1),
+                      child: 
+                      Center(
+                          child: viewModel.state == ScreenState.Loading ? 
+                          CircularProgressIndicator() : Container(child: _buildContentWidgets(constraints.maxHeight, viewModel))
+                      )
+                  );  
+              }
           ),
-        ));
-      }
-    } else {
-      final maxHeight = _mediaQuery.size.height -
-          (kBottomNavigationBarHeight +
-              _mediaQuery.padding.bottom +
-              appBar.preferredSize.height +
-              _mediaQuery.padding.top +
-              100);
-      return Center(
-        child: Column(
-          children: [_buildContentWidgets(maxHeight)],
-        ),
-      );
-    }
-
-    return Container();
+    );
   }
 
-  void handleFinishExercise() {
-    setState(() {
-      // index = 0;
-    });
-    // Future.delayed(Duration(seconds: 1)).then((value) {
-    //   animationController.forward(from: 0.0);
-    // });
-  }
-
-  Widget _buildContentWidgets(double maxHeight) {
+  Widget _buildContentWidgets(double maxHeight, LearningViewModel viewModel) {
+    final pagesTotal = viewModel.wrapperSectionPage.total;
     var rowAlignment = MainAxisAlignment.end;
 
     maxHeight -= 15;
@@ -171,64 +109,60 @@ class _LearningScreenState extends State<LearningScreen>
                   child: new CustomPaint(
                     painter: TrailPath(mainPath, animationController,
                         widget._viewModel.colorForModules, index),
-                    size: new Size(428, 212 * pages.total.toDouble()),
+                    size: new Size(428, 212 * pagesTotal.toDouble()),
                   ))),
           Container(
               height: maxHeight,
               child: ListView.builder(
                   controller: listViewScrollController,
                   padding: EdgeInsets.only(bottom: 10),
-                  itemCount: pages.total + (widget._viewModel.hasMore ? 1 : 0),
+                  itemCount: pagesTotal ,
                   itemBuilder: (ctx, index) {
-                    if (index == pages.total - 1 && widget._viewModel.hasMore) {
+                    if (index == pagesTotal - 1 && widget._viewModel.hasMore) {
                       widget._viewModel.fetchSections(ctx);
                     }
 
-                    if (index == pages.total) {
-                      if (widget._viewModel.error) {
-                        return Center(
-                            child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              widget._viewModel.loading = true;
-                              widget._viewModel.error = false;
-                              widget._viewModel.fetchSections(ctx);
-                            });
-                          },
+                    if (index == pagesTotal) {
+                      if (viewModel.state == ScreenState.Loading)
+                      return Center(
                           child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Text(
-                                "Error while loading sections, tap to try agin"),
-                          ),
-                        ));
-                      } else {
-                        return Center(
-                            child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: CircularProgressIndicator(),
-                        ));
-                      }
+                        padding: const EdgeInsets.all(8),
+                        child: CircularProgressIndicator(),
+                      ));
                     }
-                    final module = pages.moduleAtIndex(index);
+                    
+                    final module = viewModel.wrapperSectionPage.moduleAtIndex(index);
                     rowAlignment = rowAlignment == MainAxisAlignment.end
                         ? MainAxisAlignment.start
                         : MainAxisAlignment.end;
                     return ModuleWidget(
-                        module,
-                        pages.sectionAtIndex(index)?.id ?? "",
-                        widget._viewModel as ModuleViewModel,
-                        rowAlignment,
-                        handleFinishExercise,
-                        index == 0
-                            ? true
-                            : pages.isModuleAvaiable(
-                                pages.sectionAtIndex(index)?.id ?? "",
-                                module.id,
-                                ctx));
+                          module,
+                          viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
+                          widget._viewModel as ModuleViewModel,
+                          rowAlignment,
+                          handleFinishExercise,
+                          index == 0
+                              ? true
+                              : viewModel.wrapperSectionPage.isModuleAvaiable(
+                                  viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
+                                  module.id,
+                                  ctx
+                                )
+                      );
                   })),
         ]),
       ],
     );
+  }
+
+
+  void handleFinishExercise() {
+    setState(() {
+      // index = 0;
+    });
+    // Future.delayed(Duration(seconds: 1)).then((value) {
+    //   animationController.forward(from: 0.0);
+    // });
   }
 
   void _handleCompletedLogin(bool? shouldUpdateView) {
@@ -240,7 +174,8 @@ class _LearningScreenState extends State<LearningScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: _buildBody(context));
+  void dispose() {
+    super.dispose();
   }
+
 }

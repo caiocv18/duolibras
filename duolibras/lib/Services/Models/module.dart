@@ -9,8 +9,8 @@ class Module {
   final String iconUrl;
   final String backgroundImageUrl;
   final Color color;
-  late String mlModelName;
-  late String mlLabelsName;
+  late String mlModelPath;
+  late String mlLabelsPath;
 
    Module(
       {required this.title,

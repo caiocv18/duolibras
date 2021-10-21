@@ -98,7 +98,7 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
                   Container(
                       height: containerSize.height * 0.1,
                       child: InputAnswerWidget(inputController,
-                          _state == ExerciseScreenState.NotAnswered)),
+                          _state == ExerciseScreenState.NotAnswered, "Resposta")),
                   SizedBox(height: containerSize.height * 0.05),
                   Container(
                       height: containerSize.height * 0.08,

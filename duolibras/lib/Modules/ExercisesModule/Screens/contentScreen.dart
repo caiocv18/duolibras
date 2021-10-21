@@ -97,10 +97,10 @@ class _ContentScreenState extends State<ContentScreen> {
     return LayoutBuilder(builder: (ctx, constraint) {
       return Container(
         width: constraint.maxWidth * 0.89,
-        height: 33,
         child:  Center(
           child: Text(
-            title ?? "",
+            title?.replaceAll(new RegExp('_n'), '\n') ?? "",
+            textAlign: TextAlign.center,
             style: TextStyle(fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w700),
           ),
         )

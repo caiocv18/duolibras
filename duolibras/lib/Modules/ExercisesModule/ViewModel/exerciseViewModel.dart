@@ -28,7 +28,8 @@ class ExerciseViewModel extends BaseViewModel {
 
   //ML Exercise
   late MLCamera _cameraHelper =
-      MLCamera(TFLiteModel(exercisesAndModule.item2.mlModelName, exercisesAndModule.item2.mlLabelsName), CameraLensDirection.front);
+      MLCamera(TFLiteModel(exercisesAndModule.item2.mlModelPath, exercisesAndModule.item2.mlLabelsPath), 
+      CameraLensDirection.front);
   List<String> spelledLetters = [];
 
   ExerciseViewModel(this.exercisesAndModule, this.exerciseFlowDelegate) {

@@ -1,17 +1,17 @@
 class Section {
   final String title;
   final String id;
-  final String? mlModelName;
-  final String? mlLabelsName;
+  final String? mlModelPath;
+  final String? mlLabelsPath;
 
-  const Section({required this.title, required this.id, required this.mlModelName, required this.mlLabelsName});
+  const Section({required this.title, required this.id, required this.mlModelPath, required this.mlLabelsPath});
 
   factory Section.fromMap(Map<String, dynamic> parsedJson, String docId) {
     return Section(
         title: parsedJson["title"], 
         id: docId, 
-        mlModelName: parsedJson["mlModelName"],
-        mlLabelsName: parsedJson["mlLabelsName"]
+        mlModelPath: parsedJson["mlModelPath"],
+        mlLabelsPath: parsedJson["mlLabelsPath"]
       );
   }
 

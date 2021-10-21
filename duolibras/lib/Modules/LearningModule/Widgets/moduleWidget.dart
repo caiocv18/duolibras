@@ -165,8 +165,10 @@ class _ModuleWidgetState extends State<ModuleWidget> {
             SizedBox(width: 20),
             GestureDetector(
               onTap: () {
-                widget._viewModel.didSelectModule(widget.sectionID,
+                if (widget._isAvaiable) {
+                  widget._viewModel.didSelectModule(widget.sectionID,
                     widget._module, context, _handleCompleModule);
+                }
               },
               child: Stack(
                 alignment: Alignment.center,
