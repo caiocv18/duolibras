@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  final appBar = AppBar(
-    title: Text("Duolibras"),
-    actions: [IconButton(icon: Icon(Icons.person), onPressed: () => {})],
-    automaticallyImplyLeading: true,
-  );
+  Function? _longpressHandler;
+  String _title;
+
+  late var appBar = AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        title: Container(
+            child: Column(
+              children: [
+                Text(_title, 
+                style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700, color: Colors.black)),
+              ],
+        )
+      ),
+      leading: _longpressHandler != null ? GestureDetector(onLongPress: () => _longpressHandler) : null,
+      elevation: 1,
+    );
+
+  AppBarWidget(this._title, this._longpressHandler);
+
   @override
   Widget build(BuildContext context) {
     return appBar;

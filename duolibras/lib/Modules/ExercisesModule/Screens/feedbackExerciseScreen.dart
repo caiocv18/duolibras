@@ -115,7 +115,7 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
     final msg = widget.status == FeedbackStatus.Success
         ? (hasMoreExercises
             ? "Parabéns! Você completou o módulo!"
-            : "Paranéns, você já é um experte nesse assunto!")
+            : "Parabéns, você já é um experte nesse assunto!")
         : "Oh não, vamos práticar um pouco?";
 
     final imageName = widget.status == FeedbackStatus.Success

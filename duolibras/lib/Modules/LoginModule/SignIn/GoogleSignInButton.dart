@@ -72,7 +72,11 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     });
     widget._viewModel
         .login(context, LoginType.Google)
-        .then((value) => Navigator.of(context).pop(true));
+        .then((value) {
+          if (value) {
+             Navigator.of(context).pop(true);
+          }
+        });
 
     setState(() {
       _isSigningIn = false;

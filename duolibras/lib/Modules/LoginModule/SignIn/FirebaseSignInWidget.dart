@@ -70,23 +70,26 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
-      final PendingDynamicLinkData? data =
-          await FirebaseDynamicLinks.instance.getInitialLink();
+      final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
       if (data != null) {
         widget._viewModel
-            .handleFirebaseEmailLinkSignIn(
-                emailTextfieldController.text, data.link)
-            .then((value) => {Navigator.of(context).pop(true)});
+            .handleFirebaseEmailLinkSignIn(emailTextfieldController.text, data.link)
+            .then((value) => {Navigator.of(context).pop(true)})
+            .catchError((error, stackTrace) {
+              print(error);
+            });
       }
 
-      FirebaseDynamicLinks.instance.onLink(
-          onSuccess: (PendingDynamicLinkData? dynamicLink) async {
+      FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData? dynamicLink) async {
         if (dynamicLink != null) {
           final Uri deepLink = dynamicLink.link;
           widget._viewModel
               .handleFirebaseEmailLinkSignIn(
                   emailTextfieldController.text, deepLink)
-              .then((value) => {Navigator.of(context).pop(true)});
+              .then((value) => {Navigator.of(context).pop(true)})
+              .catchError((error, stackTrace) {
+                print(error);
+              });
         }
       }, onError: (OnLinkErrorException e) async {
         print('onLinkError');

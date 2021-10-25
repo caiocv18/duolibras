@@ -1,3 +1,4 @@
+import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
@@ -18,10 +19,14 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = false;
   bool isSwitched = false;
   int _currentIndex = 1;
+
+  final GlobalKey<NavigatorState> navigatorKey =
+      new GlobalKey<NavigatorState>();
+
   var _pages = [
     RankingScreen(),
     LearningScreen(LearningViewModel()),
-    ProfileFlow(setupPageRoute: ProfileFlow.routeProfile)
+    ProfilePage()
   ];
   late Widget _page = _pages[_currentIndex];
 
@@ -54,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
       type: BottomNavigationBarType.fixed,
       onTap: (index) {
-        MainRouter.instance.navigatorKey.currentState!.maybePop();
+        // MainRouter.instance.navigatorKey.currentState!.maybePop();
         setState(() => _page = _pages[index]);
         _currentIndex = index;
       },
@@ -64,32 +69,19 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  final GlobalKey<NavigatorState> navigatorKey =
-      new GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Container(
-              child: Column(
-                children: [
-                  Text(_currentIndex == 0 ? "Ranking Mundial" : "Dibras", 
-                  style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700, color: Colors.black)),
-                ],
-          )
-        ),
-        leading: GestureDetector(onLongPress: () {
-           setState(() {
+      appBar: AppBarWidget(_currentIndex == 0 ? "Ranking" : "Dibras", 
+      () {
+        setState(() {
             isSwitched = !isSwitched;
             isLoading = true;
           });
           loadingNewLearningScreen(isSwitched);
-        }),
-        elevation: 1,
-      ),
+      }),
       bottomNavigationBar: bottomNavigationBar,
       body: isLoading ? Center(child: CircularProgressIndicator()) : SafeArea(child: _page),
     );

@@ -119,12 +119,10 @@ class _RankingScreenState extends State<RankingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return Container(
           child: SharedFeatures.instance.isLoggedIn
               ? createRankingBody(context)
               : createUnllogedBody(context),
-          color: HexColor.fromHex("E5E5E5")),
-    );
+          color: HexColor.fromHex("E5E5E5"));
   }
 }

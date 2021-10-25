@@ -19,8 +19,11 @@ class _AppleSignInWidgetState extends State<AppleSignInWidget> {
   }
 
   void signInWithApple(BuildContext ctx) async {
-    widget._viewModel.login(ctx, LoginType.Apple).then((value) {
-      Navigator.of(context).pop(true);
+    widget._viewModel.login(ctx, LoginType.Apple)
+    .then((value) {
+      if (value) {
+          Navigator.of(context).pop(true);
+      }
     });
   }
 }
