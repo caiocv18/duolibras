@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Function? _longpressHandler;
@@ -15,7 +16,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               ],
         )
       ),
-      leading: _longpressHandler != null ? GestureDetector(onLongPress: () => _longpressHandler) : null,
+      leading: null,
+      actions: [GestureDetector(child: Container(width: 50, height: 30, color: Colors.transparent), onLongPress: () {
+        if (_longpressHandler != null)
+           _longpressHandler!();
+      })],
       elevation: 1,
     );
 

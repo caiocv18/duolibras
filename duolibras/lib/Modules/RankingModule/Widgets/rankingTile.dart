@@ -14,6 +14,27 @@ class RankingTile extends StatelessWidget {
   RankingTile(
       {required this.index, required this.user, required this.viewModel});
 
+  Widget _imageUserWidget(UserModel userModel) {
+    if (userModel.user.id == user.id) {
+      return Container(
+          height: 55,
+          decoration: new BoxDecoration(
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                  fit: BoxFit.cover,
+                  image: new NetworkImage(userModel.user.imageUrl!))));
+    }
+    if (user.imageUrl == null) {
+      return Container(height: 35, child: Icon(Icons.person));
+    }
+    return Container(
+        height: 55,
+        decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            image: new DecorationImage(
+                fit: BoxFit.cover, image: new NetworkImage(user.imageUrl!))));
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<UserModel>(context, listen: true);
@@ -29,15 +50,7 @@ class RankingTile extends StatelessWidget {
               children: [
                 SizedBox(width: 5),
                 CircleAvatar(
-                  child: user.imageUrl == null
-                      ? Container(height: 35, child: Icon(Icons.person))
-                      : Container(
-                          height: 55,
-                          decoration: new BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: new DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: new NetworkImage(user.imageUrl!)))),
+                  child: _imageUserWidget(userModel),
                   radius: 25,
                   backgroundColor: Colors.grey[400],
                 ),

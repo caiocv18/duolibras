@@ -62,12 +62,16 @@ flutter:
   fonts:
     - family: Nunito
       fonts:
+        - asset: assets/fonts/Nunito-Bold.ttf
+          weight: 800
         - asset: assets/fonts/Nunito-ExtraBold.ttf
           weight: 700
         - asset: assets/fonts/Nunito-Regular.ttf
           weight: 500
         - asset: assets/fonts/Nunito-Semibold.ttf
           weight: 600
+        - asset: assets/fonts/Nunito-Light.ttf
+          weight: 400
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

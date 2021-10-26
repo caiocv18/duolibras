@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
-import 'package:duolibras/Commons/Utils/Constants.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/ProfileModule/profileViewModel.dart';
 import 'package:duolibras/Modules/ProfileModule/takePictureScreen.dart';
