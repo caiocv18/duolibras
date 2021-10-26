@@ -2,16 +2,19 @@ import 'dart:async';
 
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
+import 'package:duolibras/Services/Models/Providers/userProvider.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:rxdart/subjects.dart';
 
 abstract class RankingViewModelProtocol {
   Stream<List<User>>? usersRank;
   bool loading = false;
   bool firstTime = true;
-  Future<void> fetchUsersRank(BuildContext context, {Function? exitClosure = null});
+  Future<void> fetchUsersRank(BuildContext context,
+      {Function? exitClosure = null});
   String formatUserName(String name);
 
   void disposeStreams();
@@ -31,26 +34,33 @@ class RankingViewModel extends RankingViewModelProtocol {
   }
 
   @override
-  Future<void> fetchUsersRank(BuildContext context, {Function? exitClosure = null}) async {
+  Future<void> fetchUsersRank(BuildContext context,
+      {Function? exitClosure = null}) async {
     loading = true;
+    final currentUser = Provider.of<UserModel>(context, listen: false).user;
 
     return Service.instance.getUsersRanking().then((rankings) {
       loading = false;
       firstTime = false;
+
+      if (!rankings.contains(currentUser)) {
+        rankings.add(currentUser);
+      }
+
       _controller.sink.add(rankings);
-    })
-    .catchError((error, stackTrace) {
+    }).catchError((error, stackTrace) {
       final appError = Utils.logAppError(error);
       Completer<void> completer = Completer<void>();
 
-      _errorHandler.showModal(appError, context, 
-        tryAgainClosure: () => _errorHandler.tryAgainClosure(() => Service.instance.getUsersRanking(), context, completer), 
-        exitClosure: () {
-          loading = false;
-          firstTime = false;
-          _controller.sink.add([]);
-          completer.complete();
-        });
+      _errorHandler.showModal(appError, context,
+          tryAgainClosure: () => _errorHandler.tryAgainClosure(
+              () => Service.instance.getUsersRanking(), context, completer),
+          exitClosure: () {
+            loading = false;
+            firstTime = false;
+            _controller.sink.add([]);
+            completer.complete();
+          });
 
       return completer.future;
     });
