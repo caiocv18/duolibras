@@ -25,9 +25,9 @@ import 'package:duolibras/Commons/Extensions/list_extension.dart';
 class LearningViewModel extends BaseViewModel
     with ModuleViewModel, LearningViewModelProtocol {
   final _errorHandler = ErrorHandler();
-  List<String> allSectionsID = [];
   List<Section> allSections = [];
   Map<Color, int> colorForModules = {};
+  Map<int, int> sectionsForModules = {};
   WrapperSectionPage wrapperSectionPage = WrapperSectionPage([]);
 
   Future<void> _getModules(
@@ -35,11 +35,13 @@ class LearningViewModel extends BaseViewModel
     final sectionsProgress =
         Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
 
+    allSections.addAll(newSections);
     for (var i = 0; i < newSections.length; i++) {
       await getModulesfromSection(newSections[i].id, context).then((modules) {
         wrapperSectionPage.pages.add(SectionPage(newSections[i], modules));
         Color color = modules.first.color;
         colorForModules.addAll({color: modules.length});
+        sectionsForModules.addAll({i: modules.length});
 
         modules.forEach((element) {
           element.mlModelPath = newSections[i].mlModelPath ?? "";
@@ -178,15 +180,17 @@ class LearningViewModel extends BaseViewModel
     if (level == module.maxProgress) {
       _getANumberExerciseFromModule(sectionID, module.id, 30, context)
           .then((exercises) {
-        _navigateToExercisesModule(
-            sectionID, module, context, exercises, handler);
-      });
+            if (exercises.isNotEmpty)
+            _navigateToExercisesModule(
+                sectionID, module, context, exercises, handler);
+          });
     } else {
       _getExerciseFromModule(sectionID, module.id, level, context)
           .then((exercises) {
-        _navigateToExercisesModule(
-            sectionID, module, context, exercises, handler);
-      });
+            if (exercises.isNotEmpty)
+            _navigateToExercisesModule(
+                sectionID, module, context, exercises, handler);
+          });
     }
   }
 

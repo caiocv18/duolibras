@@ -18,8 +18,6 @@ class TrailPath extends CustomPainter {
       this.mainPath, this._animationController, this.colorForRows, this.index)
       : super(repaint: _animationController);
 
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -190,6 +188,11 @@ class TrailPath extends CustomPainter {
     value = pathMetric.length * value;
     ui.Tangent pos = pathMetric.getTangentForOffset(value)!;
     return pos.position;
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 
 }

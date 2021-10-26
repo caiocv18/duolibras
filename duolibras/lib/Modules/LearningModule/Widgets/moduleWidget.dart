@@ -26,7 +26,7 @@ class ModuleWidget extends StatefulWidget {
 }
 
 class _ModuleWidgetState extends State<ModuleWidget> {
-  double _getModulerProgress(User user) {
+  double _getModuleProgress(User user) {
     if (user.sectionsProgress.isEmpty) return 0;
 
     var sectionProgress = user.sectionsProgress;
@@ -47,15 +47,6 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     }
   }
 
-  void _handleCompleModule(bool? completed) {
-    if (completed == null) return;
-
-    if (completed) {
-      widget._handleFinishExercises();
-      // setState(() {});
-    }
-  }
-
   var colors = [
     Colors.amber,
     Colors.grey,
@@ -63,163 +54,134 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     Colors.orange,
     Colors.green
   ];
+
   @override
   Widget build(BuildContext context) {
     colors.shuffle();
-    return Container(
-      // color: colors.first,
-      height: 200,
+    return LayoutBuilder(builder: (BuildContext ctx, BoxConstraints constraints) {
+      final leftPadding = widget._rowAlignment == MainAxisAlignment.start ? 50.0 : 0.0;
+      final rightPadding = widget._rowAlignment == MainAxisAlignment.end ? 50.0 : 0.0;
 
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      return Padding(
+        padding: EdgeInsets.only(left: leftPadding, right: rightPadding),
+        child: Container(
+          // color: colors.first,
+          height: 200,
+          width: constraints.maxWidth * 0.9,
+          child: _buildBody(widget._rowAlignment),
+        ),
+      );
+    });
+  }
+
+
+  Widget _buildBody(MainAxisAlignment alignment) {
+   return 
+    Consumer(builder: (ctx, UserModel userProvider, _) {
+      return Row(
+        mainAxisAlignment: alignment,
         children: [
-          Center(
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.7,
-              child: Row(
-                mainAxisAlignment: widget._rowAlignment,
-                children: _createRowContent(),
+          if (alignment != MainAxisAlignment.start) 
+            Flexible(
+                child: Text(widget._module.title,
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black)),
               ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: 
+            GestureDetector(
+                      onTap: () {
+                        widget._viewModel.didSelectModule(widget.sectionID,
+                            widget._module, context, _handleCompleteModule);
+                      },
+                      child: 
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          if (widget._isAvaiable)
+                          _buildIcon(userProvider.user)
+                          else 
+                            _buildUnavailableIcon()
+                        ],
+                      ),
+          ),
+          ),
+          if (alignment == MainAxisAlignment.start) 
+            Flexible(
+                child: Text(widget._module.title,
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black)),
+              ),
+        ]
+      );
+    });
+  }
+
+  Widget _buildIcon (User user) {
+   return Stack(
+        alignment: Alignment.center,
+        children: [
+          CircularProgressIndicator(
+            backgroundColor: HexColor.fromHex("D2D7E4"),
+            valueColor: AlwaysStoppedAnimation<Color>(
+                Color.fromRGBO(255, 215, 0, 1)),
+            value: _getModuleProgress(user),
+            strokeWidth: 60,
+          ),
+          CircleAvatar(
+            backgroundColor: Colors.white,
+            radius: 40,
+            child: Container(
+                child:Image.network(widget._module.backgroundImageUrl)
             ),
+          ),
+          CircleAvatar(
+            child: Container(
+                height: 50,
+                child: Image.network(widget._module.iconUrl)
+            ),
+            radius: 35,
+            backgroundColor:
+                1 == _getModuleProgress(locator<UserModel>().user)
+                    ? Colors.transparent
+                    : Colors.transparent,
           )
-        ],
-      ),
+        ]
     );
   }
 
-  List<Widget> _createRowContent() {
-    return widget._rowAlignment == MainAxisAlignment.start
-        ? [
-            GestureDetector(
-              onTap: () {
-                widget._viewModel.didSelectModule(widget.sectionID,
-                    widget._module, context, _handleCompleModule);
-              },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Consumer(builder: (ctx, UserModel userProvider, _) {
-                    return CircularProgressIndicator(
-                      backgroundColor: HexColor.fromHex("D2D7E4"),
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Color.fromRGBO(255, 215, 0, 1)),
-                      value: _getModulerProgress(userProvider.user),
-                      strokeWidth: 60,
-                    );
-                  }),
-                  CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: 40,
-                    child: Container(
-                        // height: 50,
-                        child:
-                            Image.network(widget._module.backgroundImageUrl)),
-                  ),
-                  CircleAvatar(
-                    child: Container(
-                        height: 50,
-                        child: Image.network(widget._module.iconUrl)),
-                    radius: 35,
-                    backgroundColor:
-                        1 == _getModulerProgress(locator<UserModel>().user)
-                            ? Colors.transparent
-                            : Colors.transparent,
-                  ),
-                  if (!widget._isAvaiable)
-                    Stack(alignment: Alignment.center, children: [
-                      CircleAvatar(
-                        backgroundColor: HexColor.fromHex("D2D7E4"),
-                        radius: 50,
-                      ),
-                      CircleAvatar(
-                        child: Container(
-                            height: 50,
-                            child: Icon(
-                              Icons.lock,
-                              color: HexColor.fromHex("4982F6"),
-                            )),
-                        radius: 35,
-                        backgroundColor: HexColor.fromHex("D2D7E4"),
-                      )
-                    ])
-                ],
-              ),
-            ),
-            SizedBox(width: 20),
-            Flexible(
-              child: Text(widget._module.title,
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black)),
-            )
-          ]
-        : [
-            Flexible(
-              child: Text(widget._module.title,
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black)),
-            ),
-            SizedBox(width: 20),
-            GestureDetector(
-              onTap: () {
-                if (widget._isAvaiable) {
-                  widget._viewModel.didSelectModule(widget.sectionID,
-                    widget._module, context, _handleCompleModule);
-                }
-              },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Consumer(builder: (ctx, UserModel userProvider, _) {
-                    return CircularProgressIndicator(
-                      backgroundColor: HexColor.fromHex("D2D7E4"),
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Color.fromRGBO(255, 215, 0, 1)),
-                      value: _getModulerProgress(userProvider.user),
-                      strokeWidth: 60,
-                    );
-                  }),
-                  CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: 40,
-                    child: Container(
-                        // height: 50,
-                        child:
-                            Image.network(widget._module.backgroundImageUrl)),
-                  ),
-                  CircleAvatar(
-                    child: Container(
-                        height: 50,
-                        child: Image.network(widget._module.iconUrl)),
-                    radius: 35,
-                    backgroundColor:
-                        1 == _getModulerProgress(locator<UserModel>().user)
-                            ? Colors.transparent
-                            : Colors.transparent,
-                  ),
-                  if (!widget._isAvaiable)
-                    Stack(alignment: Alignment.center, children: [
-                      CircleAvatar(
-                        backgroundColor: HexColor.fromHex("D2D7E4"),
-                        radius: 50,
-                      ),
-                      CircleAvatar(
-                        child: Container(
-                            height: 50,
-                            child: Icon(
-                              Icons.lock,
-                              color: HexColor.fromHex("4982F6"),
-                            )),
-                        radius: 35,
-                        backgroundColor: HexColor.fromHex("D2D7E4"),
-                      )
-                    ])
-                ],
-              ),
-            )
-          ];
+  Widget _buildUnavailableIcon() {
+    return 
+      Stack(alignment: Alignment.center, children: [
+          CircleAvatar(
+            backgroundColor: HexColor.fromHex("D2D7E4"),
+            radius: 50,
+          ),
+          CircleAvatar(
+            child: Container(
+                height: 50,
+                child: Icon(
+                  Icons.lock,
+                  color: HexColor.fromHex("4982F6"),
+                )),
+            radius: 35,
+            backgroundColor: HexColor.fromHex("D2D7E4"),
+          )
+        ]);
+  }
+
+
+  void _handleCompleteModule(bool? completed) {
+    if (completed == null) return;
+
+    if (completed) {
+      widget._handleFinishExercises();
+      // setState(() {});
+    }
   }
 }

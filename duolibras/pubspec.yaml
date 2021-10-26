@@ -58,6 +58,7 @@ flutter:
     - assets/images/tabBar/
     - assets/images/google_icon.png
     - assets/images/background_login/
+    - assets/images/background_home/
     
   fonts:
     - family: Nunito
