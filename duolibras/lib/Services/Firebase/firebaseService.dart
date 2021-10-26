@@ -50,7 +50,7 @@ class FirebaseService extends ServicesProtocol {
 
     _getTrailFromFirebase()
         .collection(Constants.firebaseService.sectionsCollection)
-        .get(GetOptions(source: Source.server))
+        .get()
         .then((value) => {
               completer.complete(value.docs
                   .map((e) => Section.fromMap(e.data(), e.id))

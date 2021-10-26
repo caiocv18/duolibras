@@ -1,4 +1,5 @@
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/contentScreen.dart';
@@ -163,26 +164,76 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
     return await showDialog<bool>(
             context: context,
             builder: (context) {
-              return AlertDialog(
-                title: const Text('Tem certeza?'),
-                content: const Text(
-                    'Se você sair todo seu progesso vai ser perdido.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(true);
-                    },
-                    child: const Text('Sair'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                    child: const Text('Continuar'),
-                  ),
-                ],
-              );
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    backgroundColor: Colors.white,
+                    child: LayoutBuilder(builder: (ctx, constraint) {
+                      return Container(
+                        height: constraint.maxHeight * 0.3,
+                        child: Center(
+                            child: Column(
+                              children: [
+                                SizedBox(height: 40),
+                                Container(
+                                  width: 170,
+                                  child: 
+                                  Text("Tem certeza que deseja sair?", 
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700, color: Colors.black, fontSize: 18)),
+                                ),
+                                SizedBox(height: 10),
+                                Container(height: 2, width: constraint.maxWidth, color: Colors.grey[300]),
+                                SizedBox(height: 10),
+                                Container(
+                                  width: 170,
+                                  height: 40,
+                                  child: TextButton(child: Text("Sim",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w800, color: HexColor.fromHex('E97070'), fontSize: 18)),
+                                    onPressed: () => Navigator.of(context).pop(true),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Container(height: 2, width: constraint.maxWidth, color: Colors.grey[300]),
+                                SizedBox(height: 10),
+                                Container(
+                                  width: 170,
+                                  height: 40,
+                                  child: TextButton(child: Text("Não",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w400, color: Colors.black, fontSize: 18)),
+                                    onPressed: () => Navigator.of(context).pop(false),
+                                  )
+                                )
+                              ],
+                            ),
+                          ),
+                      );
+                    }),
+                  );
             }) ??
+              // return AlertDialog(
+              //   title: const Text('Tem certeza?'),
+              //   content: const Text(
+              //       'Se você sair todo seu progesso vai ser perdido.'),
+              //   actions: [
+              //     TextButton(
+              //       onPressed: () {
+              //         Navigator.of(context).pop(true);
+              //       },
+              //       child: const Text('Sair'),
+              //     ),
+              //     TextButton(
+              //       onPressed: () {
+              //         Navigator.of(context).pop(false);
+              //       },
+              //       child: const Text('Continuar'),
+              //     ),
+              //   ],
+              // );
+            // }) ??
         false;
   }
 
