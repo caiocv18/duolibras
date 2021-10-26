@@ -30,6 +30,15 @@ class RankingTile extends StatelessWidget {
                 SizedBox(width: 5),
                 CircleAvatar(
                   child: Consumer(builder: (_, UserModel userModel, __) {
+                    if (userModel.user.id == user.id) {
+                      return Container(
+                        height: 55,
+                        decoration: new BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: new NetworkImage(userModel.user.imageUrl!))));
+                    }
                     if (user.imageUrl == null) {
                       return Container(height: 35, child: Icon(Icons.person));
                     }
@@ -63,16 +72,19 @@ class RankingTile extends StatelessWidget {
                   maxLines: 2),
             );
           }),
-          trailing: Container(
-            width: 100,
-            child: Text("${user.currentProgress} pts",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontFamily: "Nunito",
-                    fontWeight: FontWeight.w400),
-                textAlign: TextAlign.left),
-          ),
+          trailing: 
+            Consumer(builder: (ctx, UserModel userModel, _) {
+              return Container(
+                width: 100,
+                child: Text("${userModel.user.id == user.id ? userModel.user.currentProgress : user.currentProgress} pts",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontFamily: "Nunito",
+                        fontWeight: FontWeight.w400),
+                    textAlign: TextAlign.left),
+              );
+            }),
         ),
         size: 25,
         color: HexColor.fromHex("93CAFA"),

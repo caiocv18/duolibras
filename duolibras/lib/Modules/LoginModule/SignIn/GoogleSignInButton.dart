@@ -1,4 +1,4 @@
-import 'package:duolibras/Commons/Utils/Constants.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

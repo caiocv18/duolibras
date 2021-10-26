@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:duolibras/Commons/Components/appBarWidget.dart';
 import 'package:duolibras/Commons/Components/baseScreen.dart';
-import 'package:duolibras/Commons/Utils/Constants.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
 import 'package:flutter/material.dart';
