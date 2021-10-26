@@ -112,8 +112,8 @@ class MockService extends ServicesProtocol {
   }
 
   @override
-  Future uploadImage(FileImage image) {
-    var completer = Completer<void>();
+  Future<String> uploadImage(FileImage image) {
+    var completer = Completer<String>();
     return completer.future;
   }
 

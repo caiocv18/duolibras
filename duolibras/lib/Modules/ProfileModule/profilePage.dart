@@ -51,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 20),
-                  ProfileImageButton(SharedFeatures.instance.isLoggedIn, widget._viewModel),
+                  ProfileImageButton(SharedFeatures.instance.isLoggedIn, widget._viewModel, userProvider.user.imageUrl),
                   SizedBox(height: 60),
                   Container(
                       child: CustomTextfield(nameTextfieldController,

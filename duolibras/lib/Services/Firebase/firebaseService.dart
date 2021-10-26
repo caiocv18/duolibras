@@ -264,10 +264,9 @@ class FirebaseService extends ServicesProtocol {
   }
 
   @override
-  Future uploadImage(FileImage image) async {
+  Future<String> uploadImage(FileImage image) async {
     String fileName = basename(image.file.path);
-    final firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('ImagensTeste/$fileName');
+    final firebaseStorageRef = FirebaseStorage.instance.ref().child('ProfileImages/$fileName');
     final uploadTask = firebaseStorageRef.putFile(image.file);
     final taskSnapshot = await uploadTask;
     return taskSnapshot.ref.getDownloadURL().onError((error, stackTrace) {

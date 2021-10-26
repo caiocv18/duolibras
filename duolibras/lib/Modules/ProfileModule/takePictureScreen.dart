@@ -25,7 +25,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     super.initState();
     _controller = CameraController(
       widget.camera,
-      ResolutionPreset.medium,
+      ResolutionPreset.high,
     );
 
     _initializeControllerFuture = _controller.initialize();
@@ -43,27 +43,71 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return CameraPreview(_controller);
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          try {
-            await _initializeControllerFuture;
-            final image = await _controller.takePicture();
-            final provider = Provider.of<UserModel>(context, listen: false);
-            provider.setImageUrl(image.path);
-            Navigator.of(context).pop(image.path);
-          } catch (e) {
-            print(e);
-          }
-        },
-        child: const Icon(Icons.camera_alt),
+          return 
+              LayoutBuilder(builder: (ctx, constraint) => buildBody(snapshot, constraint)); 
+            },
       ),
     );
   }
+
+  Widget buildBody(AsyncSnapshot snapshot, BoxConstraints constraints) {
+    final cameraRatio = _controller.value.aspectRatio;
+    final size = MediaQuery.of(context).size;
+    var scale = size.aspectRatio * cameraRatio;
+
+    // to prevent scaling down, invert the value
+    if (scale < 1) scale = 1 / scale;
+
+    return Container(
+      width: constraints.maxWidth,
+      height: constraints.maxHeight,
+      child: Center(
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            Transform.scale(scale: scale, child: snapshot.connectionState == ConnectionState.done ?
+              CameraPreview(_controller) : CircularProgressIndicator()),
+            
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              SizedBox(height: constraints.maxHeight * 0.05),
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: GestureDetector(child: Icon(Icons.close, color: Colors.white, size: 30), onTap: ()  {
+                  Navigator.of(context).pop();
+                }),
+              ),
+              SizedBox(height: constraints.maxHeight * 0.75),
+              GestureDetector(
+                onTap: () => _takePhoto(),
+                child: Center(
+                  child: Stack(alignment: AlignmentDirectional.center, 
+                    children: [
+                      Container(width: constraints.maxWidth * 0.2, height: constraints.maxWidth * 0.2, 
+                        decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle)),
+                      Container(width: constraints.maxWidth * 0.17, height: constraints.maxWidth * 0.18, 
+                        decoration: BoxDecoration(color: Colors.transparent, shape: BoxShape.circle, border: Border.all(color: Colors.black)))
+                  ]),
+                ),
+              )
+            ])
+          ]
+        ),
+      ),
+    );
+  }
+
+  void _takePhoto() async {
+    try {
+        await _initializeControllerFuture;
+        final image = await _controller.takePicture();
+        final provider = Provider.of<UserModel>(context, listen: false);
+        provider.setImageUrl(image.path);
+        Navigator.of(context).pop(image.path);
+      } catch (e) {
+        print(e);
+      }
+  }
+
 }
