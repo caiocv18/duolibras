@@ -130,7 +130,7 @@ class Service {
         .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
   }
 
-  Future uploadImage(FileImage image) {
+  Future<String> uploadImage(FileImage image) {
     return _service
         .uploadImage(image)
         .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);

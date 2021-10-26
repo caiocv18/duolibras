@@ -3,6 +3,6 @@ import 'package:duolibras/Services/Models/dynamicAsset.dart';
 import 'package:flutter/cupertino.dart';
 
 abstract class APIStorageProtocol {
-  Future uploadImage(FileImage image);
+  Future<String> uploadImage(FileImage image);
   Future<List<DynamicAsset>> getDynamicAssets();
 }

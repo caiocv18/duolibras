@@ -13,16 +13,15 @@ import 'package:path/path.dart';
 class ProfileImageButton extends StatefulWidget {
   final bool isEnabled;
   final ProfileViewModel viewModel;
+  final String? imageUrl;
 
-  ProfileImageButton(this.isEnabled, this.viewModel);
+  ProfileImageButton(this.isEnabled, this.viewModel, this.imageUrl);
 
   @override
   State<ProfileImageButton> createState() => _ProfileImageButtonState();
 }
 
 class _ProfileImageButtonState extends State<ProfileImageButton> {
-  var imageUrl = locator<UserModel>().user.imageUrl;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,7 +35,7 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
               CircleAvatar(
                   backgroundColor: HexColor.fromHex("4982F6"),
                   radius: 70,
-                  child: imageUrl != null
+                  child: widget.imageUrl != null
                       ? CircleAvatar(
                           backgroundColor: Color.fromRGBO(234, 234, 234, 1),
                           radius: 66,
@@ -47,7 +46,7 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
                                   shape: BoxShape.circle,
                                   image: new DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: FileImage(File(imageUrl!))))),
+                                      image: NetworkImage(widget.imageUrl!)))),
                         )
                       : CircleAvatar(
                           backgroundColor: Color.fromRGBO(234, 234, 234, 1),
@@ -94,19 +93,14 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
         context,
         MaterialPageRoute(
           builder: (context) => TakePictureScreen(camera: frontalCamera),
-        )).then((value) {
-      var imagePath = value as String?;
-      setState(() {
-        imageUrl = imagePath;
-        _uploadImage(context);
-      });
+        )
+    ).then((imagePath) {
+      _uploadImage(imagePath, context);
     });
   }
 
-  void _uploadImage(BuildContext context) {
-    var fileImage = FileImage(File(imageUrl!));
-    widget.viewModel.uploadImage(fileImage, context, exitClosure: () {
-      Navigator.of(context).pop();
-    });
+  void _uploadImage(String imagePath, BuildContext context) {
+    var fileImage = FileImage(File(imagePath));
+    widget.viewModel.uploadImage(fileImage, context);
   }
 }
