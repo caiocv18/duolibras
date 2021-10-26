@@ -14,10 +14,31 @@ class RankingTile extends StatelessWidget {
   RankingTile(
       {required this.index, required this.user, required this.viewModel});
 
+  Widget _imageUserWidget(UserModel userModel) {
+    if (userModel.user.id == user.id) {
+      return Container(
+          height: 55,
+          decoration: new BoxDecoration(
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                  fit: BoxFit.cover,
+                  image: new NetworkImage(userModel.user.imageUrl!))));
+    }
+    if (user.imageUrl == null) {
+      return Container(height: 35, child: Icon(Icons.person));
+    }
+    return Container(
+        height: 55,
+        decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            image: new DecorationImage(
+                fit: BoxFit.cover, image: new NetworkImage(user.imageUrl!))));
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<UserModel>(context, listen: true);
-    final userModel = provider.user;
+    final userModel = provider;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 19, vertical: 12),
@@ -29,67 +50,44 @@ class RankingTile extends StatelessWidget {
               children: [
                 SizedBox(width: 5),
                 CircleAvatar(
-                  child: Consumer(builder: (_, UserModel userModel, __) {
-                    if (userModel.user.id == user.id) {
-                      return Container(
-                        height: 55,
-                        decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: new DecorationImage(
-                                fit: BoxFit.cover,
-                                image: new NetworkImage(userModel.user.imageUrl!))));
-                    }
-                    if (user.imageUrl == null) {
-                      return Container(height: 35, child: Icon(Icons.person));
-                    }
-                    return Container(
-                        height: 55,
-                        decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: new DecorationImage(
-                                fit: BoxFit.cover,
-                                image: new NetworkImage(user.imageUrl!))));
-                  }),
+                  child: _imageUserWidget(userModel),
                   radius: 25,
                   backgroundColor: Colors.grey[400],
                 ),
               ],
             ),
           ),
-          title: Consumer(builder: (ctx, UserModel userModel, _) {
-            return Expanded(
-              child: Text(
-                  viewModel.formatUserName(userModel.user.id == user.id
-                      ? userModel.user.name
-                      : user.name),
-                  style: TextStyle(
-                      overflow: TextOverflow.ellipsis,
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontFamily: "Nunito",
-                      fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.left,
-                  maxLines: 2),
-            );
-          }),
-          trailing: 
-            Consumer(builder: (ctx, UserModel userModel, _) {
-              return Container(
-                width: 100,
-                child: Text("${userModel.user.id == user.id ? userModel.user.currentProgress : user.currentProgress} pts",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontFamily: "Nunito",
-                        fontWeight: FontWeight.w400),
-                    textAlign: TextAlign.left),
-              );
-            }),
+          title: Expanded(
+            child: Text(
+                viewModel.formatUserName(userModel.user.id == user.id
+                    ? userModel.user.name
+                    : user.name),
+                style: TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontFamily: "Nunito",
+                    fontWeight: FontWeight.w600),
+                textAlign: TextAlign.left,
+                maxLines: 2),
+          ),
+          trailing: Container(
+            width: 100,
+            child: Text(
+                "${userModel.user.id == user.id ? userModel.user.currentProgress : user.currentProgress} pts",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: "Nunito",
+                    fontWeight: FontWeight.w400),
+                textAlign: TextAlign.left),
+          ),
         ),
         size: 25,
         color: HexColor.fromHex("93CAFA"),
-        backgroundColor:
-            userModel.id == user.id ? HexColor.fromHex("4982F6") : Colors.white,
+        backgroundColor: userModel.user.id == user.id
+            ? HexColor.fromHex("4982F6")
+            : Colors.white,
       ),
     );
   }
