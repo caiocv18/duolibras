@@ -1,12 +1,13 @@
-import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
 import 'package:duolibras/Modules/RankingModule/ViewModel/rankingViewModel.dart';
 import 'package:duolibras/Modules/RankingModule/Widgets/rankingTile.dart';
+import 'package:duolibras/Services/Models/Providers/userProvider.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RankingScreen extends StatefulWidget {
   final _viewModel = RankingViewModel();
@@ -51,23 +52,41 @@ class _RankingScreenState extends State<RankingScreen> {
         ? Center(
             child: Text("Carregando..."),
           )
-        : Column(
-            children: [
-              SizedBox(height: 15),
-              Container(
-                height: _containerHeight * 0.84,
-                child: ListView.builder(
-                    padding: EdgeInsets.only(bottom: 12),
-                    itemCount: usersRank.length,
-                    itemBuilder: (ctx, index) {
-                      return RankingTile(
-                          index: index,
-                          user: usersRank[index],
-                          viewModel: widget._viewModel);
-                    }),
-              ),
-            ],
-          );
+        : Consumer(builder: (ctx, UserModel userModel, _) {
+            sortUsersRanking(userModel.user);
+
+            return Column(
+              children: [
+                SizedBox(height: 15),
+                Container(
+                  height: _containerHeight * 0.84,
+                  child: ListView.builder(
+                      padding: EdgeInsets.only(bottom: 12),
+                      itemCount: usersRank.length,
+                      itemBuilder: (ctx, index) {
+                        return RankingTile(
+                            index: index,
+                            user: usersRank[index],
+                            viewModel: widget._viewModel);
+                      }),
+                ),
+              ],
+            );
+          });
+  }
+
+  void sortUsersRanking(User newCurrentUser) {
+    final index = usersRank.indexWhere((u) => u.id == newCurrentUser.id);
+    if (index == -1) {
+      return;
+    }
+
+    if (usersRank[index].currentProgress != newCurrentUser.currentProgress) {
+      usersRank[index].currentProgress = newCurrentUser.currentProgress;
+      usersRank.sort((a, b) {
+        return b.currentProgress.compareTo(a.currentProgress);
+      });
+    }
   }
 
   Widget createUnllogedBody(BuildContext context) {
@@ -120,9 +139,9 @@ class _RankingScreenState extends State<RankingScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-          child: SharedFeatures.instance.isLoggedIn
-              ? createRankingBody(context)
-              : createUnllogedBody(context),
-          color: HexColor.fromHex("E5E5E5"));
+        child: SharedFeatures.instance.isLoggedIn
+            ? createRankingBody(context)
+            : createUnllogedBody(context),
+        color: HexColor.fromHex("E5E5E5"));
   }
 }

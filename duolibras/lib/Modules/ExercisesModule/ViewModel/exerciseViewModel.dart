@@ -91,7 +91,20 @@ class ExerciseViewModel extends BaseViewModel {
     }
     late SectionProgress? sectionProgress;
 
-    if (sectionsProgressIndex != -1) {
+    final isFirstTimeInModule = sectionsProgressIndex == -1;
+
+    if (!isFirstTimeInModule) {
+      print(
+          "IS Completed: ${userProvider.user.sectionsProgress[sectionsProgressIndex].isCompleted}");
+      if (!userProvider
+          .user.sectionsProgress[sectionsProgressIndex].isCompleted) {
+        userProvider.incrementUserProgress(10);
+      }
+    } else {
+      userProvider.incrementUserProgress(10);
+    }
+
+    if (!isFirstTimeInModule) {
       sectionProgress = userProvider.incrementModulesProgress(
           exerciseFlowDelegate.sectionID,
           exercisesAndModule.item2.id,
@@ -109,7 +122,7 @@ class ExerciseViewModel extends BaseViewModel {
           maxModuleProgress: exercisesAndModule.item2.maxProgress));
       userProvider.addSectionProgress(sectionProgress);
     }
-    userProvider.incrementUserProgress(10);
+
     Completer<void> completer = Completer<void>();
 
     await Service.instance
