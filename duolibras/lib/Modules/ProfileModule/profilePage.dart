@@ -51,11 +51,15 @@ class _ProfilePageState extends State<ProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 20),
-                  ProfileImageButton(SharedFeatures.instance.isLoggedIn, widget._viewModel),
+                  ProfileImageButton(
+                      SharedFeatures.instance.isLoggedIn, widget._viewModel),
                   SizedBox(height: 60),
                   Container(
-                      child: CustomTextfield(nameTextfieldController,
-                          userProvider.user.name, SharedFeatures.instance.isLoggedIn, _handleSubmitNewName),
+                      child: CustomTextfield(
+                          nameTextfieldController,
+                          userProvider.user.name,
+                          SharedFeatures.instance.isLoggedIn,
+                          _handleSubmitNewName),
                       width: containerSize.width * 0.8),
                   SizedBox(height: 60),
                   _createProgressWidget(userProvider.user),
@@ -65,7 +69,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: containerHeight * 0.05,
                       child: ExerciseButton(
                         child: Center(
-                          child: Text(SharedFeatures.instance.isLoggedIn ? "Sair" : "Entrar"),
+                          child: Text(SharedFeatures.instance.isLoggedIn
+                              ? "Sair"
+                              : "Entrar"),
                         ),
                         size: 20,
                         color: HexColor.fromHex("4982F6"),
@@ -75,43 +81,42 @@ class _ProfilePageState extends State<ProfilePage> {
               ))),
         ),
       );
-    }
-    );
+    });
   }
 
   Widget _createProgressWidget(User user) {
     return Stack(alignment: Alignment.center, children: [
-        CircularProgressIndicator(
-          backgroundColor: HexColor.fromHex("D2D7E4"),
-          valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("4982F6")),
-          value: user.currentProgress / 100,
-          strokeWidth: 150,
-        ),
+      CircularProgressIndicator(
+        backgroundColor: HexColor.fromHex("D2D7E4"),
+        valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("4982F6")),
+        value:
+            (user.currentProgress / SharedFeatures.instance.numberMaxOfPoints),
+        strokeWidth: 150,
+      ),
       CircleAvatar(
         backgroundColor: Color.fromRGBO(234, 234, 234, 1),
         radius: 80,
       ),
       Consumer(builder: (ctx, UserModel userProvider, _) {
-        return _createProgressTextWidget(
-            userProvider.user.currentProgress / 100);
+        return _createProgressTextWidget(userProvider.user.currentProgress /
+            SharedFeatures.instance.numberMaxOfPoints);
       })
     ]);
   }
 
   Widget _createProgressTextWidget(double progress) {
     return Column(children: [
-      Text(_getLevelTextByProgress(progress),
+      Text(_getLevelTextByProgress(progress / 100),
           style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black)),
       SizedBox(
         height: 4,
       ),
-      Text("${progress * 100} %",
+      Text("${(progress * 100).toStringAsFixed(2)} %",
           style: TextStyle(
               fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black)),
     ]);
   }
-
 
   void _handleSubmitNewName(String newName) {
     final userModel = locator<UserModel>().user;
@@ -150,8 +155,7 @@ class _ProfilePageState extends State<ProfilePage> {
       widget._viewModel.signOut();
     } else {
       Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SignInPage()));
+          context, MaterialPageRoute(builder: (context) => SignInPage()));
     }
   }
 }

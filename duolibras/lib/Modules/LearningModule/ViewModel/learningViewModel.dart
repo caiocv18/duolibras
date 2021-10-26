@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
 import 'package:duolibras/Commons/ViewModel/screenState.dart';
@@ -21,27 +22,29 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:duolibras/Commons/Extensions/list_extension.dart';
 
-class LearningViewModel extends BaseViewModel with ModuleViewModel, LearningViewModelProtocol {
+class LearningViewModel extends BaseViewModel
+    with ModuleViewModel, LearningViewModelProtocol {
   final _errorHandler = ErrorHandler();
   List<String> allSectionsID = [];
   List<Section> allSections = [];
   Map<Color, int> colorForModules = {};
   WrapperSectionPage wrapperSectionPage = WrapperSectionPage([]);
 
-  Future<void> _getModules(List<Section> newSections, BuildContext context) async {
-    final sectionsProgress = Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
+  Future<void> _getModules(
+      List<Section> newSections, BuildContext context) async {
+    final sectionsProgress =
+        Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
 
     for (var i = 0; i < newSections.length; i++) {
-      await getModulesfromSection(newSections[i].id, context)
-      .then((modules) {
-          wrapperSectionPage.pages.add(SectionPage(newSections[i], modules));
-          Color color = modules.first.color;
-          colorForModules.addAll({color: modules.length});
+      await getModulesfromSection(newSections[i].id, context).then((modules) {
+        wrapperSectionPage.pages.add(SectionPage(newSections[i], modules));
+        Color color = modules.first.color;
+        colorForModules.addAll({color: modules.length});
 
-          modules.forEach((element) {
-            element.mlModelPath = newSections[i].mlModelPath ?? "";
-            element.mlLabelsPath = newSections[i].mlLabelsPath ?? "";
-          });
+        modules.forEach((element) {
+          element.mlModelPath = newSections[i].mlModelPath ?? "";
+          element.mlLabelsPath = newSections[i].mlLabelsPath ?? "";
+        });
       });
     }
 
@@ -70,29 +73,30 @@ class LearningViewModel extends BaseViewModel with ModuleViewModel, LearningView
       });
     }
 
+    SharedFeatures.instance.setNumberMaxOfModules(wrapperSectionPage.total);
     setState(ScreenState.Normal);
   }
 
-  Future<List<Module>> getModulesfromSection(String sectionID, BuildContext context) async {
+  Future<List<Module>> getModulesfromSection(
+      String sectionID, BuildContext context) async {
     return Service.instance
         .getModulesFromSectionId(sectionID)
         .onError((error, stackTrace) {
-          final appError = Utils.logAppError(error);
-          Completer<List<Module>> completer = Completer<List<Module>>();
+      final appError = Utils.logAppError(error);
+      Completer<List<Module>> completer = Completer<List<Module>>();
 
-          _errorHandler.showModal(appError, context,
-              enableDrag: false,
-              tryAgainClosure: () => _errorHandler.tryAgainClosure(
-                  () => Service.instance.getModulesFromSectionId(sectionID),
-                  context,
-                  completer));
-          return completer.future;
-        });
+      _errorHandler.showModal(appError, context,
+          enableDrag: false,
+          tryAgainClosure: () => _errorHandler.tryAgainClosure(
+              () => Service.instance.getModulesFromSectionId(sectionID),
+              context,
+              completer));
+      return completer.future;
+    });
   }
 
   Future<List<Section>> getSectionsFromTrail(BuildContext context) {
-    return Service.instance.getSectionsFromTrail()
-    .onError((error, stackTrace) {
+    return Service.instance.getSectionsFromTrail().onError((error, stackTrace) {
       final appError = Utils.logAppError(error);
       Completer<List<Section>> completer = Completer<List<Section>>();
 
@@ -100,7 +104,7 @@ class LearningViewModel extends BaseViewModel with ModuleViewModel, LearningView
           enableDrag: false,
           tryAgainClosure: () => _errorHandler.tryAgainClosure(
               () => Service.instance.getSectionsFromTrail(),
-              context, 
+              context,
               completer));
       return completer.future;
     });
@@ -116,51 +120,54 @@ class LearningViewModel extends BaseViewModel with ModuleViewModel, LearningView
     });
   }
 
-  Future<List<Exercise>> _getExerciseFromModule(String sectionID, String moduleID, int level, BuildContext context) {
+  Future<List<Exercise>> _getExerciseFromModule(
+      String sectionID, String moduleID, int level, BuildContext context) {
     return Service.instance
         .getExercisesFromModuleId(sectionID, moduleID, level)
         .onError((error, stackTrace) {
-          final appError = Utils.logAppError(error);
-          Completer<List<Exercise>> completer = Completer<List<Exercise>>();
+      final appError = Utils.logAppError(error);
+      Completer<List<Exercise>> completer = Completer<List<Exercise>>();
 
-          _errorHandler.showModal(appError, context,
-              tryAgainClosure: () => _errorHandler.tryAgainClosure(
-                  () => Service.instance.getExercisesFromModuleId(sectionID, moduleID, level),
-                  context,
-                  completer),
-              exitClosure: () => completer.complete([]));
-          return completer.future;
+      _errorHandler.showModal(appError, context,
+          tryAgainClosure: () => _errorHandler.tryAgainClosure(
+              () => Service.instance
+                  .getExercisesFromModuleId(sectionID, moduleID, level),
+              context,
+              completer),
+          exitClosure: () => completer.complete([]));
+      return completer.future;
     });
   }
 
-  Future<List<Exercise>> _getANumberExerciseFromModule(String sectionID, String moduleID, int quantity, BuildContext context) {
+  Future<List<Exercise>> _getANumberExerciseFromModule(
+      String sectionID, String moduleID, int quantity, BuildContext context) {
     return Service.instance
         .getANumberOfExercisesFromModuleId(sectionID, moduleID, quantity)
         .onError((error, stackTrace) {
-            final appError = Utils.logAppError(error);
-            Completer<List<Exercise>> completer = Completer<List<Exercise>>();
+      final appError = Utils.logAppError(error);
+      Completer<List<Exercise>> completer = Completer<List<Exercise>>();
 
-            _errorHandler.showModal(appError, context,
-                tryAgainClosure: () => _errorHandler.tryAgainClosure(
-                    () => Service.instance.getANumberOfExercisesFromModuleId(
-                        sectionID, moduleID, quantity),
-                    context,
-                    completer),
-                exitClosure: () => completer.complete([]));
-            return completer.future;
-        }).then((exercises) {
-          exercises.shuffle();
-          List<Exercise> newExercises = [];
+      _errorHandler.showModal(appError, context,
+          tryAgainClosure: () => _errorHandler.tryAgainClosure(
+              () => Service.instance.getANumberOfExercisesFromModuleId(
+                  sectionID, moduleID, quantity),
+              context,
+              completer),
+          exitClosure: () => completer.complete([]));
+      return completer.future;
+    }).then((exercises) {
+      exercises.shuffle();
+      List<Exercise> newExercises = [];
 
-          for (var i = 0; i < 15; i++) {
-            if (!exercises.containsAt(i)) {
-              return newExercises;
-            } else {
-              newExercises.add(exercises[i]);
-            }
-          }
+      for (var i = 0; i < 15; i++) {
+        if (!exercises.containsAt(i)) {
           return newExercises;
-        });
+        } else {
+          newExercises.add(exercises[i]);
+        }
+      }
+      return newExercises;
+    });
   }
 
   @override

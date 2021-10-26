@@ -27,8 +27,9 @@ class ExerciseViewModel extends BaseViewModel {
   final _errorHandler = ErrorHandler();
 
   //ML Exercise
-  late MLCamera _cameraHelper =
-      MLCamera(TFLiteModel(exercisesAndModule.item2.mlModelPath, exercisesAndModule.item2.mlLabelsPath), 
+  late MLCamera _cameraHelper = MLCamera(
+      TFLiteModel(exercisesAndModule.item2.mlModelPath,
+          exercisesAndModule.item2.mlLabelsPath),
       CameraLensDirection.front);
   List<String> spelledLetters = [];
 
@@ -80,8 +81,6 @@ class ExerciseViewModel extends BaseViewModel {
   Future<void> _saveProgress(BuildContext context,
       {Function? exitClosure = null}) async {
     final userProvider = Provider.of<UserModel>(context, listen: false);
-
-    var moduleProgressIndex = -1;
     var sectionsProgressIndex = -1;
 
     try {
@@ -111,21 +110,23 @@ class ExerciseViewModel extends BaseViewModel {
       userProvider.addSectionProgress(sectionProgress);
     }
     userProvider.incrementUserProgress(10);
+    Completer<void> completer = Completer<void>();
+
     await Service.instance
         .postSectionProgress(sectionProgress!)
-        .onError((error, stackTrace) {
+        .then((_) async {
+      await Service.instance.postUser(userProvider.user, false);
+      completer.complete();
+    }).onError((error, stackTrace) {
       final appError = Utils.logAppError(error);
-      Completer<bool> completer = Completer<bool>();
-
       _errorHandler.showModal(appError, context,
           tryAgainClosure: () => _errorHandler.tryAgainClosure(
               () => Service.instance.postSectionProgress(sectionProgress!),
               context,
               completer),
-          exitClosure: () => completer.complete(false));
-
-      return completer.future;
+          exitClosure: () => completer.complete());
     });
+    return completer.future;
   }
 
   Future<void> _handleMoveToNextExercise(

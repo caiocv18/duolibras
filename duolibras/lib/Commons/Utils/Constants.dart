@@ -52,4 +52,6 @@ class ImageAssets {
   String get googleIcon => "${_basicPath}google_icon.png";
   String get camera_button => "${_basicPath}camera_button/camera_button.png";
   String get edit_button => "${_basicPath}edit_button/edit_button.png";
+  String get background_login =>
+      "${_basicPath}background_login/background_login.png";
 }
