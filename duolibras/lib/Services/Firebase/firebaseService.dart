@@ -56,9 +56,8 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Section.fromMap(e.data(), e.id))
                   .toList())
             })
-        .catchError((error, stackTrace) => {
-          completer.completeError(FirebaseErrors.GetSectionsError)
-        });
+        .catchError((error, stackTrace) =>
+            {completer.completeError(FirebaseErrors.GetSectionsError)});
 
     return completer.future;
   }
@@ -76,9 +75,8 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Module.fromMap(e.data(), e.id))
                   .toList())
             })
-        .catchError((error, stackTrace) => {
-          completer.completeError(FirebaseErrors.GetModulesError)
-        });
+        .catchError((error, stackTrace) =>
+            {completer.completeError(FirebaseErrors.GetModulesError)});
 
     return completer.future;
   }
@@ -100,9 +98,8 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Exercise.fromMap(e.data(), e.id))
                   .toList())
             })
-        .catchError((error, stackTrace) => {
-          completer.completeError(FirebaseErrors.GetExercisesError)
-        });
+        .catchError((error, stackTrace) =>
+            {completer.completeError(FirebaseErrors.GetExercisesError)});
 
     return completer.future;
   }
@@ -118,9 +115,8 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => SectionProgress.fromMap(e.data(), e.id))
                   .toList())
             })
-        .catchError((error, stackTrace) => {
-          completer.completeError(FirebaseErrors.GetSectionProgressError)
-        });
+        .catchError((error, stackTrace) =>
+            {completer.completeError(FirebaseErrors.GetSectionProgressError)});
     return completer.future;
   }
 
@@ -129,16 +125,15 @@ class FirebaseService extends ServicesProtocol {
     firestoreInstance
         .collection(Constants.firebaseService.usersCollection)
         .orderBy("currentProgress")
-        .limit(20)
+        .limit(30)
         .get()
         .then((response) => {
               completer.complete(response.docs
                   .map((e) => myUser.User.fromMap(e.data(), e.id))
                   .toList())
             })
-        .catchError((error, stackTrace) => {
-          completer.completeError(FirebaseErrors.GetRankingError)
-        });
+        .catchError((error, stackTrace) =>
+            {completer.completeError(FirebaseErrors.GetRankingError)});
     return completer.future;
   }
 
@@ -152,9 +147,8 @@ class FirebaseService extends ServicesProtocol {
         .doc(sectionProgress.id)
         .set(sectionProgress.toMap(), SetOptions(merge: true))
         .then((_) => {completer.complete(true)})
-        .catchError((error, stackTrace) => {
-          completer.completeError(FirebaseErrors.PostSectionProgressError)
-        });
+        .catchError((error, stackTrace) =>
+            {completer.completeError(FirebaseErrors.PostSectionProgressError)});
     return completer.future;
   }
 
@@ -184,8 +178,8 @@ class FirebaseService extends ServicesProtocol {
               })
             })
         .catchError((error, stackTrace) {
-          completer.completeError(FirebaseErrors.PostUserError);
-      });
+      completer.completeError(FirebaseErrors.PostUserError);
+    });
 
     return completer.future;
   }
@@ -202,8 +196,8 @@ class FirebaseService extends ServicesProtocol {
                   .toList())
             })
         .catchError((error, stackTrace) {
-          completer.completeError(FirebaseErrors.GetDynamicAssetsError);
-        });
+      completer.completeError(FirebaseErrors.GetDynamicAssetsError);
+    });
 
     return completer.future;
   }
@@ -266,7 +260,8 @@ class FirebaseService extends ServicesProtocol {
   @override
   Future<String> uploadImage(FileImage image) async {
     String fileName = basename(image.file.path);
-    final firebaseStorageRef = FirebaseStorage.instance.ref().child('ProfileImages/$fileName');
+    final firebaseStorageRef =
+        FirebaseStorage.instance.ref().child('ProfileImages/$fileName');
     final uploadTask = firebaseStorageRef.putFile(image.file);
     final taskSnapshot = await uploadTask;
     return taskSnapshot.ref.getDownloadURL().onError((error, stackTrace) {
@@ -292,9 +287,9 @@ class FirebaseService extends ServicesProtocol {
                   .map((e) => Exercise.fromMap(e.data(), e.id))
                   .toList())
             })
-      .catchError((error, stackTrace) => {
-        completer.completeError(FirebaseErrors.GetNumberOfExercisesError)
-      });
+        .catchError((error, stackTrace) => {
+              completer.completeError(FirebaseErrors.GetNumberOfExercisesError)
+            });
 
     return completer.future;
   }

@@ -23,6 +23,10 @@ class User {
         imageUrl: parsedJson["imageUrl"],
         id: id);
   }
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is User && runtimeType == other.runtimeType && id == other.id;
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {

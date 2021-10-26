@@ -88,28 +88,39 @@ class Service {
   }
 
   Future<User> postUser(User user, bool isNewUser) {
-    return _service
-        .postUser(user, isNewUser)
-        .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
+    if (SharedFeatures.instance.isLoggedIn) {
+      return _service
+          .postUser(user, isNewUser)
+          .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
+    } else {
+      return _database.updateUser(user).then((value) {
+        return Service.instance.getUser();
+      }).onError(_handleDatabaseException, test: (e) => e is DatabaseErrors);
+    }
   }
 
   Future<List<SectionProgress>> getSectionsProgress() {
     if (SharedFeatures.instance.isLoggedIn) {
-      return _service.getSectionsProgress()
-      .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
+      return _service
+          .getSectionsProgress()
+          .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
     } else {
-      return _database.getSectionProgress()
-      .onError(_handleDatabaseException, test: (e) => e is DatabaseErrors);
+      return _database
+          .getSectionProgress()
+          .onError(_handleDatabaseException, test: (e) => e is DatabaseErrors);
     }
   }
 
   Future<bool> postSectionProgress(SectionProgress sectionProgress) async {
     if (SharedFeatures.instance.isLoggedIn) {
-      return _service.postSectionProgress(sectionProgress)
-      .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
+      return _service
+          .postSectionProgress(sectionProgress)
+          .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
     } else {
-      return _database.saveSectionProgress(sectionProgress).then((_) => true)
-      .onError(_handleDatabaseException, test: (e) => e is DatabaseErrors);
+      return _database
+          .saveSectionProgress(sectionProgress)
+          .then((_) => true)
+          .onError(_handleDatabaseException, test: (e) => e is DatabaseErrors);
     }
   }
 
@@ -133,8 +144,9 @@ class Service {
   }
 
   Future<List<DynamicAsset>> getDynamicAssets() {
-    return _service.getDynamicAssets()
-    .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
+    return _service
+        .getDynamicAssets()
+        .onError(_handleFirebaseException, test: (e) => e is FirebaseErrors);
   }
 
   Future<void> cleanDatabase() {
@@ -145,12 +157,16 @@ class Service {
 
 //Error handling
   Future<T> _handleFirebaseException<T>(Object? error, StackTrace stackTrace) {
-    final FirebaseErrors firebaseError = Utils.tryCast(error, fallback: FirebaseErrors.Unknown);
-    return Future.error(AppError(firebaseError.type, firebaseError.errorDescription));
+    final FirebaseErrors firebaseError =
+        Utils.tryCast(error, fallback: FirebaseErrors.Unknown);
+    return Future.error(
+        AppError(firebaseError.type, firebaseError.errorDescription));
   }
 
   Future<T> _handleDatabaseException<T>(Object? error, StackTrace stackTrace) {
-    final DatabaseErrors databaseError = Utils.tryCast(error, fallback: DatabaseErrors.Unknown);
-    return Future.error(AppError(databaseError.type, databaseError.errorDescription));
+    final DatabaseErrors databaseError =
+        Utils.tryCast(error, fallback: DatabaseErrors.Unknown);
+    return Future.error(
+        AppError(databaseError.type, databaseError.errorDescription));
   }
 }

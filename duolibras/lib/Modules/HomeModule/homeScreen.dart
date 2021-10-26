@@ -30,69 +30,82 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   late Widget _page = _pages[_currentIndex];
 
-  BottomNavigationBar get bottomNavigationBar {
-    return BottomNavigationBar(
-      elevation: 15,
-      items: [
-        BottomNavigationBarItem(
-            icon: Image.asset(Constants.imageAssets.rankingIcon,
-                color: _currentIndex == 0
-                    ? HexColor.fromHex("4982F6")
-                    : HexColor.fromHex("D2D7E4")),
-            label: "Ranking",
-            backgroundColor:
-                _currentIndex == 1 ? HexColor.fromHex("4982F6") : Colors.white),
-        BottomNavigationBarItem(
-            icon: Image.asset(
-              Constants.imageAssets.trailIcon,
-              color: _currentIndex == 1
-                  ? HexColor.fromHex("4982F6")
-                  : HexColor.fromHex("D2D7E4"),
-            ),
-            label: "Trilha"),
-        BottomNavigationBarItem(
-            icon: Image.asset(Constants.imageAssets.profileIcon,
-                color: _currentIndex == 2
-                    ? HexColor.fromHex("4982F6")
-                    : HexColor.fromHex("D2D7E4")),
-            label: "Perfil"),
-      ],
-      type: BottomNavigationBarType.fixed,
-      onTap: (index) {
-        // MainRouter.instance.navigatorKey.currentState!.maybePop();
-        setState(() => _page = _pages[index]);
-        _currentIndex = index;
-      },
-      selectedItemColor: Colors.blue,
-      unselectedItemColor: Colors.grey,
-      currentIndex: _currentIndex,
+  Widget get bottomNavigationBar {
+    return Container(
+      height: 112,
+      child: Column(
+        children: [
+          Container(
+            height: 10,
+            width: double.infinity,
+            color: HexColor.fromHex("4982F6"),
+          ),
+          BottomNavigationBar(
+            elevation: 15,
+            items: [
+              BottomNavigationBarItem(
+                  icon: Image.asset(Constants.imageAssets.rankingIcon,
+                      color: _currentIndex == 0
+                          ? HexColor.fromHex("4982F6")
+                          : HexColor.fromHex("D2D7E4")),
+                  label: "Ranking",
+                  backgroundColor: _currentIndex == 1
+                      ? HexColor.fromHex("4982F6")
+                      : Colors.white),
+              BottomNavigationBarItem(
+                  icon: Image.asset(
+                    Constants.imageAssets.trailIcon,
+                    color: _currentIndex == 1
+                        ? HexColor.fromHex("4982F6")
+                        : HexColor.fromHex("D2D7E4"),
+                  ),
+                  label: "Trilha"),
+              BottomNavigationBarItem(
+                  icon: Image.asset(Constants.imageAssets.profileIcon,
+                      color: _currentIndex == 2
+                          ? HexColor.fromHex("4982F6")
+                          : HexColor.fromHex("D2D7E4")),
+                  label: "Perfil"),
+            ],
+            type: BottomNavigationBarType.fixed,
+            onTap: (index) {
+              // MainRouter.instance.navigatorKey.currentState!.maybePop();
+              setState(() => _page = _pages[index]);
+              _currentIndex = index;
+            },
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.grey,
+            currentIndex: _currentIndex,
+          ),
+        ],
+      ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-      appBar: AppBarWidget(_currentIndex == 0 ? "Ranking" : "Dibras", 
-      () {
+      appBar: AppBarWidget(_currentIndex == 0 ? "Ranking" : "Dibras", () {
         setState(() {
-            isSwitched = !isSwitched;
-            isLoading = true;
-          });
-          loadingNewLearningScreen(isSwitched);
+          isSwitched = !isSwitched;
+          isLoading = true;
+        });
+        loadingNewLearningScreen(isSwitched);
       }),
       bottomNavigationBar: bottomNavigationBar,
-      body: isLoading ? Center(child: CircularProgressIndicator()) : SafeArea(child: _page),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : SafeArea(child: _page),
     );
   }
 
   Future loadingNewLearningScreen(bool newValue) {
     return Future.delayed(Duration(seconds: 1)).then((value) => {
-      setState(() {
-        _changeEnvironment(newValue);
-      })
-    });
+          setState(() {
+            _changeEnvironment(newValue);
+          })
+        });
   }
 
   void _changeEnvironment(bool newValue) {
@@ -105,6 +118,4 @@ class _HomeScreenState extends State<HomeScreen> {
     _pages[1] = LearningScreen(LearningViewModel());
     _page = _pages[1];
   }
-
 }
-

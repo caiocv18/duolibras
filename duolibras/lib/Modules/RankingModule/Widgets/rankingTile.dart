@@ -30,21 +30,16 @@ class RankingTile extends StatelessWidget {
                 SizedBox(width: 5),
                 CircleAvatar(
                   child: Consumer(builder: (_, UserModel userModel, __) {
-                    if (userModel.user.id != user.id) {
+                    if (user.imageUrl == null) {
                       return Container(height: 35, child: Icon(Icons.person));
                     }
-                    if (userModel.user.imageUrl != null) {
-                      return Container(
-                          height: 55,
-                          decoration: new BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: new DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: new NetworkImage(
-                                      userModel.user.imageUrl!))));
-                    }
-
-                    return Container(height: 55, child: Icon(Icons.person));
+                    return Container(
+                        height: 55,
+                        decoration: new BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                                fit: BoxFit.cover,
+                                image: new NetworkImage(user.imageUrl!))));
                   }),
                   radius: 25,
                   backgroundColor: Colors.grey[400],
@@ -53,17 +48,20 @@ class RankingTile extends StatelessWidget {
             ),
           ),
           title: Consumer(builder: (ctx, UserModel userModel, _) {
-            return Text(
-                viewModel.formatUserName(userModel.user.id == user.id
-                    ? userModel.user.name
-                    : user.name),
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontFamily: "Nunito",
-                    fontWeight: FontWeight.w600),
-                textAlign: TextAlign.left,
-                maxLines: 2);
+            return Expanded(
+              child: Text(
+                  viewModel.formatUserName(userModel.user.id == user.id
+                      ? userModel.user.name
+                      : user.name),
+                  style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: "Nunito",
+                      fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.left,
+                  maxLines: 2),
+            );
           }),
           trailing: Container(
             width: 100,
