@@ -53,9 +53,9 @@ flutter:
     - assets/images/sadFace.png
     - lib/Services/Mock/
     - assets/images/nextExerciseArrow/
-    - assets/images/camera_button/
-    - assets/images/edit_button/
+    - assets/images/navBar/
     - assets/images/tabBar/
+    - assets/images/profileScreen/
     - assets/images/google_icon.png
     - assets/images/background_login/
     - assets/images/background_home/

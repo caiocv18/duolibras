@@ -24,7 +24,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final nameTextfieldController = TextEditingController();
-  var _userHasChanged = false;
 
   @override
   void initState() {
@@ -40,56 +39,57 @@ class _ProfilePageState extends State<ProfilePage> {
          return SingleChildScrollView(
             child: Stack(
               children: 
-              [
-            Container(
-                height: constraint.maxHeight,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                        Constants.imageAssets.background_home),
-                    fit: BoxFit.none,
+              [Container(
+                  height: constraint.maxHeight,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                          Constants.imageAssets.background_home),
+                      fit: BoxFit.none,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                  height: constraint.maxHeight,
-                  alignment: Alignment.center,
-                  color: Colors.transparent,
-                  child: Center(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 20),
-                      ProfileImageButton(SharedFeatures.instance.isLoggedIn, widget._viewModel, userProvider.user.imageUrl),
-                      SizedBox(height: 60),
-                      Container(
-                          child: CustomTextfield(
-                              nameTextfieldController,
-                              userProvider.user.name,
-                              SharedFeatures.instance.isLoggedIn,
-                              _handleSubmitNewName),
-                          width: constraint.maxWidth * 0.8),
-                      SizedBox(height: 60),
-                      _createProgressWidget(userProvider.user),
-                      SizedBox(height: constraint.maxHeight * 0.1),
-                      Container(
-                          width: constraint.maxWidth  * 0.4,
-                          height: constraint.maxHeight * 0.05,
-                          child: ExerciseButton(
-                            child: Center(
-                              child: Text(SharedFeatures.instance.isLoggedIn
-                                  ? "Sair"
-                                  : "Entrar"),
-                            ),
-                            size: 20,
-                            color: HexColor.fromHex("4982F6"),
-                            onPressed: () => _onPressedLoginButton(),
-                          )),
-                    ],
-                  ))),
-              ]
+                Container(
+                    height: constraint.maxHeight,
+                    alignment: Alignment.center,
+                    color: Colors.transparent,
+                    child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 20),
+                            ProfileImageButton(SharedFeatures.instance.isLoggedIn, widget._viewModel, userProvider.user.imageUrl, () => {
+                              _onPressedLoginButton()
+                            }),
+                            SizedBox(height: 60),
+                            Container(
+                                child: CustomTextfield(
+                                    nameTextfieldController,
+                                    userProvider.user.name,
+                                    SharedFeatures.instance.isLoggedIn,
+                                    _handleSubmitNewName),
+                                width: constraint.maxWidth * 0.8),
+                            SizedBox(height: 60),
+                            _createProgressWidget(userProvider.user),
+                            SizedBox(height: constraint.maxHeight * 0.1),
+                            Container(
+                                width: constraint.maxWidth  * 0.4,
+                                height: constraint.maxHeight * 0.05,
+                                child: ExerciseButton(
+                                  child: Center(
+                                    child: Text(SharedFeatures.instance.isLoggedIn
+                                        ? "Sair"
+                                        : "Entrar"),
+                                  ),
+                                  size: 20,
+                                  color: HexColor.fromHex("4982F6"),
+                                  onPressed: () => _onPressedLoginButton(),
+                                )),
+                          ],
+                        ))),
+               ]
             ));
         })
       );
@@ -103,7 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
         valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("4982F6")),
         value:
             (user.currentProgress / SharedFeatures.instance.numberMaxOfPoints),
-        strokeWidth: 150,
+        strokeWidth: 170,
       ),
       CircleAvatar(
         backgroundColor: Color.fromRGBO(234, 234, 234, 1),

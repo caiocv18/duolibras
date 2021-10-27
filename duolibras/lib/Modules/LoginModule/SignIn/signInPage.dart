@@ -15,11 +15,11 @@ class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
-    
     return Scaffold(
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-      appBar: AppBarWidget("Perfil", null),
+      appBar: AppBarWidget("Perfil", longpressHandler: null, backButtonPressed: () {
+        Navigator.of(context).pop();
+      }),
       body:
           BaseScreen<LoginViewModel>(builder: (_, viewModel, __) {
             return SafeArea(

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/imagesMultiChoice.dart';
@@ -54,7 +55,21 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
          body: SafeArea(
                 child: LayoutBuilder(builder: (ctx, constraint) {
                   return SingleChildScrollView(child:  
-                  _buildBody(widget._exercise, widget._viewModel, Size(constraint.maxWidth, constraint.maxHeight), context),
+                  Stack(
+                    children: [
+                      Container(
+                          height: constraint.maxHeight,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  Constants.imageAssets.background_home),
+                              fit: BoxFit.none,
+                            ),
+                          ),
+                        ),
+                      _buildBody(widget._exercise, widget._viewModel, Size(constraint.maxWidth, constraint.maxHeight), context)
+                    ]),
                   );
                 })
         ));

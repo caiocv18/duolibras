@@ -47,10 +47,24 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
          body: SafeArea(
                 child: LayoutBuilder(builder: (ctx, constraint) {
                   return SingleChildScrollView(child: 
-                   _showingCamera
-                    ? _cameraBody(widget._exercise, Size(constraint.maxWidth, constraint.maxHeight), context)
-                    : _buildOnboardingBody(widget._exercise, widget._viewModel,
-                        Size(constraint.maxWidth, constraint.maxHeight), context));
+                    Stack(children: [
+                      Container(
+                          height: constraint.maxHeight,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  Constants.imageAssets.background_home),
+                              fit: BoxFit.none,
+                            ),
+                          ),
+                        ),
+                      _showingCamera
+                      ? _cameraBody(widget._exercise, Size(constraint.maxWidth, constraint.maxHeight), context)
+                      : _buildOnboardingBody(widget._exercise, widget._viewModel,
+                          Size(constraint.maxWidth, constraint.maxHeight), context)
+                    ])
+                  );
                 })
               ));
             

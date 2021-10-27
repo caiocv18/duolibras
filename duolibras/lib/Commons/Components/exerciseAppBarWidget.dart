@@ -110,6 +110,7 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
             children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 _buildExitButton(size),
+                if (!_showNextExerciseArrow)
                 _buildLifeWidget(widget._numberOfLifes),
                 if (_showNextExerciseArrow) _buildNextExerciseButton(size)
               ]),

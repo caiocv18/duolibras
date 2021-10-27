@@ -15,7 +15,7 @@ class _AppleSignInWidgetState extends State<AppleSignInWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SignInWithAppleButton(onPressed: () => signInWithApple(context));
+    return SignInWithAppleButton(text: "Entrar com Apple", onPressed: () => signInWithApple(context));
   }
 
   void signInWithApple(BuildContext ctx) async {

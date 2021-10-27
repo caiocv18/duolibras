@@ -91,12 +91,12 @@ class _LearningScreenState extends State<LearningScreen>with SingleTickerProvide
               return Stack(
                 alignment: AlignmentDirectional.topCenter,
                 children: [
-                SingleChildScrollView(
-                controller: scrollController,
-                child: 
-                  _buildBody(context, viewModel, constraints.maxHeight)
-                ),
-                SectionTitleWidget(scrollController, viewModel.allSections, viewModel.sectionsForModules)
+                  SingleChildScrollView(
+                    controller: scrollController,
+                    child: 
+                      _buildBody(context, viewModel, constraints.maxHeight)
+                  ),
+                  SectionTitleWidget(scrollController, viewModel.allSections, viewModel.sectionsForModules)
                 ],
               );
             })
@@ -144,12 +144,13 @@ class _LearningScreenState extends State<LearningScreen>with SingleTickerProvide
     final pagesTotal = viewModel.wrapperSectionPage.total;
     int totalImages = 1;
     if (pagesTotal > 3){
-      totalImages = (pagesTotal/3/2).round();
+      totalImages = (pagesTotal/3).round();
     }
     return Column(
             children: 
               List.generate(totalImages,(index){
-                return Image(image: AssetImage(Constants.imageAssets.background_home));
+                return Image(image: AssetImage(
+                          Constants.imageAssets.background_home));
               })
           );
   }
@@ -193,19 +194,23 @@ class _LearningScreenState extends State<LearningScreen>with SingleTickerProvide
     
     final module = viewModel.wrapperSectionPage.moduleAtIndex(index);
 
-    return ModuleWidget(module,
-      viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
-      widget._viewModel,
-      rowAlignment,
-      handleFinishExercise,
-      index == 0
-      ? true
-      : viewModel.wrapperSectionPage.isModuleAvaiable(
-          viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
-          module.id,
-          ctx
-        )
-      );
+    return Container(
+      height: 200,
+      width: double.infinity,
+      child: ModuleWidget(module,
+        viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
+        widget._viewModel,
+        rowAlignment,
+        handleFinishExercise,
+        index == 0
+        ? true
+        : viewModel.wrapperSectionPage.isModuleAvaiable(
+            viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
+            module.id,
+            ctx
+          )
+        ),
+    );
   }
 
   void handleFinishExercise() {

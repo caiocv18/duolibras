@@ -1,3 +1,6 @@
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
+import 'package:flutter/material.dart';
+
 class Constants {
   static DatabaseConstants database = const DatabaseConstants();
   static FirebaseServiceConstants firebaseService =
@@ -42,16 +45,21 @@ class ImageAssets {
 
   String get nextExerciseArrow =>
       "${_basicPath}nextExerciseArrow/nextExerciseArrow.png";
-  String get lifeIcon => "${_basicPath}tabBar/lifeIcon.png";
-  String get lifeIconEmpty => "${_basicPath}tabBar/lifeIconEmpty.png";
+  String get lifeIcon => "${_basicPath}navBar/heartFilled.png";
+  String get lifeIconEmpty => "${_basicPath}navBar/heartEmpty.png";
+  String get backArrow => "${_basicPath}navBar/backArrow.png";
   String get sadFace => "${_basicPath}/sadFace.png";
   String get happyFace => "${_basicPath}/happyFace.png";
-  String get profileIcon => "${_basicPath}tabBar/profile_icon.png";
-  String get rankingIcon => "${_basicPath}tabBar/ranking_icon.png";
-  String get trailIcon => "${_basicPath}tabBar/trail_icon.png";
+  String get profileEmpty => "${_basicPath}tabBar/profileEmpty.png";
+  String get profileGradient => "${_basicPath}tabBar/profileGradient.png";
+  String get trophyGradient => "${_basicPath}tabBar/trophyGradient.png";
+  String get trophyEmpty => "${_basicPath}tabBar/trophyEmpty.png";
+  String get trailEmpty => "${_basicPath}tabBar/trailEmpty.png";
+  String get trailGradient => "${_basicPath}tabBar/trailGradient.png";
   String get googleIcon => "${_basicPath}google_icon.png";
-  String get camera_button => "${_basicPath}camera_button/camera_button.png";
-  String get edit_button => "${_basicPath}edit_button/edit_button.png";
+  String get edit_button => "${_basicPath}profileScreen/edit_button.png";
   String get background_login => "${_basicPath}background_login/background_login.png";
   String get background_home => "${_basicPath}background_home/camada_azul.png";
+  String get profileCameraButton => "${_basicPath}profileScreen/camera_button.png";
+  String get profileEmptyPhoto => "${_basicPath}profileScreen/empty_photo.png";
 }

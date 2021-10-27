@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
@@ -103,28 +104,49 @@ class _RankingScreenState extends State<RankingScreen> {
 
   Widget createUnllogedBody(BuildContext context, Size screenSize) {
     return Container(
+      width: screenSize.width * 0.8,
       height: screenSize.height,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "É necessário fazer o login",
+            "Faça login para ver a pontuação de outros jogadores!",
             style: TextStyle(
               color: Colors.black,
-              fontSize: 22,
+              fontSize: 24,
               fontFamily: "Nunito",
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
             ),
+            textAlign: TextAlign.center
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 40),
           Container(
-            width: screenSize.width * 0.25,
+            width: screenSize.width * 0.8,
             height: screenSize.height * 0.1,
-            child: TextButton(child: Text("Entrar",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w800, color: HexColor.fromHex('E97070'), fontSize: 18)),
-              onPressed: () => widget.selectNewPage(HomePages.Profile)
-            )
+            child: ExerciseButton(
+              child: Center(
+                child: Text(
+                  "Entrar",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 22,
+                    fontFamily: 'Nunito',
+                  ),
+                ),
+              ),
+              size: 25,
+              color: HexColor.fromHex(
+                  "#93CAFA"), //Colors.white, //Color(0xFFCA3034),
+              onPressed: () {
+                widget.selectNewPage(HomePages.Profile);
+              },
+            ),
+            // child: ExerciseButton(child: Text("Entrar",
+            //   textAlign: TextAlign.center,
+            //   style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w800, color: HexColor.fromHex('E97070'), fontSize: 18)),
+            //   onPressed: () => widget.selectNewPage(HomePages.Profile)
+            // )
           )
         ],
       ),

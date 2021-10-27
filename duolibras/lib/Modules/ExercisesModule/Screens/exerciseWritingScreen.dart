@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/inputAnswerWidget.dart';
@@ -72,69 +73,83 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
     return SingleChildScrollView(
       physics: isKeyboardActive ? null : NeverScrollableScrollPhysics(),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+      child: Stack(
         children: [
-          Container(
-              height: containerSize.height * 0.10,
-              child: QuestionWidget(exercise.question ?? "")),
-          SizedBox(
-            height: containerSize.height * 0.05,
-          ),
-          Container(
-              height: containerSize.height * 0.35,
-              width: containerSize.width * 0.54,
-              child: Midiawidget(exercise.mediaUrl)),
-          SizedBox(
-            height: containerSize.height * 0.05,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            Container(
+                height: containerSize.height,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        Constants.imageAssets.background_home),
+                    fit: BoxFit.none,
+                  ),
+                ),
+              ),
+            Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                  height: containerSize.height * 0.1,
-                  child: InputAnswerWidget(
-                      inputController,
-                      _state == ExerciseScreenState.NotAnswered,
-                      "Sua Resposta")),
-              SizedBox(height: containerSize.height * 0.05),
+                  height: containerSize.height * 0.10,
+                  child: QuestionWidget(exercise.question ?? "")),
+              SizedBox(
+                height: containerSize.height * 0.05,
+              ),
               Container(
-                  height: containerSize.height * 0.08,
-                  width: containerSize.width * 0.7,
-                  child: ExerciseButton(
-                    child: Center(
-                      child: Text(
-                        "Verificar",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 22,
-                          fontFamily: 'Gameplay',
+                  height: containerSize.height * 0.35,
+                  width: containerSize.width * 0.54,
+                  child: Midiawidget(exercise.mediaUrl)),
+              SizedBox(
+                height: containerSize.height * 0.05,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                      height: containerSize.height * 0.1,
+                      child: InputAnswerWidget(
+                          inputController,
+                          _state == ExerciseScreenState.NotAnswered,
+                          "Sua Resposta")),
+                  SizedBox(height: containerSize.height * 0.05),
+                  Container(
+                      height: containerSize.height * 0.08,
+                      width: containerSize.width * 0.7,
+                      child: ExerciseButton(
+                        child: Center(
+                          child: Text(
+                            "Verificar",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 22,
+                              fontFamily: 'Gameplay',
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    size: 25,
-                    color: (didAnswerCorrect == null)
-                        ? Colors.grey
-                        : didAnswerCorrect
-                            ? Colors.green
-                            : Colors
-                                .red, //Colors.white, //Color(0xFFCA3034),
-                    onPressed: () {
-                      if (_state == ExerciseScreenState.DidAnswer) return;
-                      setState(() {
-                        _state = ExerciseScreenState.DidAnswer;
-                        didAnswerCorrect = widget._viewModel
-                            .isAnswerCorrect(
-                                inputController.text, widget._exercise.id);
-                        widget._viewModel.showNextArrow();
-                      });
-                    },
-                  )),
+                        size: 25,
+                        color: (didAnswerCorrect == null)
+                            ? Colors.grey
+                            : didAnswerCorrect
+                                ? Colors.green
+                                : Colors
+                                    .red, //Colors.white, //Color(0xFFCA3034),
+                        onPressed: () {
+                          if (_state == ExerciseScreenState.DidAnswer) return;
+                          setState(() {
+                            _state = ExerciseScreenState.DidAnswer;
+                            didAnswerCorrect = widget._viewModel
+                                .isAnswerCorrect(
+                                    inputController.text, widget._exercise.id);
+                            widget._viewModel.showNextArrow();
+                          });
+                        },
+                      )),
+                ],
+              ),
             ],
           ),
-        ],
-      ),
+        ]),
     );
   }
 }
