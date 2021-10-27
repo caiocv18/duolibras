@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/Launch/launchViewModel.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
@@ -41,21 +42,37 @@ class _LaunchScreenState extends State<LaunchScreen> {
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
       body: 
         SafeArea(
-          child: 
-            Center(
-                child: 
-                 Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                      Text("Preparando o ambiente...", 
-                      style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700, fontSize: 20)),
-                    SizedBox(height: 15),
-                    CircularProgressIndicator(color: Colors.black)
-                  ],
-                )
-            ),
-          ),
-      );
+          child: LayoutBuilder(builder: (ctx, constraint) {
+                return SingleChildScrollView(
+                  child: Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: 
+                    [
+                      Container(
+                        height: constraint.maxHeight,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                                Constants.imageAssets.background_home),
+                            fit: BoxFit.none,
+                          ),
+                        ),
+                      ),
+                      Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                          Text("Preparando o ambiente...", 
+                          style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700, fontSize: 20)),
+                        SizedBox(height: 15),
+                        CircularProgressIndicator(color: Colors.black)
+                      ],
+                    )
+                    ],
+                  ),
+                );
+          })
+      ));
   }
     
 }

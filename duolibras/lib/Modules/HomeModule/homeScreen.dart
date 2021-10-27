@@ -4,11 +4,15 @@ import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
-import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
 import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 import 'package:duolibras/Modules/RankingModule/rankingScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+
+enum HomePages {
+  Ranking,
+  Home, 
+  Profile
+}
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -23,8 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<NavigatorState> navigatorKey =
       new GlobalKey<NavigatorState>();
 
-  var _pages = [
-    RankingScreen(),
+  late var _pages = [
+    RankingScreen(_setupNewPage),
     LearningScreen(LearningViewModel()),
     ProfilePage()
   ];
@@ -69,7 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
             type: BottomNavigationBarType.fixed,
             onTap: (index) {
-              // MainRouter.instance.navigatorKey.currentState!.maybePop();
               setState(() => _page = _pages[index]);
               _currentIndex = index;
             },
@@ -100,12 +103,35 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _setupNewPage(HomePages selectedPage) {
+    switch (selectedPage) {
+      case HomePages.Profile:
+        setState(() {
+          _page = _pages[2];
+          _currentIndex = 2;
+        });
+        break;
+      case HomePages.Ranking:
+        setState(() {
+          _page = _pages[0];
+          _currentIndex = 0;
+        });
+        break;
+      case HomePages.Home:
+        setState(() {
+          _page = _pages[1];
+          _currentIndex = 1;
+        });
+        break;
+    }
+  }
+
   Future loadingNewLearningScreen(bool newValue) {
     return Future.delayed(Duration(seconds: 1)).then((value) => {
-          setState(() {
-            _changeEnvironment(newValue);
-          })
-        });
+      setState(() {
+        _changeEnvironment(newValue);
+      })
+    });
   }
 
   void _changeEnvironment(bool newValue) {
