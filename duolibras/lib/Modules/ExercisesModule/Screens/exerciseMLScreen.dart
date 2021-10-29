@@ -35,11 +35,10 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
 
   @override
   void initState() {
-    super.initState();
-
     widget.handleNextExercise = () {
       _submitAnswer(this.context);
     };
+    super.initState();
   }
 
   @override
@@ -47,9 +46,11 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     return Scaffold(
          backgroundColor: Color.fromRGBO(234, 234, 234, 1),
          body: SafeArea(
+                bottom: false,
                 child: LayoutBuilder(builder: (ctx, constraint) {
-                  return SingleChildScrollView(child: 
-                    Stack(children: [
+                  return Stack(
+                    children: 
+                    [
                       Container(
                           height: constraint.maxHeight,
                           width: double.infinity,
@@ -61,11 +62,25 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                             ),
                           ),
                         ),
-                      _showingCamera
-                      ? _cameraBody(widget._exercise, Size(constraint.maxWidth, constraint.maxHeight), context)
-                      : _buildOnboardingBody(widget._exercise, widget._viewModel,
-                          Size(constraint.maxWidth, constraint.maxHeight), context)
-                    ])
+                      SingleChildScrollView(child: 
+                      Stack(children: [
+                        // Container(
+                        //     height: constraint.maxHeight,
+                        //     width: double.infinity,
+                        //     decoration: BoxDecoration(
+                        //       image: DecorationImage(
+                        //         image: AssetImage(
+                        //             Constants.imageAssets.background_home),
+                        //         fit: BoxFit.none,
+                        //       ),
+                        //     ),
+                        //   ),
+                        _showingCamera
+                        ? _cameraBody(widget._exercise, Size(constraint.maxWidth, constraint.maxHeight), context)
+                        : _buildOnboardingBody(widget._exercise, widget._viewModel,
+                            Size(constraint.maxWidth, constraint.maxHeight), context)
+                      ])
+                    )],
                   );
                 })
               ));

@@ -35,8 +35,6 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
 
   @override
   void initState() {
-    super.initState();
-
     widget.handleNextExercise = () {
       handleSubmitAnswer(
         answerPicked, 
@@ -45,6 +43,8 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
         this.context
       );
     };
+    
+    super.initState();
   }
 
   @override
@@ -54,22 +54,22 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
          backgroundColor: Color.fromRGBO(234, 234, 234, 1),
          body: SafeArea(
                 child: LayoutBuilder(builder: (ctx, constraint) {
-                  return SingleChildScrollView(child:  
-                  Stack(
+                  return Stack(
                     children: [
                       Container(
-                          height: constraint.maxHeight,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                  Constants.imageAssets.background_home),
-                              fit: BoxFit.none,
-                            ),
+                        height: constraint.maxHeight,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                                Constants.imageAssets.background_home),
+                            fit: BoxFit.none,
                           ),
                         ),
-                      _buildBody(widget._exercise, widget._viewModel, Size(constraint.maxWidth, constraint.maxHeight), context)
-                    ]),
+                      ),
+                      SingleChildScrollView(child:  
+                    _buildBody(widget._exercise, widget._viewModel, Size(constraint.maxWidth, constraint.maxHeight), context),
+                    )],
                   );
                 })
         ));

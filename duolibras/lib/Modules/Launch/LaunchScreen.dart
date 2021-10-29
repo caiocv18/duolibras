@@ -31,8 +31,7 @@ class _LaunchScreenState extends State<LaunchScreen> with SingleTickerProviderSt
 
   @override
   void initState() {
-    _animationController =
-        new AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _animationController = new AnimationController(vsync: this, duration: Duration(seconds: 1));
     _animationController.addListener(() => setState(() {}));
     _animationController.repeat();
     getUser();

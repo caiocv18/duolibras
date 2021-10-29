@@ -24,8 +24,9 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
 
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance?.addObserver(this);
+
+    super.initState();
   }
 
   @override

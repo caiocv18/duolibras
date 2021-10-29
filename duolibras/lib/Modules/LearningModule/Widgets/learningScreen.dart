@@ -51,12 +51,8 @@ class _LearningScreenState extends State<LearningScreen>with SingleTickerProvide
 
   @override
   initState() {
-    super.initState();
-
     animationController = AnimationController(vsync: this, duration: Duration(seconds: 0), animationBehavior: AnimationBehavior.normal);
     animation = Tween(begin: 0.0, end: 1.0).animate(animationController);
-
-    
 
     animation.addListener(() {
       setState(() {
@@ -80,6 +76,8 @@ class _LearningScreenState extends State<LearningScreen>with SingleTickerProvide
           isLoadingPath = false;
       });
     }
+
+    super.initState();
   }
 
   @override

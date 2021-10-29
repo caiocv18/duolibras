@@ -27,13 +27,13 @@ class _ErrorScreenState extends State<ErrorScreen> {
 
   @override
   void initState() {
-    super.initState();
-
     widget.changeScreenState = (state) {
       setState(() {
         this.state = state;
       });
     };
+
+    super.initState();
   }
 
   @override

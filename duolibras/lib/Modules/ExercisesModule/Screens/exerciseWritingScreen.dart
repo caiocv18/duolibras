@@ -28,13 +28,10 @@ class ExerciseWritingScreen extends ExerciseStateful {
 class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
   ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
   var didAnswerCorrect = null;
-  var isKeyboardActive = false;
   final inputController = TextEditingController();
 
   @override
   void initState() {
-    super.initState();
-
     widget.handleNextExercise = () {
       handleSubmitAnswer(inputController.text, widget._exercise.correctAnswer,
           widget._exercise.id, this.context);
@@ -42,10 +39,11 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
 
     final keyboardVisibilityController = KeyboardVisibilityController();
     keyboardVisibilityController.onChange.listen((bool visible) {
-      setState(() {
-        isKeyboardActive = visible;
-      });
+      // setState(() {
+      // });
     });
+
+        super.initState();
   }
 
   void handleSubmitAnswer(String answer, String correctAnswer,
@@ -64,28 +62,45 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
     return Scaffold(
         backgroundColor: Color.fromRGBO(234, 234, 234, 1),
         body: SafeArea(
-            child: _buildBody(
-                widget._exercise, widget._viewModel, containerSize, context)
+            bottom: false,
+            child: Stack(
+              children: [
+                Container(
+                  height: containerSize.height,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(Constants.imageAssets.background_home),
+                      fit: BoxFit.none,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: containerSize.height,
+                  width: double.infinity,
+                  child: _buildBody(
+                    widget._exercise, widget._viewModel, containerSize, context),
+                )],
+            )
         ));
   }
 
   Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
     return SingleChildScrollView(
-      physics: isKeyboardActive ? null : NeverScrollableScrollPhysics(),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       child: Stack(
         children: [
-            Container(
-                height: containerSize.height,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                        Constants.imageAssets.background_home),
-                    fit: BoxFit.none,
-                  ),
-                ),
-              ),
+            // Container(
+            //     height: containerSize.height,
+            //     width: double.infinity,
+            //     decoration: BoxDecoration(
+            //       image: DecorationImage(
+            //         image: AssetImage(
+            //             Constants.imageAssets.background_home),
+            //         fit: BoxFit.none,
+            //       ),
+            //     ),
+            //   ),
             Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

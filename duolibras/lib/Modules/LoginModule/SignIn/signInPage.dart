@@ -17,7 +17,7 @@ class SignInPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-      appBar: AppBarWidget("Perfil", longpressHandler: null, backButtonPressed: () {
+      appBar: AppBarWidget("Cadastro", longpressHandler: null, backButtonPressed: () {
         Navigator.of(context).pop();
       }),
       body:

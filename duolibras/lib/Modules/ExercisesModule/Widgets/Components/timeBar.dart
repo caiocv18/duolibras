@@ -20,9 +20,9 @@ class _TimeBarState extends State<TimeBar> {
 
   @override
   void initState() {
-    super.initState();
-
     _startTimer();
+
+    super.initState();
   }
 
   @override

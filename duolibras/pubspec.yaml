@@ -47,8 +47,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/model.tflite
-    - assets/labels.txt
     - assets/images/moduleCompleted.png
     - assets/images/happyFace.png
     - assets/images/sadFace.png

@@ -54,9 +54,9 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
 
   @override
   void initState() {
-    super.initState();
-
     _showContentTabBar = widget.tabType == TabType.ContentBar;
+
+    super.initState();
   }
 
   @override

@@ -11,7 +11,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   late var appBar = AppBar(
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        foregroundColor: HexColor.fromHex("4982F6"),
         title: Container(
             child: GradientText(
                 _title,
@@ -22,9 +22,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
         ),
-      automaticallyImplyLeading: false,
-      leading: _buildBackButton(),
-      leadingWidth: 82,
+      automaticallyImplyLeading: true,
+      // leading: _buildBackButton(),
+      // leadingWidth: 82,
       actions: [GestureDetector(child: Container(width: 50, height: 30, color: Colors.transparent), onLongPress: () {
         if (longpressHandler != null)
            longpressHandler!();
