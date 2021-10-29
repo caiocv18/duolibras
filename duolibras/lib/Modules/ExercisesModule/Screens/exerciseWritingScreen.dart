@@ -64,6 +64,7 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
         body: SafeArea(
             bottom: false,
             child: Stack(
+              alignment: AlignmentDirectional.topCenter,
               children: [
                 Container(
                   height: containerSize.height,

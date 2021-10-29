@@ -53,8 +53,10 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
     return Scaffold(
          backgroundColor: Color.fromRGBO(234, 234, 234, 1),
          body: SafeArea(
+                bottom: false,
                 child: LayoutBuilder(builder: (ctx, constraint) {
                   return Stack(
+                    alignment: AlignmentDirectional.topCenter,
                     children: [
                       Container(
                         height: constraint.maxHeight,

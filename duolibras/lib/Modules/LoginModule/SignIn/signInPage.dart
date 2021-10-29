@@ -26,9 +26,8 @@ class SignInPage extends StatelessWidget {
               bottom: false,
               child: 
               LayoutBuilder(builder: (ctx, constraint) {
-                return SingleChildScrollView(
-                  child: Stack(
-                    children: 
+                return Stack(
+                  children: 
                     [
                       Container(
                         height: constraint.maxHeight,
@@ -41,7 +40,8 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Container(
+                      SingleChildScrollView(
+                      child: Container(
                         height: constraint.maxHeight,
                         color: Colors.transparent,
                         child: Column(
@@ -71,8 +71,8 @@ class SignInPage extends StatelessWidget {
                           ],
                         ),
                       ),
-                    ]
-                  ),
+                    ),
+                  ]
                 );
               })
             );

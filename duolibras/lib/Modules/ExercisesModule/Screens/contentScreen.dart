@@ -33,14 +33,6 @@ class _ContentScreenState extends State<ContentScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    // final mediaQuery = MediaQuery.of(context);
-    // final appBarHeight = ExerciseAppBarWidget.appBarHeight;
-    // final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    // final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop);
-    // final containerSize = Size(mediaQuery.size.width, containerHeight);
-
-    // final pages = _buildPages(containerSize);
     return Scaffold(
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
       body: SafeArea(
@@ -49,8 +41,8 @@ class _ContentScreenState extends State<ContentScreen> {
           final pages = _buildPages(Size(constraint.maxWidth, constraint.maxHeight));
 
           return Stack(
+            alignment: AlignmentDirectional.center,
             children: 
-            
               [
                 Container(
                           height: constraint.maxHeight,

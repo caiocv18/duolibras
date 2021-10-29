@@ -47,33 +47,33 @@ class _RankingScreenState extends State<RankingScreen> {
       sortUsersRanking(userModel.user);
 
       return 
-      SafeArea(child: 
-        LayoutBuilder(builder: (ctx, constraint) {
-          return SingleChildScrollView(
-            child: Stack(
-              alignment: AlignmentDirectional.center,
-              children: 
-                [
-                  Container(
-                    height: constraint.maxHeight,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                            Constants.imageAssets.background_home),
-                        fit: BoxFit.none,
-                      ),
-                    ),
+      SafeArea(
+        bottom: false,
+        child: LayoutBuilder(builder: (ctx, constraint) {
+          return Stack(
+            alignment: AlignmentDirectional.center,
+            children:
+            [
+              Container(
+                height: constraint.maxHeight,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        Constants.imageAssets.background_home),
+                    fit: BoxFit.none,
                   ),
-                  Container(
-                      height: constraint.maxHeight,
-                      color: Colors.transparent,
-                      child: SharedFeatures.instance.isLoggedIn
-                          ? createRankingBody(context, constraint.maxHeight)
-                          : createUnllogedBody(context, Size(constraint.maxWidth, constraint.maxHeight))
-                  ),
-              ]
-            ),
+                ),
+              ),
+              SingleChildScrollView(
+              child: Container(
+                  height: constraint.maxHeight,
+                  color: Colors.transparent,
+                  child: SharedFeatures.instance.isLoggedIn
+                      ? createRankingBody(context, constraint.maxHeight)
+                      : createUnllogedBody(context, Size(constraint.maxWidth, constraint.maxHeight))
+              ),
+            ),]
           );
         })
       );
