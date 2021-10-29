@@ -62,8 +62,9 @@ class _TimeBarState extends State<TimeBar> {
 
   @override
   void dispose() {
-    super.dispose();
     widget._timer.cancel();
+    
+    super.dispose();
   }
 
 }

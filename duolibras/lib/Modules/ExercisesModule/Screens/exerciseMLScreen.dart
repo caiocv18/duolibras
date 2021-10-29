@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
+import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/boundingBox.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/timeBar.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
@@ -30,6 +31,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   var _isRightAnswer = false;
   final completer = Completer<void>();
   late double totalTime = widget._exercise.correctAnswer.split('').length * 15.0;
+  final boundingBoxKey = GlobalKey();
 
   @override
   void initState() {
@@ -159,16 +161,17 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                   width: containerSize.width * 0.89,
                   height: containerSize.height * 0.63,
                   child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20.0),
-                        topRight: Radius.circular(20.0),
-                        bottomRight: Radius.circular(20.0),
-                        bottomLeft: Radius.circular(20.0),
-                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
                       child: Transform.scale(
                           scale: scale,
                           child:
-                              CameraPreview(widget._viewModel.getCamera())))))),
+                              CameraPreview(widget._viewModel.getCamera()
+                          )
+                      )
+                  )
+              )
+          )
+      ),
       TimeBar(
           Size(containerSize.width * 0.93, containerSize.height * 0.04),
           totalTime,
@@ -176,7 +179,13 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
           () {
         widget._viewModel.isAnswerCorrect("", widget._exercise.id);
         _finishExercise(false);
-      })
+      }),
+       Positioned(
+        top: 200,
+        width: 180,
+        left: 200,
+        height: 200,
+        child: BoundingBox(key: boundingBoxKey)),
     ]);
   }
 
@@ -266,7 +275,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   }
 
   void _startCamera() {
-    widget._viewModel.initializeCamera().then((value) => completer.complete());
+    widget._viewModel.initializeCamera(boundingBoxKey).then((value) => completer.complete());
 
     widget._viewModel.getMlModelStream().listen((value) {
       //Update results on screen

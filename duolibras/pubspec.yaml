@@ -38,6 +38,7 @@ dependencies:
   smooth_page_indicator: ^1.0.0+2
   modal_bottom_sheet: ^2.0.0
   download_assets: ^2.0.0
+  image: ^3.0.8
   
 dev_dependencies:
   flutter_test:
