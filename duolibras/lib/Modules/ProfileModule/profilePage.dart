@@ -120,13 +120,13 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(children: [
       Text(_getLevelTextByProgress(progress / 100),
           style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black)),
+              fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w600, color: Colors.black)),
       SizedBox(
         height: 4,
       ),
-      Text("${(progress * 100).toStringAsFixed(2)} %",
+      Text("${(progress * 100).toStringAsFixed(2)}%",
           style: TextStyle(
-              fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black)),
+              fontSize: 14, fontFamily: "Nunito", fontWeight: FontWeight.w500, color: Colors.black)),
     ]);
   }
 

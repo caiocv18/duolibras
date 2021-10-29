@@ -29,8 +29,8 @@ class _CustomTextfieldState extends State<CustomTextfield> {
       return Container(
         width: constraint.maxWidth,
         child: TextField(
+          style: TextStyle(fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w500),
           readOnly: !isEditing,
-          showCursor: false,
           focusNode: focusNode,
           autofocus: false,
           textAlign: TextAlign.center,
