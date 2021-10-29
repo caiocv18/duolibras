@@ -42,7 +42,7 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
                                 fit: BoxFit.cover,
                                 image: _getProfileImage()
                       ),
-                      border: Border.all(width: 3, color: HexColor.fromHex("4982F6"))
+                      border: Border.all(width: 4, color: HexColor.fromHex("4982F6"))
                   )
                 ),
                 Positioned(child: cameraButton(context), bottom: -15)
