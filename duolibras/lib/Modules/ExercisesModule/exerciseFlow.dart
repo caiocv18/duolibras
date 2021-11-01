@@ -106,6 +106,7 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
 
 
   Route _onGenerateRoute(RouteSettings settings) {
+    viewModel = locator<ExerciseViewModel>(param1: Tuple2(widget.exercises, widget.module), param2: this);
     late Widget page;
     switch (settings.name) {
       case ExerciseFlow.routeExerciseMultiChoicePage:
@@ -171,7 +172,7 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
                     backgroundColor: Colors.white,
                     child: LayoutBuilder(builder: (ctx, constraint) {
                       return Container(
-                        height: constraint.maxHeight * 0.3,
+                        height: constraint.maxHeight * 0.37,
                         child: Center(
                             child: Column(
                               children: [
@@ -214,26 +215,6 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
                     }),
                   );
             }) ??
-              // return AlertDialog(
-              //   title: const Text('Tem certeza?'),
-              //   content: const Text(
-              //       'Se você sair todo seu progesso vai ser perdido.'),
-              //   actions: [
-              //     TextButton(
-              //       onPressed: () {
-              //         Navigator.of(context).pop(true);
-              //       },
-              //       child: const Text('Sair'),
-              //     ),
-              //     TextButton(
-              //       onPressed: () {
-              //         Navigator.of(context).pop(false);
-              //       },
-              //       child: const Text('Continuar'),
-              //     ),
-              //   ],
-              // );
-            // }) ??
         false;
   }
 

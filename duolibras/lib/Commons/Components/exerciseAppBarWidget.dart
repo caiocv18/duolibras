@@ -147,7 +147,7 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
 
   Widget _buildExitButton(Size containerSize) {
     return Container(
-      width: containerSize.width * 0.21,
+      width: containerSize.width * 0.22,
       child: OutlinedButton(
           onPressed: () => widget._onExitPressed(),
           child: Text("Desistir",

@@ -28,8 +28,8 @@ class _ImagesMultiChoiceState extends State<ImagesMultiChoice> {
           physics: NeverScrollableScrollPhysics(),
           padding: EdgeInsets.all(25),
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: size.height * 0.189,
-              childAspectRatio: 3 / 2,
+              maxCrossAxisExtent: size.width/2,
+              childAspectRatio: 1.07,
               crossAxisSpacing: 15,
               mainAxisSpacing: 15),
           children: [

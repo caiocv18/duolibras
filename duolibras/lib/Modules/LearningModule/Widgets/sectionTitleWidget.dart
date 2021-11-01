@@ -1,6 +1,7 @@
 
 import 'package:duolibras/Services/Models/section.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 class SectionTitleWidget extends StatefulWidget {
   final ScrollController _scrollController;
@@ -42,29 +43,38 @@ class _SectionTitleWidgetState extends State<SectionTitleWidget> {
         }
       }
     });
-
-    Future.delayed(Duration(milliseconds: 1000)).then((value) => {
-        setState(() {
-          try {
-            currentSection = widget._allSections.first.title;
-          } catch (e) {
-            currentSection = "";
-          }
-        })
-      });
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
-      child: Text(currentSection,
+      child: Text(currentSection.isEmpty ? _getCurrentText() : currentSection,
         style: TextStyle(
         color: Colors.black,
         fontSize: 22,
         fontFamily: "Nunito",
         fontWeight: FontWeight.w600)),
       );
+  }
+
+  String _getCurrentText() {
+    String currentSection;
+
+    try {
+      currentSection = widget._allSections.first.title;
+    } catch (e) {
+      currentSection = "";
+    }
+
+    return currentSection;
+  }
+
+  @override
+  void dispose() {
+    widget._scrollController.removeListener(() { });
+    widget._scrollController.dispose();
+    super.dispose();
   }
 
 }

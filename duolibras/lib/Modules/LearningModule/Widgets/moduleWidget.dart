@@ -94,6 +94,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
             child: 
             GestureDetector(
                       onTap: () {
+                        if (widget._isAvaiable)
                         widget._viewModel.didSelectModule(widget.sectionID,
                             widget._module, context, _handleCompleteModule);
                       },

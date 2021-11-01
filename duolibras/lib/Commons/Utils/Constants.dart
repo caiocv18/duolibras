@@ -48,8 +48,9 @@ class ImageAssets {
   String get lifeIcon => "${_basicPath}navBar/heartFilled.png";
   String get lifeIconEmpty => "${_basicPath}navBar/heartEmpty.png";
   String get backArrow => "${_basicPath}navBar/backArrow.png";
-  String get sadFace => "${_basicPath}/sadFace.png";
+  String get sadFace => "${_basicPath}/feedbackScreen/sadFace.png";
   String get happyFace => "${_basicPath}/happyFace.png";
+  String get happyFeedback => "${_basicPath}/feedbackScreen/happyFeedback.png";
   String get profileEmpty => "${_basicPath}tabBar/profileEmpty.png";
   String get profileGradient => "${_basicPath}tabBar/profileGradient.png";
   String get trophyGradient => "${_basicPath}tabBar/trophyGradient.png";

@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       create: (ctx) => locator<UserModel>(),
       child: 
         MaterialApp(
-          title: 'Flutter Demo',
+          title: 'Bilibras',
           theme: ThemeData(
             primarySwatch: Colors.blue
           ),

@@ -16,6 +16,7 @@ class SignInPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
       appBar: AppBarWidget("Cadastro", longpressHandler: null, backButtonPressed: () {
         Navigator.of(context).pop();
@@ -41,35 +42,31 @@ class SignInPage extends StatelessWidget {
                         ),
                       ),
                       SingleChildScrollView(
-                      child: Container(
-                        height: constraint.maxHeight,
-                        color: Colors.transparent,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(height: constraint.maxHeight * 0.08),
-                            Container(
-                                height: constraint.maxHeight * 0.10,
-                                child: QuestionWidget(
-                                    "Bem-vindo ao Duolibras! \bVamos começar? ")),
-                            SizedBox(height: constraint.maxHeight * 0.12),
-                            Container(
-                                child: FirebaseSignInWidget(viewModel),
-                                width: constraint.maxWidth * 0.8),
-                            SizedBox(height: constraint.maxHeight * 0.08),
-                            Container(
-                              child: AppleSignInWidget(viewModel),
-                              width: constraint.maxWidth * 0.8,
-                              height: constraint.maxHeight * 0.05,
-                            ),
-                            SizedBox(height: 15.0),
-                            Container(
-                              child: GoogleSignInButton(viewModel),
-                              width: constraint.maxWidth * 0.8,
-                              height: constraint.maxHeight * 0.07,
-                            )
-                          ],
-                        ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(height: constraint.maxHeight * 0.08),
+                          Container(
+                              height: constraint.maxHeight * 0.10,
+                              child: QuestionWidget(
+                                  "Bem-vindo ao Duolibras! \bVamos começar? ")),
+                          SizedBox(height: constraint.maxHeight * 0.12),
+                          Container(
+                              child: FirebaseSignInWidget(viewModel),
+                              width: constraint.maxWidth * 0.8),
+                          SizedBox(height: constraint.maxHeight * 0.08),
+                          Container(
+                            child: AppleSignInWidget(viewModel),
+                            width: constraint.maxWidth * 0.8,
+                            height: 40,
+                          ),
+                          SizedBox(height: 15.0),
+                          Container(
+                            child: GoogleSignInButton(viewModel),
+                            width: constraint.maxWidth * 0.8,
+                            height: 60,
+                          )
+                        ],
                       ),
                     ),
                   ]

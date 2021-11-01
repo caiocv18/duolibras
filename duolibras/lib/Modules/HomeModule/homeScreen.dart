@@ -36,55 +36,40 @@ class _HomeScreenState extends State<HomeScreen> {
   late Widget _page = _pages[_currentIndex];
 
   Widget get bottomNavigationBar {
-    return Container(
-      height: 116,
-      child: Column(
-        children: [
-          Container(
-            height: 12,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [HexColor.fromHex("4982F6"), HexColor.fromHex("2CC4FC")]),
-            )
-          ),
-          Container(
-            child: BottomNavigationBar(
-              elevation: 15,
-              items: [
-                BottomNavigationBarItem(
-                    activeIcon: Image.asset(Constants.imageAssets.trophyGradient),
-                    icon: Image.asset(Constants.imageAssets.trophyEmpty),
-                    label: "Ranking",
-                ),
-                BottomNavigationBarItem(
-                    activeIcon: Image.asset(Constants.imageAssets.trailGradient), 
-                    icon: Image.asset(Constants.imageAssets.trailEmpty),
-                    label: "Trilha"
-                ),
-                BottomNavigationBarItem(
-                    activeIcon: Image.asset(Constants.imageAssets.profileGradient),
-                    icon: Image.asset(Constants.imageAssets.profileEmpty),
-                    label: "Perfil"
-                ),
-              ],
-              type: BottomNavigationBarType.fixed,
-              onTap: (index) {
-                setState(() => _page = _pages[index]);
-                _currentIndex = index;
-              },
-              selectedLabelStyle: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w500, fontSize: 14, color: HexColor.fromHex("4982F6")),
-              unselectedLabelStyle: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w500, color: Colors.grey, fontSize: 14),
-              currentIndex: _currentIndex,
-            ),
-          ),
-        ],
-      ),
-    );
+       return BottomNavigationBar(
+         elevation: 15,
+         items: [
+           BottomNavigationBarItem(
+               activeIcon: Image.asset(Constants.imageAssets.trophyGradient),
+               icon: Image.asset(Constants.imageAssets.trophyEmpty),
+               label: "Ranking",
+           ),
+           BottomNavigationBarItem(
+               activeIcon: Image.asset(Constants.imageAssets.trailGradient), 
+               icon: Image.asset(Constants.imageAssets.trailEmpty),
+               label: "Trilha"
+           ),
+           BottomNavigationBarItem(
+               activeIcon: Image.asset(Constants.imageAssets.profileGradient),
+               icon: Image.asset(Constants.imageAssets.profileEmpty),
+               label: "Perfil"
+           ),
+         ],
+         type: BottomNavigationBarType.fixed,
+         onTap: (index) {
+           setState(() => _page = _pages[index]);
+           _currentIndex = index;
+         },
+         selectedLabelStyle: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w500, fontSize: 14, color: HexColor.fromHex("4982F6")),
+         unselectedLabelStyle: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w500, color: Colors.grey, fontSize: 14),
+         currentIndex: _currentIndex,
+       );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
       appBar: AppBarWidget(_getCurrentTile(), longpressHandler: () {
         setState(() {
@@ -94,16 +79,53 @@ class _HomeScreenState extends State<HomeScreen> {
         loadingNewLearningScreen(isSwitched);
       }, backButtonPressed: null),
       bottomNavigationBar: bottomNavigationBar,
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : SafeArea(child: _page),
-    );
+      body: SafeArea(child: 
+        LayoutBuilder(builder: (BuildContext ctx, BoxConstraints constraint) {
+          return Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+              isLoading
+              ? _loadingPage(Size(constraint.maxWidth, constraint.maxHeight)) : _page,
+              Container(
+                height: 12,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [HexColor.fromHex("4982F6"), HexColor.fromHex("2CC4FC")]),
+                )
+              ),
+            ]
+          );
+        })
+      ));
+  
+  }
+
+  Widget _loadingPage(Size containerSize) {
+    return
+        Stack(
+            alignment: AlignmentDirectional.center,
+            children: 
+            [
+              Container(
+                height: containerSize.height,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        Constants.imageAssets.background_home),
+                    fit: BoxFit.none,
+                  ),
+                ),
+              ),
+              CircularProgressIndicator()
+          ],
+      );
   }
 
   void _setupNewPage(HomePages selectedPage) {
-    switch (selectedPage) {
-      case HomePages.Profile:
-       Navigator.push(
+  switch (selectedPage) {
+    case HomePages.Profile:
+      Navigator.push(
           context, MaterialPageRoute(builder: (context) => SignInPage()));
         break;
       default: break;

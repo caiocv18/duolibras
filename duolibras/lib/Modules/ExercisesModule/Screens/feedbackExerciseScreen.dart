@@ -1,6 +1,7 @@
 import 'package:duolibras/Commons/Components/baseScreen.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
@@ -32,23 +33,51 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _mediaQuery = MediaQuery.of(context);
+    // final _mediaQuery = MediaQuery.of(context);
 
-    final containerHeight = _mediaQuery.size.height -
-        AppBar().preferredSize.height -
-        _mediaQuery.padding.top -
-        _mediaQuery.padding.bottom;
+    // final containerHeight = _mediaQuery.size.height -
+    //     AppBar().preferredSize.height -
+    //     _mediaQuery.padding.top -
+    //     _mediaQuery.padding.bottom;
 
     return Scaffold(
-      body: _buildBody(Size(_mediaQuery.size.width, containerHeight), context),
-    );
+      backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+      body: SafeArea(
+            bottom: false,
+            child: LayoutBuilder(builder: (ctx, constraint) {
+              return Stack(
+                alignment: AlignmentDirectional.center,
+                children: 
+                [
+                  Container(
+                      height: constraint.maxHeight,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                              Constants.imageAssets.background_home),
+                          fit: BoxFit.none,
+                        ),
+                      ),
+                    ),
+                  SingleChildScrollView(child: 
+                    _buildBody(Size(constraint.maxWidth, constraint.maxHeight), context)
+                  )
+                ],
+              );
+            })
+          ));
+
+    // return Scaffold(
+    //   body: _buildBody(Size(_mediaQuery.size.width, containerHeight), context),
+    // );
   }
 
   Widget _createButtons(
       ExerciseViewModel viewModel, BuildContext ctx, Size containerSize) {
     final titleButton = widget.status == FeedbackStatus.Success
-        ? "Tentar Próxima dificuldade"
-        : "Tentara novamente";
+        ? "Tentar próximo nível"
+        : "Tentar novamente";
 
     return Column(children: [
       if (hasMoreExercises) ...[
@@ -119,8 +148,8 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
         : "Oh não, vamos práticar um pouco?";
 
     final imageName = widget.status == FeedbackStatus.Success
-        ? "assets/images/moduleCompleted.png"
-        : "assets/images/sadFace.png";
+        ? Constants.imageAssets.happyFeedback : Constants.imageAssets.sadFace;
+        
     return BaseScreen<ExerciseViewModel>(
       parameters: Tuple2(widget.exercisesAndModule, widget.delegate),
       onModelReady: (model) {
@@ -130,31 +159,28 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
           });
         });
       },
-      builder: (_, viewModel, __) => Container(
+      builder: (_, viewModel, __) => 
+      Container(
         width: double.infinity,
-        height: double.infinity,
-        color: Color.fromRGBO(234, 234, 234, 1),
-        child: SafeArea(
-            child: viewModel.state == ScreenState.Loading
-                ? _createLoadingWidget()
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                          height: containerSize.height * 0.08,
-                          width: containerSize.width * 0.95,
-                          child: QuestionWidget(msg)),
-                      SizedBox(height: containerSize.height * 0.05),
-                      Container(
-                          height: containerSize.height * 0.35,
-                          width: containerSize.width * 0.54,
-                          child:
-                              Image.asset("assets/images/moduleCompleted.png")),
-                      SizedBox(height: containerSize.height * 0.05),
-                      _createButtons(viewModel, ctx, containerSize),
-                      SizedBox(height: containerSize.height * 0.05),
-                    ],
-                  )),
+        child: viewModel.state == ScreenState.Loading
+            ? _createLoadingWidget()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      width: containerSize.width * 0.95,
+                      child: QuestionWidget(msg)),
+                  SizedBox(height: containerSize.height * 0.05),
+                  Container(
+                      height: containerSize.height * 0.35,
+                      width: containerSize.width * 0.54,
+                      child:
+                          Image.asset(imageName)),
+                  SizedBox(height: containerSize.height * 0.05),
+                  _createButtons(viewModel, ctx, containerSize),
+                  SizedBox(height: containerSize.height * 0.05),
+                ],
+              ),
       ),
     );
   }

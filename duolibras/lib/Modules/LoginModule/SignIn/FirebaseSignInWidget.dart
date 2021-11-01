@@ -52,7 +52,7 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
               SizedBox(height: 35.0),
               Container(
                   child: loginButton(context),
-                  height: containerSize.height * 0.05,
+                  height: 40,
                   width: containerSize.width * 0.8)
             ],
           ),
@@ -74,7 +74,7 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
                   fontSize: 22,
                   fontFamily: "Nunito",
                   fontWeight: FontWeight.w500),
-              textAlign: TextAlign.left),
+              textAlign: TextAlign.center),
         ),
         size: 20,
         color: HexColor.fromHex("93CAFA"));

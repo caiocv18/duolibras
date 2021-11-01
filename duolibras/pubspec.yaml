@@ -47,9 +47,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/moduleCompleted.png
+    - assets/images/feedbackScreen/
     - assets/images/happyFace.png
-    - assets/images/sadFace.png
     - lib/Services/Mock/
     - assets/images/nextExerciseArrow/
     - assets/images/navBar/

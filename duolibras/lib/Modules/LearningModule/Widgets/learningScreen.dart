@@ -89,7 +89,18 @@ class _LearningScreenState extends State<LearningScreen>with SingleTickerProvide
               return Stack(
                 alignment: AlignmentDirectional.topCenter,
                 children: [
-                  SingleChildScrollView(
+                  Container(
+                            height: constraints.maxHeight,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                    Constants.imageAssets.background_home),
+                                fit: BoxFit.none,
+                              ),
+                            ),
+                          ),
+                    SingleChildScrollView(
                     controller: scrollController,
                     child: 
                       _buildBody(context, viewModel, constraints.maxHeight)
@@ -109,7 +120,7 @@ class _LearningScreenState extends State<LearningScreen>with SingleTickerProvide
         children: [
           SizedBox(height: 20),
           Stack(children: [
-            _buildBackgroundImages(viewModel),
+            // _buildBackgroundImages(viewModel),
             if (isLoadingPath)
               AnimatedOpacity(
                 duration: Duration(milliseconds: 1200),

@@ -53,7 +53,7 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
     return Scaffold(
          backgroundColor: Color.fromRGBO(234, 234, 234, 1),
          body: SafeArea(
-                bottom: false,
+                // bottom: false,
                 child: LayoutBuilder(builder: (ctx, constraint) {
                   return Stack(
                     alignment: AlignmentDirectional.topCenter,
@@ -70,8 +70,9 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
                         ),
                       ),
                       SingleChildScrollView(child:  
-                    _buildBody(widget._exercise, widget._viewModel, Size(constraint.maxWidth, constraint.maxHeight), context),
-                    )],
+                        _buildBody(widget._exercise, widget._viewModel, Size(constraint.maxWidth, constraint.maxHeight), context),
+                      )
+                    ],
                   );
                 })
         ));
@@ -81,7 +82,7 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
     return exercise.category == ExercisesCategory.multipleChoicesText
         ? MultiChoicesWidget(exercise.answers ?? [], exercise.correctAnswer,
             (answer) {
-            if (_state == ExerciseScreenState.DidAnswer) return;
+            // if (_state == ExerciseScreenState.DidAnswer) return;
             widget._viewModel.isAnswerCorrect(answer, widget._exercise.id);
             setState(() {
               _state = ExerciseScreenState.DidAnswer;
@@ -100,12 +101,12 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
           });
   }
 
-  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel,Size containerSize, BuildContext ctx) {
+  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-            height: containerSize.height * 0.08,
+            // height: containerSize.height * 0.08,
             width: containerSize.width * 0.95,
             child: QuestionWidget(exercise.question ?? "")),
         SizedBox(height: containerSize.height * 0.05),
@@ -118,11 +119,11 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-                height: containerSize.height * 0.42,
+                height: containerSize.height * 0.6,
                 child: _createMultiChoiceWidget(exercise, ctx)),
           ],
         ),
-        SizedBox(height: containerSize.height * 0.05),
+        SizedBox(height: containerSize.height * 0.1),
       ],
     );
   }
