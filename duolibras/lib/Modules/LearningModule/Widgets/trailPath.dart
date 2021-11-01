@@ -18,60 +18,75 @@ class TrailPath extends CustomPainter {
       this.mainPath, this._animationController, this.colorForRows, this.index)
       : super(repaint: _animationController);
 
-
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.stroke
+      ..color = colorForRows.entries.elementAt(0).key
+      ..style = PaintingStyle.fill
       ..strokeWidth = 8.0;
 
     var initialPosition = 00.0;
 
+    canvas.drawCircle(Offset(size.width * 0.3, initialPosition), 9, paint);
+
+    lastPosition = _Position.Left;
     for (var i = 0; i < colorForRows.entries.length; i++) {
+      paint.style = PaintingStyle.stroke;
       paint.color = colorForRows.entries.elementAt(i).key;
       final numberOfRows = colorForRows.entries.elementAt(i).value;
 
-      initialPosition = drawPathLines(lastPosition, initialPosition, numberOfRows, canvas, paint, size);
+      // if (i + 1 != colorForRows.entries.length) {
+      //   final pathLine =
+      //       createNewModuleLine(initialPosition, size, lastPosition, canvas, [
+      //     colorForRows.entries.elementAt(i).key,
+      //     colorForRows.entries.elementAt(i + 1).key,
+      //   ])
+
+      initialPosition = drawPathLines(
+          lastPosition, initialPosition, numberOfRows, canvas, paint, size);
 
       if (i + 1 != colorForRows.entries.length) {
-        final pathLine =
+        final _ =
             createNewModuleLine(initialPosition, size, lastPosition, canvas, [
           colorForRows.entries.elementAt(i).key,
           colorForRows.entries.elementAt(i + 1).key,
         ]);
-        mainPath.extendWithPath(pathLine, const Offset(0, 0));
+        // mainPath.addPath(pathLine, const Offset(0, 0));
+        // mainPath.extendWithPath(pathLine, const Offset(0, 0));
       }
     }
 
     Paint paintball = Paint();
-    paintball.color = Colors.amber;
+    paintball.color = colorForRows.entries.last.key;
     paintball.strokeWidth = 8.0;
     paintball.style = PaintingStyle.fill;
 
     if (lastPosition != _Position.Right) {
       canvas.drawCircle(
-          Offset(size.width * 0.7, initialPosition), 12, paintball);
+          Offset((size.width * 0.7) - (size.width * 0.4), initialPosition),
+          9,
+          paintball);
     } else {
       canvas.drawCircle(
-          Offset(size.width * 0.3, initialPosition), 12, paintball);
+          Offset((size.width * 0.3) + (size.width * 0.4), initialPosition),
+          9,
+          paintball);
     }
 
+    paintball.color = Colors.amber;
     canvas.drawCircle(
-      ui.Offset(calculate(_animationController.value, index).dx,
-          calculate(_animationController.value, index).dy),
-      12.0,
-      paintball);
-
+        ui.Offset(calculate(_animationController.value, index).dx,
+            calculate(_animationController.value, index).dy),
+        12.0,
+        paintball);
   }
 
   double drawPathLines(_Position initialPosition, double initialHeight,
       int numberOfModules, Canvas canvas, Paint paint, Size size) {
-
     var shouldDrawLine = true;
     Path tempPath = Path();
     for (var i = 1; i <= numberOfModules; i++) {
-      shouldDrawLine = i != numberOfModules;
+      shouldDrawLine = true; //i != numberOfModules;
       if (initialPosition == _Position.Right) {
         Path p = createRightCurve(initialHeight, size, shouldDrawLine);
         // mainPath.addPath(p, const Offset(0, 0));
@@ -88,9 +103,10 @@ class TrailPath extends CustomPainter {
           initialPosition == _Position.Right ? _Position.Left : _Position.Right;
       initialHeight += 200;
     }
-    canvas.drawPath(tempPath, paint);
     mainPath.addPath(tempPath, const Offset(0, 0));
+    canvas.drawPath(tempPath, paint);
 
+    // mainPath.extendWithPath(tempPath, const Offset(0, 0));
     // if (isTheLast) {
     //   Path finalBall = Path();
     //   finalBall.moveTo(x, initialHeight - 200);
@@ -132,7 +148,7 @@ class TrailPath extends CustomPainter {
       path.extendWithPath(pathLine, const Offset(0, 0));
     }
 
-    mainPath.addPath(path, const Offset(0, 0));
+    // mainPath.extendWithPath(path, const Offset(0, 0));
 
     return path;
   }
@@ -171,11 +187,11 @@ class TrailPath extends CustomPainter {
 
   Offset calculate(value, pathIndex) {
     try {
-        ui.PathMetrics pathMetrics = mainPath.computeMetrics();
-        ui.PathMetric pathMetric = pathMetrics.elementAt(pathIndex);
-        value = pathMetric.length * value;
-        ui.Tangent pos = pathMetric.getTangentForOffset(value)!;
-        return pos.position;
+      ui.PathMetrics pathMetrics = mainPath.computeMetrics();
+      ui.PathMetric pathMetric = pathMetrics.elementAt(pathIndex);
+      value = pathMetric.length * value;
+      ui.Tangent pos = pathMetric.getTangentForOffset(value)!;
+      return pos.position;
     } catch (e) {
       return Offset(0, 0);
     }
@@ -194,5 +210,4 @@ class TrailPath extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
-
 }

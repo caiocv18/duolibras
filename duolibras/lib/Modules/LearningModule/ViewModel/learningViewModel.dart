@@ -16,6 +16,7 @@ import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/section.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -180,17 +181,17 @@ class LearningViewModel extends BaseViewModel
     if (level == module.maxProgress) {
       _getANumberExerciseFromModule(sectionID, module.id, 30, context)
           .then((exercises) {
-            if (exercises.isNotEmpty)
-            _navigateToExercisesModule(
-                sectionID, module, context, exercises, handler);
-          });
+        if (exercises.isNotEmpty)
+          _navigateToExercisesModule(
+              sectionID, module, context, exercises, handler);
+      });
     } else {
       _getExerciseFromModule(sectionID, module.id, level, context)
           .then((exercises) {
-            if (exercises.isNotEmpty)
-            _navigateToExercisesModule(
-                sectionID, module, context, exercises, handler);
-          });
+        if (exercises.isNotEmpty)
+          _navigateToExercisesModule(
+              sectionID, module, context, exercises, handler);
+      });
     }
   }
 
@@ -227,6 +228,29 @@ class LearningViewModel extends BaseViewModel
     }
   }
 
+  int shouldAnimatedTrail(BuildContext context) {
+    final userProvider = Provider.of<UserModel>(context, listen: false);
+    final idOfLastModuleIncremented = userProvider.idOfLastModuleIncremented;
+
+    if (idOfLastModuleIncremented == null) {
+      return -1;
+    }
+
+    final index = wrapperSectionPage
+        .getCurrentTrailIndexByModuleProgress(idOfLastModuleIncremented);
+
+    if (index == -1) {
+      return -1;
+    }
+    if (index == userProvider.user.trailSectionIndex) {
+      return -1;
+    }
+
+    userProvider.trailSectionIndex(index);
+    Service.instance.postUser(userProvider.user, false);
+
+    return index;
+  }
   // void disposeStreams() {
   //   _controller.close();
   //   _controllerModules.close();

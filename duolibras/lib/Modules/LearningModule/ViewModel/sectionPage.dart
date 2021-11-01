@@ -100,4 +100,9 @@ class WrapperSectionPage {
     }
     return null;
   }
+
+  int getCurrentTrailIndexByModuleProgress(String moduleID) {
+    final index = _modules.indexWhere((m) => m.id == moduleID);
+    return index;
+  }
 }

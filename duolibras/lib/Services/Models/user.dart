@@ -7,6 +7,9 @@ class User {
   List<SectionProgress> sectionsProgress = [];
   int currentProgress;
   String? imageUrl;
+  int trailSectionIndex = initialTrailSectionIndex;
+
+  static final initialTrailSectionIndex = -99;
 
   User(
       {required this.name,
@@ -16,12 +19,14 @@ class User {
       required this.imageUrl});
 
   factory User.fromMap(Map<String, dynamic> parsedJson, String id) {
-    return User(
+    final user = User(
         name: parsedJson["name"],
         email: parsedJson["email"],
         currentProgress: parsedJson["currentProgress"],
         imageUrl: parsedJson["imageUrl"],
         id: id);
+    user.trailSectionIndex = parsedJson["trailSectionIndex"];
+    return user;
   }
   @override
   bool operator ==(Object other) =>
@@ -34,6 +39,7 @@ class User {
       'name': name,
       'email': email,
       'currentProgress': currentProgress,
+      'trailSectionIndex': trailSectionIndex,
     };
     if (imageUrl != null) map["imageUrl"] = imageUrl;
     return map;
