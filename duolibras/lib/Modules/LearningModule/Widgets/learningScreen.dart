@@ -111,11 +111,11 @@ class _LearningScreenState extends State<LearningScreen>
                 alignment: AlignmentDirectional.topCenter,
                 children: [
                   SingleChildScrollView(
-                      controller: scrollController,
-                      child: _buildBody(
-                          context, viewModel, constraints.maxHeight)),
-                  SectionTitleWidget(scrollController, viewModel.allSections,
-                      viewModel.sectionsForModules)
+                    controller: scrollController,
+                    child: 
+                      _buildBody(context, viewModel, constraints.maxHeight)
+                  ),
+                  SectionTitleWidget(scrollController, viewModel.allSections, viewModel.sectionsForModules)
                 ],
               );
             }));
