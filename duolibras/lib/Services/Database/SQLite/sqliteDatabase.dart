@@ -22,7 +22,7 @@ class SQLiteDatabase extends DatabaseProtocol {
       onCreate: (db, version) {
         return db
             .execute(
-                'CREATE TABLE ${Constants.database.userTable}(id TEXT PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL, currentProgress INTEGER NOT NULL)')
+                'CREATE TABLE ${Constants.database.userTable}(id TEXT PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL, currentProgress INTEGER NOT NULL,trailSectionIndex INTEGER NOT NULL)')
             .then((_) => {
                   db.execute(
                       'CREATE TABLE ${Constants.database.sectionProgressTable}(id TEXT PRIMARY KEY, sectionId TEXT NOT NULL, progress INTEGER)')

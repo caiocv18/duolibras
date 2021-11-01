@@ -18,11 +18,26 @@ class UserModel extends BaseViewModel {
           currentProgress: _user!.currentProgress,
           imageUrl: _user!.imageUrl);
       user.sectionsProgress = _user!.sectionsProgress;
+      user.trailSectionIndex = _user!.trailSectionIndex;
       return user;
     }
 
     return User(
         name: "", email: ",", id: "", currentProgress: 0, imageUrl: null);
+  }
+
+  String? _idOfLastModuleIncremented;
+
+  String? get idOfLastModuleIncremented {
+    return _idOfLastModuleIncremented;
+  }
+
+  void _getIdOfLastModuleIncremented(ModuleProgress moduleProgress) {
+    if (moduleProgress.progress == moduleProgress.maxModuleProgress) {
+      _idOfLastModuleIncremented = moduleProgress.moduleId;
+      return;
+    }
+    _idOfLastModuleIncremented = null;
   }
 
   void setNewUser(User newUser) {
@@ -58,6 +73,12 @@ class UserModel extends BaseViewModel {
     }
   }
 
+  void trailSectionIndex(int index) {
+    if (_user != null) {
+      _user!.trailSectionIndex = index;
+    }
+  }
+
   SectionProgress? incrementModulesProgress(
       String sectionId, moduleID, int maxModuleProgress) {
     if (_user != null) {
@@ -78,15 +99,22 @@ class UserModel extends BaseViewModel {
 
         _user!.sectionsProgress[sectionIndex].modulesProgress[modulesIndex]
             .progress += 1;
+
+        _getIdOfLastModuleIncremented(_user!
+            .sectionsProgress[sectionIndex].modulesProgress[modulesIndex]);
+
         setState(ScreenState.Normal);
         return _user!.sectionsProgress[sectionIndex];
       }
 
-      _user!.sectionsProgress[sectionIndex].modulesProgress.add(ModuleProgress(
+      ModuleProgress newModule = ModuleProgress(
           id: UniqueKey().toString(),
           moduleId: moduleID,
           progress: 1,
-          maxModuleProgress: maxModuleProgress));
+          maxModuleProgress: maxModuleProgress);
+      _user!.sectionsProgress[sectionIndex].modulesProgress.add(newModule);
+
+      _getIdOfLastModuleIncremented(newModule);
       setState(ScreenState.Normal);
 
       return _user!.sectionsProgress[sectionIndex];
