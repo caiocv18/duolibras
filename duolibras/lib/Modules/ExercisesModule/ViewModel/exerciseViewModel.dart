@@ -237,8 +237,8 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
     return _cameraHelper.mlModel.tfLiteResultsController.stream;
   }
 
-  Future<void> initializeCamera() {
-    return _cameraHelper.initializeCamera();
+  Future<void> initializeCamera(GlobalKey key) {
+    return _cameraHelper.initializeCamera(key);
   }
 
   void closeCamera() async {

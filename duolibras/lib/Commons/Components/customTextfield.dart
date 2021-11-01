@@ -5,10 +5,10 @@ class CustomTextfield extends StatefulWidget {
   final TextEditingController inputController;
   final String hintText;
   final bool isEnabled;
-  final Function(String) _onSubmitHandle;
+  final Function(String) _onSubmitHandler;
 
   CustomTextfield(this.inputController, this.hintText, this.isEnabled,
-      this._onSubmitHandle);
+      this._onSubmitHandler);
 
   @override
   State<CustomTextfield> createState() => _CustomTextfieldState();
@@ -18,11 +18,6 @@ class _CustomTextfieldState extends State<CustomTextfield> {
   final focusNode = FocusNode();
   var isEditing = false;
 
-  // to open keyboard call this function;
-  void openKeyboard() {
-    FocusScope.of(context).requestFocus(focusNode);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -30,26 +25,29 @@ class _CustomTextfieldState extends State<CustomTextfield> {
 
   @override
   Widget build(BuildContext context) {
-    widget.inputController.text = widget.hintText;
-
     return LayoutBuilder(builder: (ctx, constraint) {
       return Container(
         width: constraint.maxWidth,
         child: TextField(
+          style: TextStyle(fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w500),
+          readOnly: !isEditing,
           focusNode: focusNode,
           autofocus: false,
           textAlign: TextAlign.center,
           controller: widget.inputController,
-          onChanged: (_) => setState(() {}),
           onSubmitted: (_) => setState(() {
             isEditing = false;
+            widget._onSubmitHandler(widget.inputController.text);
           }),
           decoration: InputDecoration(
               suffixIcon: isEditing
                   ? IconButton(
                       onPressed: () {
                         widget.inputController.clear();
-                        setState(() {});
+                        setState(() {
+                          isEditing = false;
+                          FocusScope.of(context).unfocus();
+                        });
                       },
                       icon: Icon(Icons.cancel, color: Colors.grey))
                   : IconButton(
@@ -66,14 +64,20 @@ class _CustomTextfieldState extends State<CustomTextfield> {
                   width: 0,
                   style: BorderStyle.none,
                 ),
-                borderRadius: BorderRadius.circular(15.0),
+                borderRadius: BorderRadius.circular(20.0),
               ),
               filled: true,
-              hintText: widget.hintText,
+              hintText: !isEditing ? widget.hintText : "",
               hintStyle: TextStyle(color: Colors.grey[800]),
               fillColor: Colors.white),
         ),
       );
     });
   }
+
+    // to open keyboard call this function;
+  void openKeyboard() {
+    FocusScope.of(context).requestFocus(focusNode);
+  }
+
 }

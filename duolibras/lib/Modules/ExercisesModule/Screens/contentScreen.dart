@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -24,47 +25,64 @@ class _ContentScreenState extends State<ContentScreen> {
   
   @override
   void initState() {
-    super.initState();
-
     widget.handleNextExercise = () {
       _submitAnswer(this.context);
     };
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    final mediaQuery = MediaQuery.of(context);
-    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
-    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop);
-    final containerSize = Size(mediaQuery.size.width, containerHeight);
-
-    final pages = _buildPages(containerSize);
     return Scaffold(
-      body: Container(
-        height: containerHeight,
-        color: Color.fromRGBO(234, 234, 234, 1),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(height: 16),
-              Container(
-                height: containerSize.height * 0.85,
-                child: PageView.builder(
-                  controller: controller,
-                  // itemCount: pages.length,
-                  itemBuilder: (_, index) {
-                    return pages[index % pages.length];
-                  },
+      backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+      body: SafeArea(
+        bottom: false,
+        child: LayoutBuilder(builder: (ctx, constraint) {
+          final pages = _buildPages(Size(constraint.maxWidth, constraint.maxHeight));
+
+          return Stack(
+            alignment: AlignmentDirectional.center,
+            children: 
+              [
+                Container(
+                          height: constraint.maxHeight,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  Constants.imageAssets.background_home),
+                              fit: BoxFit.none,
+                            ),
+                          ),
+                        ),
+                SingleChildScrollView(
+                child: Container(
+                  height: constraint.maxHeight,
+                  child: SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(height: 16),
+                        Container(
+                          height: constraint.maxHeight * 0.85,
+                          child: PageView.builder(
+                            controller: controller,
+                            // itemCount: pages.length,
+                            itemBuilder: (_, index) {
+                              return pages[index % pages.length];
+                            },
+                          ),
+                        ),
+                        _buildPageIndicator(),
+                        SizedBox(height: 32.0),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-              _buildPageIndicator(),
-              SizedBox(height: 32.0),
-            ],
-          ),
-        ),
+              )
+            ,]
+          );
+         })
       ),
     );
   }

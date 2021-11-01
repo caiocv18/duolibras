@@ -28,7 +28,7 @@ class MainRouter {
       page = HomeScreen();
     } else if (settings.name == routeSignIn) {
       page = ProfilePage();
-    } else if (settings.name == routeSignIn) {
+    } else if (settings.name == routeLaunch) {
       page = LaunchScreen(initialLoadCompleted);
     } else if (settings.name!
         .startsWith(ExerciseFlow.routePrefixExerciseFlow)) {

@@ -97,9 +97,8 @@ class _LearningScreenState extends State<LearningScreen>
         isLoadingPath = false;
       });
     }
-    // Future.delayed(Duration(seconds: 3)).then((value) {
-    //   animationController.forward(from: 0.0);
-    // });
+
+    super.initState();
   }
 
   @override
@@ -165,13 +164,16 @@ class _LearningScreenState extends State<LearningScreen>
   Widget _buildBackgroundImages(LearningViewModel viewModel) {
     final pagesTotal = viewModel.wrapperSectionPage.total;
     int totalImages = 1;
-    if (pagesTotal > 3) {
-      totalImages = (pagesTotal / 3 / 2).round();
+    if (pagesTotal > 3){
+      totalImages = (pagesTotal/3).round();
     }
     return Column(
-        children: List.generate(totalImages, (index) {
-      return Image(image: AssetImage(Constants.imageAssets.background_home));
-    }));
+            children: 
+              List.generate(totalImages,(index){
+                return Image(image: AssetImage(
+                          Constants.imageAssets.background_home));
+              })
+          );
   }
 
   Widget _buildTrail(double maxHeight, LearningViewModel viewModel) {
@@ -211,18 +213,23 @@ class _LearningScreenState extends State<LearningScreen>
 
     final module = viewModel.wrapperSectionPage.moduleAtIndex(index);
 
-    return ModuleWidget(
-        module,
+    return Container(
+      height: 200,
+      width: double.infinity,
+      child: ModuleWidget(module,
         viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
         widget._viewModel,
         rowAlignment,
         handleFinishExercise,
         index == 0
-            ? true
-            : viewModel.wrapperSectionPage.isModuleAvaiable(
-                viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
-                module.id,
-                ctx));
+        ? true
+        : viewModel.wrapperSectionPage.isModuleAvaiable(
+            viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
+            module.id,
+            ctx
+          )
+        ),
+    );
   }
 
   void handleFinishExercise() {

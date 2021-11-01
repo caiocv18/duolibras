@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/inputAnswerWidget.dart';
@@ -27,13 +28,10 @@ class ExerciseWritingScreen extends ExerciseStateful {
 class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
   ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
   var didAnswerCorrect = null;
-  var isKeyboardActive = false;
   final inputController = TextEditingController();
 
   @override
   void initState() {
-    super.initState();
-
     widget.handleNextExercise = () {
       handleSubmitAnswer(inputController.text, widget._exercise.correctAnswer,
           widget._exercise.id, this.context);
@@ -41,10 +39,11 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
 
     final keyboardVisibilityController = KeyboardVisibilityController();
     keyboardVisibilityController.onChange.listen((bool visible) {
-      setState(() {
-        isKeyboardActive = visible;
-      });
+      // setState(() {
+      // });
     });
+
+        super.initState();
   }
 
   void handleSubmitAnswer(String answer, String correctAnswer,
@@ -57,26 +56,53 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
     final mediaQuery = MediaQuery.of(context);
     final appBarHeight = ExerciseAppBarWidget.appBarHeight;
     final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    final containerHeight =
-        mediaQuery.size.height - (appBarHeight + paddingTop);
+    final containerHeight = mediaQuery.size.height - (appBarHeight + paddingTop);
     final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Scaffold(
-        body: _buildBody(
-            widget._exercise, widget._viewModel, containerSize, context));
+        backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+        body: SafeArea(
+            bottom: false,
+            child: Stack(
+              alignment: AlignmentDirectional.topCenter,
+              children: [
+                Container(
+                  height: containerSize.height,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(Constants.imageAssets.background_home),
+                      fit: BoxFit.none,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: containerSize.height,
+                  width: double.infinity,
+                  child: _buildBody(
+                    widget._exercise, widget._viewModel, containerSize, context),
+                )],
+            )
+        ));
   }
 
-  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel,
-      Size containerSize, BuildContext ctx) {
-    return Container(
-      height: containerSize.height,
-      color: Color.fromRGBO(234, 234, 234, 1),
-      child: Container(
-        height: containerSize.height,
-        child: SingleChildScrollView(
-          physics: isKeyboardActive ? null : NeverScrollableScrollPhysics(),
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          child: Column(
+  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
+    return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      child: Stack(
+        children: [
+            // Container(
+            //     height: containerSize.height,
+            //     width: double.infinity,
+            //     decoration: BoxDecoration(
+            //       image: DecorationImage(
+            //         image: AssetImage(
+            //             Constants.imageAssets.background_home),
+            //         fit: BoxFit.none,
+            //       ),
+            //     ),
+            //   ),
+            Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
@@ -139,8 +165,7 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
               ),
             ],
           ),
-        ),
-      ),
+        ]),
     );
   }
 }

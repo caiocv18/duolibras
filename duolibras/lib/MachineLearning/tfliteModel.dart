@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:download_assets/download_assets.dart';
+import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/MachineLearning/mlModelProtocol.dart';
 import 'package:tflite/tflite.dart';
+import 'package:image/image.dart' as IL;
 
 import 'Helpers/app_helper.dart';
 import 'Helpers/result.dart';
@@ -32,15 +35,13 @@ class TFLiteModel extends MLModelProtocol {
     });
   }
 
-  void predict(CameraImage image) async {
+  void predict(List<IL.Image> images) async {
     if (!isOpen || !modelsIsLoaded) return;
-    
+    // List<Uint8List> bytes = Utils.tryCast(image.getBytes().toList(), fallback: []);
     var recognitions = await Tflite.runModelOnFrame(
-        bytesList: image.planes.map((plane) {
-          return plane.bytes;
-        }).toList(), // required
-        imageHeight: image.height,
-        imageWidth: image.width,
+        bytesList: List.from(images.map((e) => e.getBytes())), // required
+        imageHeight: images.first.height,
+        imageWidth: images.first.width,
         imageMean: 127.5, // defaults to 127.5
         imageStd: 127.5, // defaults to 127.5
         rotation: 90, // defaults to 90, Android only

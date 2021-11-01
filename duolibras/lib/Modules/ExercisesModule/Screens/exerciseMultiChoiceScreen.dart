@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/imagesMultiChoice.dart';
@@ -35,8 +35,6 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
 
   @override
   void initState() {
-    super.initState();
-
     widget.handleNextExercise = () {
       handleSubmitAnswer(
         answerPicked, 
@@ -45,42 +43,38 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
         this.context
       );
     };
+    
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
-    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    final containerHeight = mediaQuery.size.height -
-        (appBarHeight + paddingTop + mediaQuery.padding.bottom);
-    final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Scaffold(
-        body: _buildBody(
-            widget._exercise, widget._viewModel, containerSize, context));
-  }
-
-  Widget _buildPopupDialog(BuildContext context, String title) {
-    return new AlertDialog(
-      title: Text(title),
-      content: new Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text("Hello"),
-        ],
-      ),
-      actions: <Widget>[
-        new FlatButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          textColor: Theme.of(context).primaryColor,
-          child: const Text('Close'),
-        ),
-      ],
-    );
+         backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+         body: SafeArea(
+                bottom: false,
+                child: LayoutBuilder(builder: (ctx, constraint) {
+                  return Stack(
+                    alignment: AlignmentDirectional.topCenter,
+                    children: [
+                      Container(
+                        height: constraint.maxHeight,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                                Constants.imageAssets.background_home),
+                            fit: BoxFit.none,
+                          ),
+                        ),
+                      ),
+                      SingleChildScrollView(child:  
+                    _buildBody(widget._exercise, widget._viewModel, Size(constraint.maxWidth, constraint.maxHeight), context),
+                    )],
+                  );
+                })
+        ));
   }
 
   Widget _createMultiChoiceWidget(Exercise exercise, BuildContext ctx) {
@@ -106,40 +100,30 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
           });
   }
 
-  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel,
-      Size containerSize, BuildContext ctx) {
-    return Container(
-      width: double.infinity,
-      color: Color.fromRGBO(234, 234, 234, 1),
-      child: SafeArea(
-          child: Container(
-        color: Color.fromRGBO(234, 234, 234, 1),
-        // height: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel,Size containerSize, BuildContext ctx) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+            height: containerSize.height * 0.08,
+            width: containerSize.width * 0.95,
+            child: QuestionWidget(exercise.question ?? "")),
+        SizedBox(height: containerSize.height * 0.05),
+        Container(
+            height: containerSize.height * 0.35,
+            width: containerSize.width * 0.54,
+            child: Midiawidget(exercise.mediaUrl)),
+        SizedBox(height: containerSize.height * 0.05),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-                height: containerSize.height * 0.08,
-                width: containerSize.width * 0.95,
-                child: QuestionWidget(exercise.question ?? "")),
-            SizedBox(height: containerSize.height * 0.05),
-            Container(
-                height: containerSize.height * 0.35,
-                width: containerSize.width * 0.54,
-                child: Midiawidget(exercise.mediaUrl)),
-            SizedBox(height: containerSize.height * 0.05),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                    height: containerSize.height * 0.42,
-                    child: _createMultiChoiceWidget(exercise, ctx)),
-              ],
-            ),
-            SizedBox(height: containerSize.height * 0.05),
+                height: containerSize.height * 0.42,
+                child: _createMultiChoiceWidget(exercise, ctx)),
           ],
         ),
-      )),
+        SizedBox(height: containerSize.height * 0.05),
+      ],
     );
   }
 

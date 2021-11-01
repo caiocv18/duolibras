@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
-import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
+import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/boundingBox.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/timeBar.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
@@ -30,88 +30,81 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   var spelledText = "";
   var _isRightAnswer = false;
   final completer = Completer<void>();
-  late double totalTime =
-      widget._exercise.correctAnswer.split('').length * 15.0;
-  // late ConfettiController controllerTopCenter;
+  late double totalTime = widget._exercise.correctAnswer.split('').length * 15.0;
+  final boundingBoxKey = GlobalKey();
 
   @override
   void initState() {
-    super.initState();
-
     widget.handleNextExercise = () {
       _submitAnswer(this.context);
     };
-
-    setState(() {
-      // initController();
-    });
+    super.initState();
   }
-
-  // void initController() {
-  //   controllerTopCenter =
-  //       ConfettiController(duration: const Duration(seconds: 2));
-  // }
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final appBarHeight = ExerciseAppBarWidget.appBarHeight;
-    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    final containerHeight =
-        mediaQuery.size.height - (appBarHeight + paddingTop);
-    final containerSize = Size(mediaQuery.size.width, containerHeight);
-
     return Scaffold(
-        body: Container(
-            height: containerHeight,
-            color: Color.fromRGBO(234, 234, 234, 1),
-            child: SafeArea(
-                child: _showingCamera
-                    ? _cameraBody(widget._exercise, containerSize, context)
-                    : _buildOnboardingBody(widget._exercise, widget._viewModel,
-                        containerSize, context))));
+         backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+         body: SafeArea(
+                bottom: false,
+                child: LayoutBuilder(builder: (ctx, constraint) {
+                  return Stack(
+                    alignment: AlignmentDirectional.topCenter,
+                    children: 
+                    [
+                      Container(
+                          height: constraint.maxHeight,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  Constants.imageAssets.background_home),
+                              fit: BoxFit.none,
+                            ),
+                          ),
+                        ),
+                      SingleChildScrollView(child: 
+                      Stack(children: [
+                        _showingCamera
+                        ? _cameraBody(widget._exercise, Size(constraint.maxWidth, constraint.maxHeight), context)
+                        : _buildOnboardingBody(widget._exercise, widget._viewModel,
+                            Size(constraint.maxWidth, constraint.maxHeight), context)
+                      ])
+                    )],
+                  );
+                })
+              ));
+            
   }
-
-  // Align buildConfettiWidget(controller, double blastDirection) {
-  //   return Align(
-  //     alignment: Alignment.topCenter,
-  //     child: ConfettiWidget(
-  //       maximumSize: Size(30, 30),
-  //       shouldLoop: false,
-  //       confettiController: controller,
-  //       blastDirection: blastDirection,
-  //       blastDirectionality: BlastDirectionality.directional,
-  //       maxBlastForce: 20, // set a lower max blast force
-  //       minBlastForce: 8, // set a lower min blast force
-  //       emissionFrequency: 1, // a lot of particles at once
-  //       gravity: 1,
-  //     ),
-  //   );
-  // }
 
   Widget _buildOnboardingBody(Exercise exercise, ExerciseViewModel viewModel,
       Size containerSize, BuildContext ctx) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-            height: containerSize.height * 0.10,
-            child: QuestionWidget("Faça o sinal em Libras")),
-        SizedBox(height: 15),
-        Container(
-          height: containerSize.height * 0.08,
-          width: containerSize.width * 0.7,
-          child: ElevatedButton(
-            child: Text("Abrir a Câmera"),
-            onPressed: () => _startCamera(),
-            style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.blue)))),
-          ),
+    return Container(
+      height: containerSize.height,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+                height: containerSize.height * 0.10,
+                child: QuestionWidget("Faça o sinal em Libras")),
+            SizedBox(height: 15),
+            Container(
+              height: containerSize.height * 0.08,
+              width: containerSize.width * 0.7,
+              child: ElevatedButton(
+                child: Text("Abrir a Câmera"),
+                onPressed: () => _startCamera(),
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.blue)))),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -144,8 +137,6 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
               },
             ),
           ),
-          // buildConfettiWidget(controllerTopCenter, 3.14 / 1),
-          // buildConfettiWidget(controllerTopCenter, 3.14 / 4),
         ]),
       ],
     );
@@ -175,16 +166,17 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                   width: containerSize.width * 0.89,
                   height: containerSize.height * 0.63,
                   child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20.0),
-                        topRight: Radius.circular(20.0),
-                        bottomRight: Radius.circular(20.0),
-                        bottomLeft: Radius.circular(20.0),
-                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
                       child: Transform.scale(
                           scale: scale,
                           child:
-                              CameraPreview(widget._viewModel.getCamera())))))),
+                              CameraPreview(widget._viewModel.getCamera()
+                          )
+                      )
+                  )
+              )
+          )
+      ),
       TimeBar(
           Size(containerSize.width * 0.93, containerSize.height * 0.04),
           totalTime,
@@ -192,7 +184,13 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
           () {
         widget._viewModel.isAnswerCorrect("", widget._exercise.id);
         _finishExercise(false);
-      })
+      }),
+       Positioned(
+        top: 200,
+        width: 180,
+        left: 200,
+        height: 200,
+        child: BoundingBox(key: boundingBoxKey)),
     ]);
   }
 
@@ -282,7 +280,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   }
 
   void _startCamera() {
-    widget._viewModel.initializeCamera().then((value) => completer.complete());
+    widget._viewModel.initializeCamera(boundingBoxKey).then((value) => completer.complete());
 
     widget._viewModel.getMlModelStream().listen((value) {
       //Update results on screen

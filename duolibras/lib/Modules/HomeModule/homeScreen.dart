@@ -4,11 +4,16 @@ import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
-import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
+import 'package:duolibras/Modules/LoginModule/SignIn/signInPage.dart';
 import 'package:duolibras/Modules/ProfileModule/profilePage.dart';
 import 'package:duolibras/Modules/RankingModule/rankingScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+
+enum HomePages {
+  Ranking,
+  Home, 
+  Profile
+}
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -23,8 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<NavigatorState> navigatorKey =
       new GlobalKey<NavigatorState>();
 
-  var _pages = [
-    RankingScreen(),
+  late var _pages = [
+    RankingScreen(_setupNewPage),
     LearningScreen(LearningViewModel()),
     ProfilePage()
   ];
@@ -32,50 +37,45 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget get bottomNavigationBar {
     return Container(
-      height: 112,
+      height: 116,
       child: Column(
         children: [
           Container(
-            height: 10,
+            height: 12,
             width: double.infinity,
-            color: HexColor.fromHex("4982F6"),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [HexColor.fromHex("4982F6"), HexColor.fromHex("2CC4FC")]),
+            )
           ),
-          BottomNavigationBar(
-            elevation: 15,
-            items: [
-              BottomNavigationBarItem(
-                  icon: Image.asset(Constants.imageAssets.rankingIcon,
-                      color: _currentIndex == 0
-                          ? HexColor.fromHex("4982F6")
-                          : HexColor.fromHex("D2D7E4")),
-                  label: "Ranking",
-                  backgroundColor: _currentIndex == 1
-                      ? HexColor.fromHex("4982F6")
-                      : Colors.white),
-              BottomNavigationBarItem(
-                  icon: Image.asset(
-                    Constants.imageAssets.trailIcon,
-                    color: _currentIndex == 1
-                        ? HexColor.fromHex("4982F6")
-                        : HexColor.fromHex("D2D7E4"),
-                  ),
-                  label: "Trilha"),
-              BottomNavigationBarItem(
-                  icon: Image.asset(Constants.imageAssets.profileIcon,
-                      color: _currentIndex == 2
-                          ? HexColor.fromHex("4982F6")
-                          : HexColor.fromHex("D2D7E4")),
-                  label: "Perfil"),
-            ],
-            type: BottomNavigationBarType.fixed,
-            onTap: (index) {
-              // MainRouter.instance.navigatorKey.currentState!.maybePop();
-              setState(() => _page = _pages[index]);
-              _currentIndex = index;
-            },
-            selectedItemColor: Colors.blue,
-            unselectedItemColor: Colors.grey,
-            currentIndex: _currentIndex,
+          Container(
+            child: BottomNavigationBar(
+              elevation: 15,
+              items: [
+                BottomNavigationBarItem(
+                    activeIcon: Image.asset(Constants.imageAssets.trophyGradient),
+                    icon: Image.asset(Constants.imageAssets.trophyEmpty),
+                    label: "Ranking",
+                ),
+                BottomNavigationBarItem(
+                    activeIcon: Image.asset(Constants.imageAssets.trailGradient), 
+                    icon: Image.asset(Constants.imageAssets.trailEmpty),
+                    label: "Trilha"
+                ),
+                BottomNavigationBarItem(
+                    activeIcon: Image.asset(Constants.imageAssets.profileGradient),
+                    icon: Image.asset(Constants.imageAssets.profileEmpty),
+                    label: "Perfil"
+                ),
+              ],
+              type: BottomNavigationBarType.fixed,
+              onTap: (index) {
+                setState(() => _page = _pages[index]);
+                _currentIndex = index;
+              },
+              selectedLabelStyle: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w500, fontSize: 14, color: HexColor.fromHex("4982F6")),
+              unselectedLabelStyle: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w500, color: Colors.grey, fontSize: 14),
+              currentIndex: _currentIndex,
+            ),
           ),
         ],
       ),
@@ -86,13 +86,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-      appBar: AppBarWidget(_currentIndex == 0 ? "Ranking" : "Dibras", () {
+      appBar: AppBarWidget(_getCurrentTile(), longpressHandler: () {
         setState(() {
           isSwitched = !isSwitched;
           isLoading = true;
         });
         loadingNewLearningScreen(isSwitched);
-      }),
+      }, backButtonPressed: null),
       bottomNavigationBar: bottomNavigationBar,
       body: isLoading
           ? Center(child: CircularProgressIndicator())
@@ -100,12 +100,36 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _setupNewPage(HomePages selectedPage) {
+    switch (selectedPage) {
+      case HomePages.Profile:
+       Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SignInPage()));
+        break;
+      default: break;
+    }
+  }
+
+  String _getCurrentTile() {
+    if (_currentIndex == 0) {
+      return "Ranking";
+    }
+    if (_currentIndex == 1) {
+      return "Trilha";
+    }
+    if (_currentIndex == 2) {
+      return "Perfil";
+    }
+
+    return "";
+  }
+
   Future loadingNewLearningScreen(bool newValue) {
     return Future.delayed(Duration(seconds: 1)).then((value) => {
-          setState(() {
-            _changeEnvironment(newValue);
-          })
-        });
+      setState(() {
+        _changeEnvironment(newValue);
+      })
+    });
   }
 
   void _changeEnvironment(bool newValue) {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:download_assets/download_assets.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
@@ -47,11 +48,16 @@ class LaunchViewModel {
 
   Future _downloadMlModelAsset(BuildContext context, DynamicAsset mlAsset) async {
     Completer<void> completer = Completer();
-    bool assetsDownloaded = await DownloadAssetsController.assetsDirAlreadyExists();
 
+    bool assetsDownloaded = await DownloadAssetsController.assetsDirAlreadyExists();
     if (assetsDownloaded) {
-      completer.complete();
-      return;
+      final stat = FileStat.statSync(DownloadAssetsController.assetsDir ?? "");
+      if (stat.type != FileSystemEntityType.notFound) {
+        if (stat.accessed.isAfter(mlAsset.lastUpdate)){
+          completer.complete();
+          return;
+        }
+      }
     }
 
     try {

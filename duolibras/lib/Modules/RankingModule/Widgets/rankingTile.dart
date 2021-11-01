@@ -44,44 +44,39 @@ class RankingTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 19, vertical: 12),
       child: ExerciseButton(
         child: ListTile(
-          leading: Container(
-            width: 80,
-            child: Row(
-              children: [
-                SizedBox(width: 5),
-                CircleAvatar(
-                  child: _imageUserWidget(userModel),
-                  radius: 25,
-                  backgroundColor: Colors.grey[400],
-                ),
-              ],
+            leading: Container(
+                child: 
+                  CircleAvatar(
+                    child: _imageUserWidget(userModel),
+                    radius: 25,
+                    backgroundColor: Colors.grey[400],
+                  ),
             ),
-          ),
-          title: Expanded(
-            child: Text(
-                viewModel.formatUserName(userModel.user.id == user.id
-                    ? userModel.user.name
-                    : user.name),
-                style: TextStyle(
-                    overflow: TextOverflow.ellipsis,
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontFamily: "Nunito",
-                    fontWeight: FontWeight.w600),
-                textAlign: TextAlign.left,
-                maxLines: 2),
-          ),
-          trailing: Container(
-            width: 100,
-            child: Text(
-                "${userModel.user.id == user.id ? userModel.user.currentProgress : user.currentProgress} pts",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontFamily: "Nunito",
-                    fontWeight: FontWeight.w400),
-                textAlign: TextAlign.left),
-          ),
+            title: Container(
+              child: Text(
+                  viewModel.formatUserName(userModel.user.id == user.id
+                      ? userModel.user.name
+                      : user.name),
+                  style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: "Nunito",
+                      fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.left,
+                  maxLines: 1),
+            ),
+            trailing: Container(
+              width: 50,
+              child: Text(
+                  "${userModel.user.id == user.id ? userModel.user.currentProgress : user.currentProgress} pts",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontFamily: "Nunito",
+                      fontWeight: FontWeight.w400),
+                  textAlign: TextAlign.left),
+            ),
         ),
         size: 25,
         color: HexColor.fromHex("93CAFA"),

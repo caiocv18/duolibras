@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/LoginModule/SignIn/signInPage.dart';
@@ -23,7 +24,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final nameTextfieldController = TextEditingController();
-  var _userHasChanged = false;
 
   @override
   void initState() {
@@ -32,53 +32,68 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final paddingTop = MediaQueryData.fromWindow(window).padding.top;
-    final containerHeight =
-        mediaQuery.size.height - (AppBar().preferredSize.height + paddingTop);
-    final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Consumer(builder: (ctx, UserModel userProvider, _) {
       return SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-              height: containerHeight,
-              alignment: Alignment.center,
-              color: Color.fromRGBO(234, 234, 234, 1),
-              child: Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: 20),
-                  ProfileImageButton(SharedFeatures.instance.isLoggedIn, widget._viewModel, userProvider.user.imageUrl),
-                  SizedBox(height: 60),
-                  Container(
-                      child: CustomTextfield(
-                          nameTextfieldController,
-                          userProvider.user.name,
-                          SharedFeatures.instance.isLoggedIn,
-                          _handleSubmitNewName),
-                      width: containerSize.width * 0.8),
-                  SizedBox(height: 60),
-                  _createProgressWidget(userProvider.user),
-                  SizedBox(height: containerHeight * 0.1),
-                  Container(
-                      width: containerSize.width * 0.4,
-                      height: containerHeight * 0.05,
-                      child: ExerciseButton(
-                        child: Center(
-                          child: Text(SharedFeatures.instance.isLoggedIn
-                              ? "Sair"
-                              : "Entrar"),
-                        ),
-                        size: 20,
-                        color: HexColor.fromHex("4982F6"),
-                        onPressed: () => _onPressedLoginButton(),
-                      )),
-                ],
-              ))),
-        ),
+        bottom: false,
+        child: LayoutBuilder(builder: (ctx, constraint) {
+         return Stack(
+           children: 
+           [
+             Container(
+                  height: constraint.maxHeight,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                          Constants.imageAssets.background_home),
+                      fit: BoxFit.none,
+                    ),
+                  ),
+                ),
+             SingleChildScrollView(
+              child: Container(
+                  height: constraint.maxHeight,
+                  alignment: Alignment.center,
+                  color: Colors.transparent,
+                  child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 20),
+                          ProfileImageButton(SharedFeatures.instance.isLoggedIn, widget._viewModel, userProvider.user.imageUrl, () => {
+                            _onPressedLoginButton()
+                          }),
+                          SizedBox(height: 60),
+                          Container(
+                              child: CustomTextfield(
+                                  nameTextfieldController,
+                                  userProvider.user.name,
+                                  SharedFeatures.instance.isLoggedIn,
+                                  _handleSubmitNewName),
+                              width: constraint.maxWidth * 0.8),
+                          SizedBox(height: 60),
+                          _createProgressWidget(userProvider.user),
+                          SizedBox(height: constraint.maxHeight * 0.1),
+                          Container(
+                              width: constraint.maxWidth  * 0.4,
+                              height: constraint.maxHeight * 0.05,
+                              child: ExerciseButton(
+                                child: Center(
+                                  child: Text(SharedFeatures.instance.isLoggedIn
+                                      ? "Sair"
+                                      : "Entrar"),
+                                ),
+                                size: 20,
+                                color: HexColor.fromHex("4982F6"),
+                                onPressed: () => _onPressedLoginButton(),
+                              )),
+                        ],
+                      )))),
+           ]
+         );
+        })
       );
     });
   }
@@ -90,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
         valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("4982F6")),
         value:
             (user.currentProgress / SharedFeatures.instance.numberMaxOfPoints),
-        strokeWidth: 150,
+        strokeWidth: 170,
       ),
       CircleAvatar(
         backgroundColor: Color.fromRGBO(234, 234, 234, 1),
@@ -107,13 +122,13 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(children: [
       Text(_getLevelTextByProgress(progress / 100),
           style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black)),
+              fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w600, color: Colors.black)),
       SizedBox(
         height: 4,
       ),
-      Text("${(progress * 100).toStringAsFixed(2)} %",
+      Text("${(progress * 100).toStringAsFixed(2)}%",
           style: TextStyle(
-              fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black)),
+              fontSize: 14, fontFamily: "Nunito", fontWeight: FontWeight.w500, color: Colors.black)),
     ]);
   }
 

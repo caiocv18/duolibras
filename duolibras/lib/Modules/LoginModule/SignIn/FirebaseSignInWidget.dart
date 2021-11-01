@@ -24,8 +24,9 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
 
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance?.addObserver(this);
+
+    super.initState();
   }
 
   @override
@@ -58,6 +59,25 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
         ),
       ),
     );
+  }
+
+  Widget emailTextfield() {
+    return InputAnswerWidget(emailTextfieldController, true, "Email");
+  }
+
+  Widget loginButton(BuildContext ctx) {
+    return ExerciseButton(
+        child: Center(
+          child: Text("Entrar",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 22,
+                  fontFamily: "Nunito",
+                  fontWeight: FontWeight.w500),
+              textAlign: TextAlign.left),
+        ),
+        size: 20,
+        color: HexColor.fromHex("93CAFA"));
   }
 
   @override
@@ -103,22 +123,5 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
         loginModel: AuthenticationModel(email: emailTextfieldController.text));
   }
 
-  Widget emailTextfield() {
-    return InputAnswerWidget(emailTextfieldController, true, "Email");
-  }
 
-  Widget loginButton(BuildContext ctx) {
-    return ExerciseButton(
-        child: Center(
-          child: Text("Log In",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 22,
-                  fontFamily: "Nunito",
-                  fontWeight: FontWeight.w600),
-              textAlign: TextAlign.left),
-        ),
-        size: 20,
-        color: HexColor.fromHex("93CAFA"));
-  }
 }

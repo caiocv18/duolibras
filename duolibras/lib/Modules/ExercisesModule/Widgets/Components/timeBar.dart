@@ -20,9 +20,9 @@ class _TimeBarState extends State<TimeBar> {
 
   @override
   void initState() {
-    super.initState();
-
     _startTimer();
+
+    super.initState();
   }
 
   @override
@@ -58,6 +58,13 @@ class _TimeBarState extends State<TimeBar> {
         }
       },
     );
+  }
+
+  @override
+  void dispose() {
+    widget._timer.cancel();
+    
+    super.dispose();
   }
 
 }
