@@ -48,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               isLoading
-                  ? CircularProgressIndicator()
+                  ? Center(child: CircularProgressIndicator())
                   : SingleChildScrollView(
                       child: Center(
                           child: Column(
