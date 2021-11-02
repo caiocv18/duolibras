@@ -37,10 +37,7 @@ class ExerciseViewModel extends BaseViewModel {
     exercises = exercisesAndModule.item1;
   }
 
-  var exerciseProgressValue = 0.0;
-  var totalPoints = 0.0;
 
-  var lifes = 3;
 
   bool isAnswerCorrect(String answer, String exerciseID) {
     if (answer.isEmpty) {
@@ -73,7 +70,7 @@ class ExerciseViewModel extends BaseViewModel {
       String answer, String exerciseID, BuildContext context) {
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
     final isAnswerCorrect = exercise.correctAnswer == answer;
-    totalPoints += isAnswerCorrect ? (exercise.score ?? 0) : 0.0;
+    exerciseFlowDelegate.totalPoints += isAnswerCorrect ? (exercise.score ?? 0) : 0.0;
 
     _handleMoveToNextExercise(exerciseID, context);
   }
@@ -148,23 +145,23 @@ class ExerciseViewModel extends BaseViewModel {
 
     if (index + 1 == exercises.length) {
       await _saveProgress(context);
-      exerciseProgressValue = index + 1;
+      exerciseFlowDelegate.exerciseProgressValue = index + 1;
       exerciseFlowDelegate.didFinishExercise(null, FeedbackStatus.Success);
       return;
     }
 
     final exercise = exercises[index + 1];
-    exerciseProgressValue = index + 1;
+    exerciseFlowDelegate.exerciseProgressValue = index + 1;
     exerciseFlowDelegate.didFinishExercise(exercise, null);
   }
 
   bool _handleFinishModule(bool isAnswerCorrect) {
     if (isAnswerCorrect) return false;
 
-    lifes -= 1;
-    exerciseFlowDelegate.updateNumberOfLifes(lifes);
+    exerciseFlowDelegate.lifes -= 1;
+    exerciseFlowDelegate.updateNumberOfLifes(exerciseFlowDelegate.lifes);
 
-    if (lifes == 0) {
+    if (exerciseFlowDelegate.lifes == 0) {
       exerciseFlowDelegate.didFinishExercise(null, FeedbackStatus.Failed);
       return true;
     }

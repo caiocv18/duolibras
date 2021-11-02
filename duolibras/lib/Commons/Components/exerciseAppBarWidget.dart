@@ -60,6 +60,13 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
   }
 
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     widget.showArrow = () {
       if (_showContentTabBar) return;

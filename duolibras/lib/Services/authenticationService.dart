@@ -73,16 +73,16 @@ class AuthenticationService {
         userModel = oldUser;
       }
 
+      SharedFeatures.instance.isLoggedIn = true;   
       var userUpdated = await Service.instance.postUser(userModel, isNewUser);
       userUpdated.sectionsProgress = await Service.instance
           .getSectionsProgress()
           .onError((error, stackTrace) {
-        return [];
-      });
+            return [];
+          });
 
       //Resetando dados locais
-      locator<Service>().cleanDatabase();
-
+      Service.instance.cleanDatabase();
       locator<UserModel>().setNewUser(userUpdated);
       return;
     } else {

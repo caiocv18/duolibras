@@ -110,10 +110,10 @@ class SQLiteDatabase extends DatabaseProtocol {
 
     int changesInUserTable =
         await db.rawDelete('DELETE FROM ${Constants.database.userTable}');
-    int changesInModulesTable = await db
-        .rawDelete('DELETE FROM ${Constants.database.sectionProgressTable}');
+    // int changesInModulesTable = await db
+    //     .rawDelete('DELETE FROM ${Constants.database.sectionProgressTable}');
 
-    if (changesInUserTable == 0 || changesInModulesTable == 0) {
+    if (changesInUserTable == 0) {
       return Future.error(DatabaseErrors.CleanDatabaseError);
     }
 

@@ -208,8 +208,9 @@ class FirebaseService extends ServicesProtocol {
     var completer = Completer<myUser.User>();
 
     _getUserFromFirebase().get().then((response) {
-      if (response.data() == null) {
+      if (response.data() == null || !response.exists) {
         completer.completeError(FirebaseErrors.GetUserError);
+        return;
       }
       completer.complete(myUser.User.fromMap(response.data()!, response.id));
     });
@@ -229,6 +230,7 @@ class FirebaseService extends ServicesProtocol {
     _getTrailFromFirebase().get().then((response) {
       if (response.data() == null) {
         completer.completeError(FirebaseErrors.GetTrailsError);
+        return;
       }
       completer.complete(Trail.fromMap(response.data()!, response.id));
     });

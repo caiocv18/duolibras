@@ -24,6 +24,9 @@ abstract class ExerciseFlowDelegate {
   void restartLevel();
   void updateNumberOfLifes(int lifes);
 
+  var exerciseProgressValue;
+  var totalPoints;
+  var lifes;
   String get sectionID;
 }
 
@@ -77,6 +80,14 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
   var _exerciseProgress = 0.0;
   var isToShowAppBar = true;
   late ExerciseScreenDelegate? _currentPage;
+
+  @override
+  var exerciseProgressValue = 0;
+  @override
+  var lifes = 3;
+  @override
+  var totalPoints = 0;
+
   late var viewModel = locator<ExerciseViewModel>(param1: Tuple2(widget.exercises, widget.module), param2: this);
 
   @override

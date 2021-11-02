@@ -35,6 +35,13 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   final boundingBoxKey = GlobalKey();
 
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     widget.handleNextExercise = () {
       _submitAnswer(this.context);
@@ -345,7 +352,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   void dispose() {
     widget.timerHandler.cancelTimer();
     widget._viewModel.closeCamera();
-    
+
     super.dispose();
   }
 }

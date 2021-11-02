@@ -43,11 +43,8 @@ class _LearningScreenState extends State<LearningScreen>
     with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController animationController;
-  var _currentSectionIndex = 0;
-  late var currentSectionIndex =
-      _currentSectionIndex == User.initialTrailSectionIndex
-          ? 0
-          : _currentSectionIndex + 1;
+  // var _currentSectionIndex = 0;
+  var currentSectionIndex = 0;
 
   late String currentSection =
       widget._viewModel.allSections[currentSectionIndex].title;
@@ -60,6 +57,13 @@ class _LearningScreenState extends State<LearningScreen>
       size: new Size(
           428, 212 * widget._viewModel.wrapperSectionPage.total.toDouble()));
   final scrollController = ScrollController();
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
 
   @override
   initState() {
@@ -82,14 +86,7 @@ class _LearningScreenState extends State<LearningScreen>
       });
     });
 
-    if (widget._firstTime) {
-      Future.delayed(Duration(milliseconds: 1200)).then((value) => {
-            setState(() {
-              isLoadingPath = false;
-              widget._firstTime = false;
-            })
-          });
-    } else {
+    if (!widget._firstTime)  {
       setState(() {
         isLoadingPath = false;
       });
@@ -99,26 +96,28 @@ class _LearningScreenState extends State<LearningScreen>
   }
 
   void setTrailPathIndex() {
-    Future.delayed(Duration(milliseconds: 900)).then((value) {
-      _currentSectionIndex = Provider.of<UserModel>(this.context, listen: false)
+    Future.delayed(Duration(milliseconds: 1200)).then((value) {
+      currentSectionIndex = Provider.of<UserModel>(this.context, listen: false)
           .user
           .trailSectionIndex;
 
-      if (_currentSectionIndex == User.initialTrailSectionIndex) {
+      if (currentSectionIndex == User.initialTrailSectionIndex) {
         currentSectionIndex = 0;
       } else {
-        if (_currentSectionIndex == widget._viewModel.allSections.length) {
-          currentSectionIndex = _currentSectionIndex;
+        if (currentSectionIndex == widget._viewModel.allSections.length) {
           animationController.duration = Duration(milliseconds: 150);
           animationController.forward().then((_) {
             animationController.duration = Duration(seconds: 2);
           });
           return;
         } else {
-          currentSectionIndex = _currentSectionIndex + 1;
+          currentSectionIndex = currentSectionIndex + 1;
         }
       }
-      setState(() {});
+      setState(() {
+        isLoadingPath = false;
+        widget._firstTime = false;
+      });
     });
   }
 
