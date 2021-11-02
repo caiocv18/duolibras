@@ -65,7 +65,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       }),
                       SizedBox(height: 60),
                       Container(
-                        // height: 60,
                           child: CustomTextfield(
                               nameTextfieldController,
                               userProvider.user.name,

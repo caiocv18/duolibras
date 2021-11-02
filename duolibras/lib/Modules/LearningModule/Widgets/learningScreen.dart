@@ -124,33 +124,33 @@ class _LearningScreenState extends State<LearningScreen>
   @override
   Widget build(BuildContext context) {
     return BaseScreen<LearningViewModel>(
-        onModelReady: (viewModel) =>
-            {viewModel.fetchSections(context).then((_) => setTrailPathIndex())},
-        builder: (_, viewModel, __) => LayoutBuilder(
-                builder: (BuildContext ctx, BoxConstraints constraints) {
-              return Stack(
-                alignment: AlignmentDirectional.topCenter,
-                children: [
-                  Container(
-                            height: constraints.maxHeight,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(
-                                    Constants.imageAssets.background_home),
-                                fit: BoxFit.none,
-                              ),
-                            ),
-                          ),
-                    SingleChildScrollView(
-                    controller: scrollController,
-                    child: 
-                      _buildBody(context, viewModel, constraints.maxHeight)
-                  ),
-                  SectionTitleWidget(scrollController, viewModel.allSections, viewModel.sectionsForModules)
-                ],
-              );
-            }));
+        onModelReady: (viewModel) =>  {
+        viewModel.fetchSections(context).then((_) => setTrailPathIndex())},
+          builder: (_, viewModel, __) => LayoutBuilder(
+          builder: (BuildContext ctx, BoxConstraints constraints) {
+        return Stack(
+          alignment: AlignmentDirectional.topCenter,
+          children: [
+            Container(
+                      height: constraints.maxHeight,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                              Constants.imageAssets.background_home),
+                          fit: BoxFit.none,
+                        ),
+                      ),
+                    ),
+              SingleChildScrollView(
+              controller: scrollController,
+              child: 
+                _buildBody(context, viewModel, constraints.maxHeight)
+            ),
+            SectionTitleWidget(scrollController, viewModel.allSections, viewModel.sectionsForModules)
+          ],
+        );
+      }));
   }
 
   Widget _buildBody(BuildContext scrollViewContext, LearningViewModel viewModel,
