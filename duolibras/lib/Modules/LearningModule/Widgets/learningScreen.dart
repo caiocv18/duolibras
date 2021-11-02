@@ -93,6 +93,7 @@ class _LearningScreenState extends State<LearningScreen> with SingleTickerProvid
 
   void setTrailPathIndex() {
     Future.delayed(Duration(milliseconds: 1200)).then((value) {
+      if (!mounted) return;
       currentSectionIndex = Provider.of<UserModel>(this.context, listen: false)
           .user
           .trailSectionIndex;
