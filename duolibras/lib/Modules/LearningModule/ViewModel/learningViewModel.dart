@@ -36,7 +36,6 @@ class LearningViewModel extends BaseViewModel
     final sectionsProgress =
         Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
 
-    allSections.addAll(newSections);
     for (var i = 0; i < newSections.length; i++) {
       await getModulesfromSection(newSections[i].id, context).then((modules) {
         wrapperSectionPage.pages.add(SectionPage(newSections[i], modules));
@@ -119,6 +118,7 @@ class LearningViewModel extends BaseViewModel
 
     await getSectionsFromTrail(context).then((newSections) {
       hasMore = false;
+      allSections.addAll(newSections);
       _getModules(newSections, context);
     });
   }
@@ -242,6 +242,7 @@ class LearningViewModel extends BaseViewModel
     if (index == -1) {
       return -1;
     }
+
     if (index == userProvider.user.trailSectionIndex) {
       return -1;
     }
@@ -251,8 +252,4 @@ class LearningViewModel extends BaseViewModel
 
     return index;
   }
-  // void disposeStreams() {
-  //   _controller.close();
-  //   _controllerModules.close();
-  // }
 }
