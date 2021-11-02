@@ -51,31 +51,30 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-         backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-         body: SafeArea(
-                // bottom: false,
-                child: LayoutBuilder(builder: (ctx, constraint) {
-                  return Stack(
-                    alignment: AlignmentDirectional.topCenter,
-                    children: [
-                      Container(
-                        height: constraint.maxHeight,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                                Constants.imageAssets.background_home),
-                            fit: BoxFit.none,
-                          ),
+         body: Stack(
+           children: 
+           [
+               Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                              Constants.imageAssets.background_home),
+                          fit: BoxFit.cover,
                         ),
                       ),
-                      SingleChildScrollView(child:  
-                        _buildBody(widget._exercise, widget._viewModel, Size(constraint.maxWidth, constraint.maxHeight), context),
-                      )
-                    ],
-                  );
-                })
-        ));
+               ),
+             SafeArea(
+                  bottom: false,
+                  child: LayoutBuilder(builder: (ctx, constraint) {
+                    return SingleChildScrollView(child:  
+                      _buildBody(widget._exercise, widget._viewModel, Size(constraint.maxWidth, constraint.maxHeight), context),
+                    );
+                  })
+                 ),
+              
+            ]
+         ));
   }
 
   Widget _createMultiChoiceWidget(Exercise exercise, BuildContext ctx) {

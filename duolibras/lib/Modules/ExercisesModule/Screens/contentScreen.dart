@@ -34,31 +34,26 @@ class _ContentScreenState extends State<ContentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-      body: SafeArea(
-        bottom: false,
-        child: LayoutBuilder(builder: (ctx, constraint) {
-          final pages = _buildPages(Size(constraint.maxWidth, constraint.maxHeight));
-
-          return Stack(
-            alignment: AlignmentDirectional.center,
-            children: 
-              [
-                Container(
-                          height: constraint.maxHeight,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                  Constants.imageAssets.background_home),
-                              fit: BoxFit.none,
-                            ),
-                          ),
-                        ),
-                SingleChildScrollView(
-                child: Container(
-                  height: constraint.maxHeight,
-                  child: SafeArea(
+      body: 
+      Stack(
+           children: 
+           [
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        Constants.imageAssets.background_home),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            SafeArea(
+              child: LayoutBuilder(builder: (ctx, constraint) {
+                final pages = _buildPages(Size(constraint.maxWidth, constraint.maxHeight));
+                return SingleChildScrollView(
+                  child: Container(
+                    height: constraint.maxHeight,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
@@ -78,12 +73,11 @@ class _ContentScreenState extends State<ContentScreen> {
                       ],
                     ),
                   ),
-                ),
-              )
-            ,]
-          );
-         })
-      ),
+                );
+              }),
+            ),
+           ]
+        )
     );
   }
 

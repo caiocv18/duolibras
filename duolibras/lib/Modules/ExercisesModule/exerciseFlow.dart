@@ -94,6 +94,7 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
     return WillPopScope(
       onWillPop: _isExitDesired,
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: _appBar,
         body: Navigator(
           key: _navigatorKey,
@@ -131,9 +132,12 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
       case ExerciseFlow.routeContentModulePage:
         page = ContentScreen(viewModel, _getContentsFromExercisesList());
         final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
-        if (exerciseAppBar != null) {
-          if (exerciseAppBar.showContentTabBar != null) exerciseAppBar.showContentTabBar!(TabType.ContentBar);
-        }
+        Future.delayed(Duration.zero, () async {
+          if (exerciseAppBar != null) {
+            if (exerciseAppBar.showContentTabBar != null) exerciseAppBar.showContentTabBar!(TabType.ContentBar);
+         }
+        });
+
         break;
     }
 

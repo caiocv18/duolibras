@@ -61,30 +61,31 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-        body: SafeArea(
-            bottom: false,
-            child: Stack(
-              alignment: AlignmentDirectional.topCenter,
-              children: [
-                Container(
-                  height: containerSize.height,
+        body: 
+        Stack(
+           children: 
+           [
+            Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(Constants.imageAssets.background_home),
-                      fit: BoxFit.none,
+                      image: AssetImage(
+                          Constants.imageAssets.background_home),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                ),
-                Container(
-                  height: containerSize.height,
-                  width: double.infinity,
-                  child: _buildBody(
-                    widget._exercise, widget._viewModel, containerSize, context),
-                )],
-            )
-        ));
+            ),
+          SafeArea(
+              bottom: false,
+              child: Container(
+                height: containerSize.height,
+                width: double.infinity,
+                child: _buildBody(
+                  widget._exercise, widget._viewModel, containerSize, context),
+              )
+          )
+      ])
+    );
   }
 
   Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {

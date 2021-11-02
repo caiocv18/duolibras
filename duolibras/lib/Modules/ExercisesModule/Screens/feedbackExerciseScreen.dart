@@ -33,15 +33,7 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final _mediaQuery = MediaQuery.of(context);
-
-    // final containerHeight = _mediaQuery.size.height -
-    //     AppBar().preferredSize.height -
-    //     _mediaQuery.padding.top -
-    //     _mediaQuery.padding.bottom;
-
     return Scaffold(
-      backgroundColor: Color.fromRGBO(234, 234, 234, 1),
       body: SafeArea(
             bottom: false,
             child: LayoutBuilder(builder: (ctx, constraint) {
@@ -67,10 +59,6 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
               );
             })
           ));
-
-    // return Scaffold(
-    //   body: _buildBody(Size(_mediaQuery.size.width, containerHeight), context),
-    // );
   }
 
   Widget _createButtons(

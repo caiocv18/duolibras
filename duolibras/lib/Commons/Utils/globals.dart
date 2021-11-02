@@ -7,7 +7,7 @@ class SharedFeatures {
 
   bool isLoggedIn = false;
   bool isMocked = false;
-  AppEnvironment enviroment = AppEnvironment.DEV;
+  AppEnvironment enviroment = AppEnvironment.PROD;
   int _numberMaxOfPoints = 0;
 
   int get numberMaxOfPoints => _numberMaxOfPoints;

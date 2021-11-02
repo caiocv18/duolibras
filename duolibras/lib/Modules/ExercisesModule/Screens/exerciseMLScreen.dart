@@ -45,36 +45,35 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-         backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-         body: SafeArea(
-                bottom: false,
-                child: LayoutBuilder(builder: (ctx, constraint) {
-                  return Stack(
-                    alignment: AlignmentDirectional.topCenter,
-                    children: 
-                    [
-                      Container(
-                          height: constraint.maxHeight,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                  Constants.imageAssets.background_home),
-                              fit: BoxFit.none,
-                            ),
-                          ),
+         body: 
+         Stack(
+           children: 
+           [
+               Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                              Constants.imageAssets.background_home),
+                          fit: BoxFit.cover,
                         ),
-                      SingleChildScrollView(child: 
-                      Stack(children: [
-                        _showingCamera
-                        ? _cameraBody(widget._exercise, Size(constraint.maxWidth, constraint.maxHeight), context)
-                        : _buildOnboardingBody(widget._exercise, widget._viewModel,
-                            Size(constraint.maxWidth, constraint.maxHeight), context)
-                      ])
-                    )],
-                  );
-                })
-              ));
+                      ),
+               ),
+              SafeArea(
+                  bottom: false,
+                  child: LayoutBuilder(builder: (ctx, constraint) {
+                    return 
+                        SingleChildScrollView(child: 
+                        Stack(children: [
+                          _showingCamera
+                          ? _cameraBody(widget._exercise, Size(constraint.maxWidth, constraint.maxHeight), context)
+                          : _buildOnboardingBody(widget._exercise, widget._viewModel,
+                              Size(constraint.maxWidth, constraint.maxHeight), context)
+                        ])
+                      );
+                  })
+                )
+           ]));
             
   }
 
@@ -269,10 +268,6 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
       child: Container(
           width: containerSize.width * 0.89,
           height: containerSize.height * 0.5,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(width: 5, color: Colors.white),
-              borderRadius: BorderRadius.all(Radius.circular(20))),
           child: Image(
               image: AssetImage(_isRightAnswer
                   ? Constants.imageAssets.happyFace
@@ -348,6 +343,9 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
 
   @override
   void dispose() {
+    widget.timerHandler.cancelTimer();
+    widget._viewModel.closeCamera();
+    
     super.dispose();
   }
 }

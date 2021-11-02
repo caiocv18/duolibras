@@ -47,7 +47,7 @@ class ExerciseAppBarWidget extends StatefulWidget
 }
 
 class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
-  late bool _showContentTabBar;
+  late bool _showContentTabBar = widget.tabType == TabType.ContentBar;
   var _showNextExerciseArrow = false;
   double _currentProgress = 0;
   late var _currentLifes = widget._numberOfLifes;
@@ -97,7 +97,7 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
     final size = MediaQuery.of(ctx).size;
 
     return AppBar(
-        backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.transparent,
         toolbarHeight: widget._height,
         leadingWidth: 0,
@@ -132,7 +132,7 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
     final size = MediaQuery.of(ctx).size;
 
     return AppBar(
-        backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.transparent,
         toolbarHeight: widget._height,
         leadingWidth: 0,
