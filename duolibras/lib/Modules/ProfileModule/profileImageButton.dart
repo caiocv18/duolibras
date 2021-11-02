@@ -39,15 +39,13 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
   }
 
   Image _getProfileImage() {
-    // if (widget.imageUrl != null) {
-      return Image.network(widget.imageUrl!,
-                errorBuilder: (context, exception, stackTrace) {
-                    return Image(image: AssetImage(Constants.imageAssets.profileEmptyPhoto));
-                },
-            );
-    // } else {
-    //   return Image(image: AssetImage(Constants.imageAssets.profileEmptyPhoto));
-    // }
+    if (widget.imageUrl != null) {
+      if (widget.imageUrl!.contains("firebase"))
+        return Image(image: NetworkImage(widget.imageUrl!));
+    } 
+    
+    return Image(image: AssetImage(Constants.imageAssets.profileEmptyPhoto));
+    
   }
 
   Widget profileImageBoxDecoration() {

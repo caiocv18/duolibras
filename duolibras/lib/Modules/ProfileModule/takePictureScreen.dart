@@ -54,7 +54,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   }
 
   Widget buildBody(AsyncSnapshot snapshot, BoxConstraints constraints) {
-    final cameraRatio = _controller.value.aspectRatio;
+    var cameraRatio = 1.0;
+    try {
+      cameraRatio = _controller.value.aspectRatio;
+    } catch (e) {
+    }
     final size = MediaQuery.of(context).size;
     var scale = size.aspectRatio * cameraRatio;
 
