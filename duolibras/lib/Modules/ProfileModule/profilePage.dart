@@ -24,7 +24,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final nameTextfieldController = TextEditingController();
-
+  var isLogging = false;
   @override
   void initState() {
     super.initState();
@@ -32,10 +32,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer(builder: (ctx, UserModel userProvider, _) {
       return SafeArea(
-        bottom: false,
+          bottom: false,
         child: LayoutBuilder(builder: (ctx, constraint) {
          return Stack(
            children: 
@@ -58,26 +57,28 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(height: 20),
-                      ProfileImageButton(SharedFeatures.instance.isLoggedIn, widget._viewModel, userProvider.user.imageUrl, () => {
-                        _onPressedLoginButton()
-                      }),
-                      SizedBox(height: 60),
-                      Container(
-                        height: 60,
-                          child: CustomTextfield(
-                              nameTextfieldController,
-                              userProvider.user.name,
-                              SharedFeatures.instance.isLoggedIn,
-                              _handleSubmitNewName),
-                          width: constraint.maxWidth * 0.8),
-                      SizedBox(height: 60),
-                      _createProgressWidget(userProvider.user),
-                      SizedBox(height: 80),
-                      Container(
-                          width: constraint.maxWidth  * 0.4,
-                          height: 45,
-                          child: ExerciseButton(
-                            child: Center(
+            ProfileImageButton(
+                SharedFeatures.instance.isLoggedIn,
+                widget._viewModel,
+                userProvider.user.imageUrl,
+                () => {_onPressedLoginButton()}),
+            SizedBox(height: 60),
+            Container(
+                height: 60,
+                child: CustomTextfield(
+                    nameTextfieldController,
+                    userProvider.user.name,
+                    SharedFeatures.instance.isLoggedIn,
+                    _handleSubmitNewName),
+                width: constraint.maxWidth * 0.8),
+            SizedBox(height: 60),
+            _createProgressWidget(userProvider.user),
+            SizedBox(height: 80),
+            Container(
+                width: constraint.maxWidth * 0.4,
+                height: 45,
+                child: ExerciseButton(
+                  child: Center(
                               child: Text(SharedFeatures.instance.isLoggedIn
                                   ? "Sair"
                                   : "Entrar"),
@@ -120,18 +121,26 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(children: [
       Text(_getLevelTextByProgress(progress / 100),
           style: TextStyle(
-              fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w600, color: Colors.black)),
+              fontSize: 24,
+              fontFamily: "Nunito",
+              fontWeight: FontWeight.w600,
+              color: Colors.black)),
       SizedBox(
         height: 4,
       ),
       Text("${(progress * 100).toStringAsFixed(2)}%",
           style: TextStyle(
-              fontSize: 14, fontFamily: "Nunito", fontWeight: FontWeight.w500, color: Colors.black)),
+              fontSize: 14,
+              fontFamily: "Nunito",
+              fontWeight: FontWeight.w500,
+              color: Colors.black)),
     ]);
   }
 
   void _handleSubmitNewName(String newName) {
-    if (newName.isEmpty) { return ;}
+    if (newName.isEmpty) {
+      return;
+    }
     final userModel = locator<UserModel>().user;
 
     var user = User(
@@ -165,7 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _onPressedLoginButton() {
     if (SharedFeatures.instance.isLoggedIn) {
-      widget._viewModel.signOut();
+      widget._viewModel.signOut(context);
     } else {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => SignInPage()));

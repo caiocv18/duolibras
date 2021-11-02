@@ -16,37 +16,44 @@ class ProfileViewModel {
     return Service.instance.postUser(user, false);
   }
 
-  Future<void> signOut() {
-    return AuthenticationService.sharedInstance.signOut()
-    .onError((error, stackTrace)  {
+  Future<void> signOut(BuildContext context) {
+    final userProvider = Provider.of<UserModel>(context, listen: false);
+    userProvider.trailSectionIndex(User.initialTrailSectionIndex);
+    return AuthenticationService.sharedInstance
+        .signOut()
+        .onError((error, stackTrace) {
       Utils.logAppError(error);
     });
   }
 
-  Future<void> uploadImage(FileImage image, BuildContext context, {Function? exitClosure = null}) {
-    return Service.instance.uploadImage(image)
-    .then((url) async {
+  Future<void> uploadImage(FileImage image, BuildContext context,
+      {Function? exitClosure = null}) {
+    return Service.instance.uploadImage(image).then((url) async {
       final newUser = Provider.of<UserModel>(context, listen: false);
       newUser.setImageUrl(url);
 
-      return Service.instance.postUser(newUser.user, false)
-      .catchError((error, stackTrace) {
+      return Service.instance
+          .postUser(newUser.user, false)
+          .catchError((error, stackTrace) {
         final appError = Utils.logAppError(error);
         Completer completer = Completer();
 
-        _errorHandler.showModal(appError, context, 
-          tryAgainClosure: () => _errorHandler.tryAgainClosure(() => Service.instance.postUser(newUser.user, false), context, completer),
-          exitClosure: () => completer.complete());
+        _errorHandler.showModal(appError, context,
+            tryAgainClosure: () => _errorHandler.tryAgainClosure(
+                () => Service.instance.postUser(newUser.user, false),
+                context,
+                completer),
+            exitClosure: () => completer.complete());
         return completer.future;
       });
-    })
-    .catchError((error, stackTrace) {
+    }).catchError((error, stackTrace) {
       final appError = Utils.logAppError(error);
       Completer completer = Completer();
 
-      _errorHandler.showModal(appError, context, 
-        tryAgainClosure: () => _errorHandler.tryAgainClosure(() => Service.instance.uploadImage(image), context, completer),
-        exitClosure: () => completer.complete());
+      _errorHandler.showModal(appError, context,
+          tryAgainClosure: () => _errorHandler.tryAgainClosure(
+              () => Service.instance.uploadImage(image), context, completer),
+          exitClosure: () => completer.complete());
       return completer.future;
     });
   }

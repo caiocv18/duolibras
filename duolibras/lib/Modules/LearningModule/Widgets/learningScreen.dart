@@ -99,7 +99,7 @@ class _LearningScreenState extends State<LearningScreen>
   }
 
   void setTrailPathIndex() {
-    Future.delayed(Duration(milliseconds: 800)).then((value) {
+    Future.delayed(Duration(milliseconds: 900)).then((value) {
       _currentSectionIndex = Provider.of<UserModel>(this.context, listen: false)
           .user
           .trailSectionIndex;
@@ -118,6 +118,7 @@ class _LearningScreenState extends State<LearningScreen>
           currentSectionIndex = _currentSectionIndex + 1;
         }
       }
+      setState(() {});
     });
   }
 
@@ -132,22 +133,22 @@ class _LearningScreenState extends State<LearningScreen>
                 alignment: AlignmentDirectional.topCenter,
                 children: [
                   Container(
-                            height: constraints.maxHeight,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(
-                                    Constants.imageAssets.background_home),
-                                fit: BoxFit.none,
-                              ),
-                            ),
-                          ),
-                    SingleChildScrollView(
-                    controller: scrollController,
-                    child: 
-                      _buildBody(context, viewModel, constraints.maxHeight)
+                    height: constraints.maxHeight,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image:
+                            AssetImage(Constants.imageAssets.background_home),
+                        fit: BoxFit.none,
+                      ),
+                    ),
                   ),
-                  SectionTitleWidget(scrollController, viewModel.allSections, viewModel.sectionsForModules)
+                  SingleChildScrollView(
+                      controller: scrollController,
+                      child: _buildBody(
+                          context, viewModel, constraints.maxHeight)),
+                  SectionTitleWidget(scrollController, viewModel.allSections,
+                      viewModel.sectionsForModules)
                 ],
               );
             }));
@@ -173,7 +174,7 @@ class _LearningScreenState extends State<LearningScreen>
                       )
                     else
                       Stack(children: [
-                        RepaintBoundary(child: _buildPath(maxHeight)),
+                        _buildPath(maxHeight),
                         _buildTrail(maxHeight, viewModel)
                       ]),
                   ]),
