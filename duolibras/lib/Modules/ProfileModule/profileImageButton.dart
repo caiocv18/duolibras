@@ -33,19 +33,8 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
             alignment: AlignmentDirectional.bottomEnd,
             fit: StackFit.loose,
             children: [
-                Container(
-                  height: 145,
-                  width: 145,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image:  DecorationImage(
-                                fit: BoxFit.cover,
-                                image: _getProfileImage()
-                      ),
-                      border: Border.all(width: 4, color: HexColor.fromHex("4982F6"))
-                  )
-                ),
-                Positioned(child: cameraButton(context), bottom: -15)
+              profileImageBoxDecoration(),
+              Positioned(child: cameraButton(context), bottom: -15)
             ])));
   }
 
@@ -55,6 +44,26 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
     } else {
       return AssetImage(Constants.imageAssets.profileEmptyPhoto);
     }
+  }
+
+  Widget profileImageBoxDecoration() {
+    final kGradientBoxDecoration = BoxDecoration(
+      // image: DecorationImage(image: _getProfileImage(), fit: BoxFit.cover),
+      shape: BoxShape.circle,
+      gradient: LinearGradient(colors: [HexColor.fromHex("4982F6"), HexColor.fromHex("2CC4FC")]),
+    );
+
+    return Container(
+      height: 145,
+      width: 145,
+      child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Container(
+                        decoration: BoxDecoration(image: DecorationImage(image: _getProfileImage(), fit: BoxFit.cover), shape: BoxShape.circle)
+                      ),
+            ),
+      decoration: kGradientBoxDecoration,
+    );
   }
 
   Widget cameraButton(BuildContext context) {

@@ -131,12 +131,23 @@ class _LearningScreenState extends State<LearningScreen>
               return Stack(
                 alignment: AlignmentDirectional.topCenter,
                 children: [
-                  SingleChildScrollView(
-                      controller: scrollController,
-                      child: _buildBody(
-                          context, viewModel, constraints.maxHeight)),
-                  SectionTitleWidget(scrollController, viewModel.allSections,
-                      viewModel.sectionsForModules)
+                  Container(
+                            height: constraints.maxHeight,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                    Constants.imageAssets.background_home),
+                                fit: BoxFit.none,
+                              ),
+                            ),
+                          ),
+                    SingleChildScrollView(
+                    controller: scrollController,
+                    child: 
+                      _buildBody(context, viewModel, constraints.maxHeight)
+                  ),
+                  SectionTitleWidget(scrollController, viewModel.allSections, viewModel.sectionsForModules)
                 ],
               );
             }));
@@ -151,7 +162,6 @@ class _LearningScreenState extends State<LearningScreen>
                 children: [
                   SizedBox(height: 20),
                   Stack(children: [
-                    _buildBackgroundImages(viewModel),
                     if (isLoadingPath)
                       AnimatedOpacity(
                         duration: Duration(milliseconds: 1200),

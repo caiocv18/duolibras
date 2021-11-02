@@ -65,15 +65,9 @@ class _RankingScreenState extends State<RankingScreen> {
                   ),
                 ),
               ),
-              SingleChildScrollView(
-              child: Container(
-                  height: constraint.maxHeight,
-                  color: Colors.transparent,
-                  child: SharedFeatures.instance.isLoggedIn
-                      ? createRankingBody(context, constraint.maxHeight)
-                      : createUnllogedBody(context, Size(constraint.maxWidth, constraint.maxHeight))
-              ),
-            ),]
+              SharedFeatures.instance.isLoggedIn
+                  ? createRankingBody(context, constraint.maxHeight)
+                  : createUnllogedBody(context, Size(constraint.maxWidth, constraint.maxHeight)),]
           );
         })
       );
@@ -87,10 +81,9 @@ class _RankingScreenState extends State<RankingScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            height: containerHeight * 0.84,
+            height: containerHeight,
             child: ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.only(bottom: 12),
+                padding: EdgeInsets.only(bottom: 15),
                 itemCount: usersRank.length,
                 itemBuilder: (ctx, index) {
                   return RankingTile(

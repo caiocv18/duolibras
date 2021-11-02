@@ -17,6 +17,7 @@ class ExerciseMLScreen extends ExerciseStateful {
   final ExerciseViewModel _viewModel;
   final Exercise _exercise;
   final bool _isSpelling;
+  final timerHandler = TimerHandler(Duration(seconds: 1));
 
   ExerciseMLScreen(this._exercise, this._viewModel, this._isSpelling);
 
@@ -180,7 +181,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
       TimeBar(
           Size(containerSize.width * 0.93, containerSize.height * 0.04),
           totalTime,
-          [Color.fromRGBO(73, 130, 246, 1), Color.fromRGBO(44, 196, 252, 1)],
+          [Color.fromRGBO(73, 130, 246, 1), Color.fromRGBO(44, 196, 252, 1)], widget.timerHandler,
           () {
         widget._viewModel.isAnswerCorrect("", widget._exercise.id);
         _finishExercise(false);
@@ -284,10 +285,8 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
 
     widget._viewModel.getMlModelStream().listen((value) {
       //Update results on screen
-      setState(() {
         _handleCameraPrediction(
             value.first.label, value.first.confidence, this.context);
-      });
     }, onDone: () {}, onError: (error) {});
 
     setState(() {
@@ -295,8 +294,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     });
   }
 
-  void _handleCameraPrediction(
-      String label, double confidence, BuildContext ctx) {
+  void _handleCameraPrediction(String label, double confidence, BuildContext ctx) {
     if (!widget._isSpelling) {
       _handleCameraPredictionLetter(label, confidence, ctx);
     } else {
@@ -304,8 +302,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     }
   }
 
-  void _handleCameraPredictionLetter(
-      String label, double confidence, BuildContext ctx) {
+  void _handleCameraPredictionLetter(String label, double confidence, BuildContext ctx) {
     if (widget._viewModel
             .isGestureCorrect(label, confidence, widget._exercise) &&
         !_finishedExercise) {
@@ -317,8 +314,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     }
   }
 
-  void _handleCameraPredictionSpelling(
-      String newLetter, double confidence, BuildContext ctx) {
+  void _handleCameraPredictionSpelling(String newLetter, double confidence, BuildContext ctx) {
     if (widget._viewModel
         .isSpellingCorrect(newLetter, confidence, widget._exercise)) {
       setState(() {
@@ -332,11 +328,16 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   }
 
   void _finishExercise(bool rightAnswer) {
+    widget.timerHandler.cancelTimer();
+
     setState(() {
       _finishedExercise = true;
       _isRightAnswer = rightAnswer;
-      widget._viewModel.closeCamera();
-      widget._viewModel.showNextArrow();
+      Future.delayed(Duration(milliseconds: 100)).then((value) {
+        widget._viewModel.closeCamera();
+        widget._viewModel.showNextArrow();
+      });
+      
     });
   }
 

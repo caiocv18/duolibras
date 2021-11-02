@@ -23,7 +23,7 @@ class _MultiChoicesWidgetState extends State<MultiChoicesWidget> {
     return Column(
       children: [
         Container(
-          height: constraint.maxHeight * 0.15,
+          height: 45,
           width: constraint.maxWidth * 0.7,
           child: ExerciseButton(
             child: Center(
@@ -40,7 +40,7 @@ class _MultiChoicesWidgetState extends State<MultiChoicesWidget> {
             size: 25,
             color: _getButtonColor(title), //Colors.white, //Color(0xFFCA3034),
             onPressed: () {
-              if (state == ExerciseScreenState.DidAnswer) return;
+              // if (state == ExerciseScreenState.DidAnswer) return;
               setState(() {
                 state = ExerciseScreenState.DidAnswer;
                 selectAnswer = title;

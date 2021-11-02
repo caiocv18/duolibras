@@ -60,6 +60,7 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
     final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(234, 234, 234, 1),
         body: SafeArea(
             bottom: false,
@@ -89,21 +90,11 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
   Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
     return SingleChildScrollView(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      child: Stack(
-        children: [
-            // Container(
-            //     height: containerSize.height,
-            //     width: double.infinity,
-            //     decoration: BoxDecoration(
-            //       image: DecorationImage(
-            //         image: AssetImage(
-            //             Constants.imageAssets.background_home),
-            //         fit: BoxFit.none,
-            //       ),
-            //     ),
-            //   ),
-            Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+      child: Container(
+        height: containerSize.height,
+        child: 
+          Column(
+          mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
                   height: containerSize.height * 0.10,
@@ -165,7 +156,7 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
               ),
             ],
           ),
-        ]),
+      ),
     );
   }
 }
