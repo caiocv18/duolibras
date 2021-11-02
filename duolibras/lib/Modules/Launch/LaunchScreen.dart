@@ -64,7 +64,7 @@ class _LaunchScreenState extends State<LaunchScreen> with SingleTickerProviderSt
                           image: DecorationImage(
                             image: AssetImage(
                                 Constants.imageAssets.background_home),
-                            fit: BoxFit.none,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),

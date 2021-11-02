@@ -39,11 +39,9 @@ class LearningScreen extends StatefulWidget {
   _LearningScreenState createState() => _LearningScreenState();
 }
 
-class _LearningScreenState extends State<LearningScreen>
-    with SingleTickerProviderStateMixin {
+class _LearningScreenState extends State<LearningScreen> with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController animationController;
-  // var _currentSectionIndex = 0;
   var currentSectionIndex = 0;
 
   late String currentSection =
@@ -80,8 +78,6 @@ class _LearningScreenState extends State<LearningScreen>
         if (animation.isCompleted) {
           animationController.stop();
           isAnimating = false;
-          // index += 1;
-          // animationController.forward(from: 0.0);
         }
       });
     });
@@ -138,7 +134,7 @@ class _LearningScreenState extends State<LearningScreen>
                       image: DecorationImage(
                         image:
                             AssetImage(Constants.imageAssets.background_home),
-                        fit: BoxFit.none,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

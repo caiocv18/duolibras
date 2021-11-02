@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +26,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     _controller = CameraController(
       widget.camera,
       ResolutionPreset.high,
-    );
+      enableAudio: false,
+      imageFormatGroup: defaultTargetPlatform == TargetPlatform.iOS ? ImageFormatGroup.bgra8888 : ImageFormatGroup.yuv420);
 
     _initializeControllerFuture = _controller.initialize();
 

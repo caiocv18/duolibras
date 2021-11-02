@@ -16,6 +16,9 @@ class RankingTile extends StatelessWidget {
 
   Widget _imageUserWidget(UserModel userModel) {
     if (userModel.user.id == user.id) {
+      if (user.imageUrl == null) {
+        return Container(height: 35, child: Icon(Icons.person));
+      }
       return Container(
           height: 55,
           decoration: new BoxDecoration(

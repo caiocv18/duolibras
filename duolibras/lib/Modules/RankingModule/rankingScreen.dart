@@ -61,7 +61,7 @@ class _RankingScreenState extends State<RankingScreen> {
                   image: DecorationImage(
                     image: AssetImage(
                         Constants.imageAssets.background_home),
-                    fit: BoxFit.none,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),

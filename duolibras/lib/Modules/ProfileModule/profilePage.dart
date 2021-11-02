@@ -43,7 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage(Constants.imageAssets.background_home),
-                    fit: BoxFit.none,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),

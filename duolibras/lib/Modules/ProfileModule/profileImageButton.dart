@@ -38,12 +38,16 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
             ])));
   }
 
-  ImageProvider _getProfileImage() {
-    if (widget.imageUrl != null) {
-      return NetworkImage(widget.imageUrl!);
-    } else {
-      return AssetImage(Constants.imageAssets.profileEmptyPhoto);
-    }
+  Image _getProfileImage() {
+    // if (widget.imageUrl != null) {
+      return Image.network(widget.imageUrl!,
+                errorBuilder: (context, exception, stackTrace) {
+                    return Image(image: AssetImage(Constants.imageAssets.profileEmptyPhoto));
+                },
+            );
+    // } else {
+    //   return Image(image: AssetImage(Constants.imageAssets.profileEmptyPhoto));
+    // }
   }
 
   Widget profileImageBoxDecoration() {
@@ -59,7 +63,7 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
       child: Padding(
               padding: const EdgeInsets.all(3.0),
               child: Container(
-                        decoration: BoxDecoration(image: DecorationImage(image: _getProfileImage(), fit: BoxFit.cover), shape: BoxShape.circle)
+                        decoration: BoxDecoration(image: DecorationImage(image: _getProfileImage().image, fit: BoxFit.cover), shape: BoxShape.circle)
                       ),
             ),
       decoration: kGradientBoxDecoration,
