@@ -48,24 +48,21 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> with WidgetsBind
         ],
       ) :
       Container(
-        child: Padding(
-          padding: const EdgeInsets.all(0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(height: 45.0),
-              Container(
-                  child: emailTextfield(),
-                  height: containerSize.height * 0.08,
-                  width: containerSize.width * 0.8),
-              SizedBox(height: 35.0),
-              Container(
-                  child: loginButton(context),
-                  height: 40,
-                  width: containerSize.width * 0.8)
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(height: 45.0),
+            Container(
+                child: emailTextfield(),
+                height: containerSize.height * 0.08,
+                width: containerSize.width * 0.8),
+            SizedBox(height: 35.0),
+            Container(
+                child: loginButton(context),
+                height: 50,
+                width: containerSize.width * 0.8)
+          ],
         ),
       )
     );

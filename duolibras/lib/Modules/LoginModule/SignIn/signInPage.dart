@@ -58,13 +58,13 @@ class SignInPage extends StatelessWidget {
                           Container(
                             child: AppleSignInWidget(viewModel),
                             width: constraint.maxWidth * 0.8,
-                            height: 40,
+                            height: 50,
                           ),
                           SizedBox(height: 15.0),
                           Container(
                             child: GoogleSignInButton(viewModel),
                             width: constraint.maxWidth * 0.8,
-                            height: 60,
+                            height: 50,
                           )
                         ],
                       ),

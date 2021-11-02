@@ -17,50 +17,47 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: _isSigningIn
-          ? 
-          Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("93CAFA")),
-            ),
-          )
-          : OutlinedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+    return _isSigningIn
+        ? 
+        Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("93CAFA")),
+          ),
+        )
+        : OutlinedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.white),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              onPressed: () async {
-                loginWithGoogle(context);
-              },
-              child: Container(
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(Constants.imageAssets.googleIcon),
-                      SizedBox(
-                        width: 7,
+            ),
+            onPressed: () async {
+              loginWithGoogle(context);
+            },
+            child: Container(
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(Constants.imageAssets.googleIcon),
+                    SizedBox(
+                      width: 7,
+                    ),
+                    Text(
+                      'Entrar com o Google',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w600,
                       ),
-                      Text(
-                        'Entrar com o Google',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
                 ),
               ),
             ),
-    );
+          );
   }
 
   void loginWithGoogle(BuildContext context) async {

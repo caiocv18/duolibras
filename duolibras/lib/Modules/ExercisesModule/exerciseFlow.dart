@@ -172,11 +172,11 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
                     backgroundColor: Colors.white,
                     child: LayoutBuilder(builder: (ctx, constraint) {
                       return Container(
-                        height: constraint.maxHeight * 0.37,
+                        height: 223,
                         child: Center(
                             child: Column(
                               children: [
-                                SizedBox(height: 40),
+                                SizedBox(height: 35),
                                 Container(
                                   width: 170,
                                   child: 
@@ -186,22 +186,22 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
                                 ),
                                 SizedBox(height: 10),
                                 Container(height: 2, width: constraint.maxWidth, color: Colors.grey[300]),
-                                SizedBox(height: 10),
+                                // SizedBox(height: 10),
                                 Container(
                                   width: 170,
-                                  height: 40,
+                                  height: 53,
                                   child: TextButton(child: Text("Sim",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w800, color: HexColor.fromHex('E97070'), fontSize: 18)),
                                     onPressed: () => Navigator.of(context).pop(true),
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                // SizedBox(height: 10),
                                 Container(height: 2, width: constraint.maxWidth, color: Colors.grey[300]),
-                                SizedBox(height: 10),
+                                // SizedBox(height: 10),
                                 Container(
                                   width: 170,
-                                  height: 40,
+                                  height: 53,
                                   child: TextButton(child: Text("Não",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w400, color: Colors.black, fontSize: 18)),
