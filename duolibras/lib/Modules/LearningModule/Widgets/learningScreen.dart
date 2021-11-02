@@ -43,14 +43,11 @@ class _LearningScreenState extends State<LearningScreen>
     with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController animationController;
-  late var _currentSectionIndex =
-      Provider.of<UserModel>(this.context, listen: false)
-          .user
-          .trailSectionIndex;
+  var _currentSectionIndex = 0;
   late var currentSectionIndex =
       _currentSectionIndex == User.initialTrailSectionIndex
           ? 0
-          : _currentSectionIndex;
+          : _currentSectionIndex + 1;
 
   late String currentSection =
       widget._viewModel.allSections[currentSectionIndex].title;
@@ -101,10 +98,34 @@ class _LearningScreenState extends State<LearningScreen>
     super.initState();
   }
 
+  void setTrailPathIndex() {
+    Future.delayed(Duration(milliseconds: 800)).then((value) {
+      _currentSectionIndex = Provider.of<UserModel>(this.context, listen: false)
+          .user
+          .trailSectionIndex;
+
+      if (_currentSectionIndex == User.initialTrailSectionIndex) {
+        currentSectionIndex = 0;
+      } else {
+        if (_currentSectionIndex == widget._viewModel.allSections.length) {
+          currentSectionIndex = _currentSectionIndex;
+          animationController.duration = Duration(milliseconds: 150);
+          animationController.forward().then((_) {
+            animationController.duration = Duration(seconds: 2);
+          });
+          return;
+        } else {
+          currentSectionIndex = _currentSectionIndex + 1;
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseScreen<LearningViewModel>(
-        onModelReady: (viewModel) => {viewModel.fetchSections(context)},
+        onModelReady: (viewModel) =>
+            {viewModel.fetchSections(context).then((_) => setTrailPathIndex())},
         builder: (_, viewModel, __) => LayoutBuilder(
                 builder: (BuildContext ctx, BoxConstraints constraints) {
               return Stack(
@@ -152,7 +173,7 @@ class _LearningScreenState extends State<LearningScreen>
                       )
                     else
                       Stack(children: [
-                        _buildPath(maxHeight),
+                        RepaintBoundary(child: _buildPath(maxHeight)),
                         _buildTrail(maxHeight, viewModel)
                       ]),
                   ]),
@@ -174,16 +195,13 @@ class _LearningScreenState extends State<LearningScreen>
   Widget _buildBackgroundImages(LearningViewModel viewModel) {
     final pagesTotal = viewModel.wrapperSectionPage.total;
     int totalImages = 1;
-    if (pagesTotal > 3){
-      totalImages = (pagesTotal/3).round();
+    if (pagesTotal > 3) {
+      totalImages = (pagesTotal / 3).round();
     }
     return Column(
-            children: 
-              List.generate(totalImages,(index){
-                return Image(image: AssetImage(
-                          Constants.imageAssets.background_home));
-              })
-          );
+        children: List.generate(totalImages, (index) {
+      return Image(image: AssetImage(Constants.imageAssets.background_home));
+    }));
   }
 
   Widget _buildTrail(double maxHeight, LearningViewModel viewModel) {
@@ -226,19 +244,18 @@ class _LearningScreenState extends State<LearningScreen>
     return Container(
       height: 200,
       width: double.infinity,
-      child: ModuleWidget(module,
-        viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
-        widget._viewModel,
-        rowAlignment,
-        handleFinishExercise,
-        index == 0
-        ? true
-        : viewModel.wrapperSectionPage.isModuleAvaiable(
-            viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
-            module.id,
-            ctx
-          )
-        ),
+      child: ModuleWidget(
+          module,
+          viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
+          widget._viewModel,
+          rowAlignment,
+          handleFinishExercise,
+          index == 0
+              ? true
+              : viewModel.wrapperSectionPage.isModuleAvaiable(
+                  viewModel.wrapperSectionPage.sectionAtIndex(index)?.id ?? "",
+                  module.id,
+                  ctx)),
     );
   }
 
