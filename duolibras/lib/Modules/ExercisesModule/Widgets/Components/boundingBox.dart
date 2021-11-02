@@ -1,4 +1,5 @@
 
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:flutter/material.dart';
 
 class BoundingBox extends StatelessWidget {
@@ -7,9 +8,23 @@ class BoundingBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final kGradientBoxDecoration = BoxDecoration(
+      color: Colors.transparent,
+      shape: BoxShape.circle,
+      gradient: LinearGradient(colors: [HexColor.fromHex("4982F6"), HexColor.fromHex("2CC4FC")]),
+    );
+
     return Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.blue, width: 3.0)));
+      height: 145,
+      width: 145,
+      child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Container(
+                color: Colors.transparent,
+              ),
+            ),
+      decoration: kGradientBoxDecoration,
+    );
   }
 }
 

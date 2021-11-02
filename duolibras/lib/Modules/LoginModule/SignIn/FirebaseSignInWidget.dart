@@ -17,10 +17,10 @@ class FirebaseSignInWidget extends StatefulWidget {
   _FirebaseSignInWidget createState() => _FirebaseSignInWidget();
 }
 
-class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
-    with WidgetsBindingObserver {
+class _FirebaseSignInWidget extends State<FirebaseSignInWidget> with WidgetsBindingObserver {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   final emailTextfieldController = TextEditingController();
+  var _isSigningIn = false;
 
   @override
   void initState() {
@@ -37,7 +37,17 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
     final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Center(
-      child: Container(
+      child: 
+      _isSigningIn ?
+      Column(
+        children: [
+          SizedBox(height: containerSize.height * 0.1), 
+          CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("93CAFA")),
+          ),
+        ],
+      ) :
+      Container(
         child: Padding(
           padding: const EdgeInsets.all(0),
           child: Column(
@@ -57,7 +67,7 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
             ],
           ),
         ),
-      ),
+      )
     );
   }
 
@@ -70,14 +80,16 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
         child: Center(
           child: Text("Entrar",
               style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 22,
-                  fontFamily: "Nunito",
-                  fontWeight: FontWeight.w500),
-              textAlign: TextAlign.center),
+                color: Colors.black,
+                fontSize: 22,
+                fontFamily: "Nunito",
+                fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center),
         ),
         size: 20,
-        color: HexColor.fromHex("93CAFA"));
+        color: HexColor.fromHex("93CAFA"),
+        onPressed: () => signIn(ctx)
+        );
   }
 
   @override
@@ -119,8 +131,15 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
   }
 
   void signIn(BuildContext ctx) async {
+    setState(() {
+      _isSigningIn = true;
+    });
     await widget._viewModel.login(ctx, LoginType.Firebase,
-        loginModel: AuthenticationModel(email: emailTextfieldController.text));
+        loginModel: AuthenticationModel(email: emailTextfieldController.text)).then((value) {
+          setState(() {
+            _isSigningIn = false;
+          });
+        });
   }
 
 

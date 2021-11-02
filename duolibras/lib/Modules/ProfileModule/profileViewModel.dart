@@ -16,9 +16,10 @@ class ProfileViewModel {
     return Service.instance.postUser(user, false);
   }
 
-  Future<void> signOut(BuildContext context) {
+  Future<void> signOut(BuildContext context) async {
     final userProvider = Provider.of<UserModel>(context, listen: false);
     userProvider.trailSectionIndex(User.initialTrailSectionIndex);
+    await Future.delayed(Duration(seconds: 1));
     return AuthenticationService.sharedInstance
         .signOut()
         .onError((error, stackTrace) {
