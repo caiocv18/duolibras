@@ -23,8 +23,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  var isLoading = false;
   final nameTextfieldController = TextEditingController();
-  var isLogging = false;
   @override
   void initState() {
     super.initState();
@@ -35,65 +35,62 @@ class _ProfilePageState extends State<ProfilePage> {
     return Consumer(builder: (ctx, UserModel userProvider, _) {
       return SafeArea(
           bottom: false,
-        child: LayoutBuilder(builder: (ctx, constraint) {
-         return Stack(
-           children: 
-           [
-             Container(
-                  height: constraint.maxHeight,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          Constants.imageAssets.background_home),
-                      fit: BoxFit.none,
-                    ),
+          child: LayoutBuilder(builder: (ctx, constraint) {
+            return Stack(children: [
+              Container(
+                height: constraint.maxHeight,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(Constants.imageAssets.background_home),
+                    fit: BoxFit.none,
                   ),
                 ),
-             SingleChildScrollView(
-              child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 20),
-            ProfileImageButton(
-                SharedFeatures.instance.isLoggedIn,
-                widget._viewModel,
-                userProvider.user.imageUrl,
-                () => {_onPressedLoginButton()}),
-            SizedBox(height: 60),
-            Container(
-                height: 60,
-                child: CustomTextfield(
-                    nameTextfieldController,
-                    userProvider.user.name,
-                    SharedFeatures.instance.isLoggedIn,
-                    _handleSubmitNewName),
-                width: constraint.maxWidth * 0.8),
-            SizedBox(height: 60),
-            _createProgressWidget(userProvider.user),
-            SizedBox(height: 80),
-            Container(
-                width: constraint.maxWidth * 0.4,
-                height: 45,
-                child: ExerciseButton(
-                  child: Center(
-                              child: Text(SharedFeatures.instance.isLoggedIn
-                                  ? "Sair"
-                                  : "Entrar"),
-                            ),
-                            size: 20,
-                            color: HexColor.fromHex("4982F6"),
-                            onPressed: () => _onPressedLoginButton(),
-                          )),
-                      SizedBox(height: 30),
-                    ],
-                  ))),
-           ]
-         );
-        })
-      );
+              ),
+              isLoading
+                  ? CircularProgressIndicator()
+                  : SingleChildScrollView(
+                      child: Center(
+                          child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 20),
+                        ProfileImageButton(
+                            SharedFeatures.instance.isLoggedIn,
+                            widget._viewModel,
+                            userProvider.user.imageUrl,
+                            () => {_onPressedLoginButton()}),
+                        SizedBox(height: 60),
+                        Container(
+                            // height: 60,
+                            child: CustomTextfield(
+                                nameTextfieldController,
+                                userProvider.user.name,
+                                SharedFeatures.instance.isLoggedIn,
+                                _handleSubmitNewName),
+                            width: constraint.maxWidth * 0.8),
+                        SizedBox(height: 60),
+                        _createProgressWidget(userProvider.user),
+                        SizedBox(height: 80),
+                        Container(
+                            width: constraint.maxWidth * 0.4,
+                            height: 45,
+                            child: ExerciseButton(
+                              child: Center(
+                                child: Text(SharedFeatures.instance.isLoggedIn
+                                    ? "Sair"
+                                    : "Entrar"),
+                              ),
+                              size: 20,
+                              color: HexColor.fromHex("4982F6"),
+                              onPressed: () => _onPressedLoginButton(),
+                            )),
+                        SizedBox(height: 30),
+                      ],
+                    ))),
+            ]);
+          }));
     });
   }
 
@@ -174,7 +171,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _onPressedLoginButton() {
     if (SharedFeatures.instance.isLoggedIn) {
-      widget._viewModel.signOut(context);
+      setState(() {
+        isLoading = true;
+      });
+      widget._viewModel.signOut(context).then((value) => isLoading = false);
     } else {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => SignInPage()));

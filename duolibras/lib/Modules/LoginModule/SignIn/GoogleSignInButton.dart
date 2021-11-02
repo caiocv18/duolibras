@@ -1,3 +1,4 @@
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,9 +20,12 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: _isSigningIn
-          ? CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            )
+          ? 
+          Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("93CAFA")),
+            ),
+          )
           : OutlinedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -64,15 +68,14 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       _isSigningIn = true;
     });
     widget._viewModel
-        .login(context, LoginType.Google)
-        .then((value) {
-          if (value) {
-             Navigator.of(context).pop(true);
-          }
+      .login(context, LoginType.Google)
+      .then((value) {
+        if (value) {
+            Navigator.of(context).pop(true);
+        }
+        setState(() {
+        _isSigningIn = false;
         });
-
-    setState(() {
-      _isSigningIn = false;
     });
   }
 }
