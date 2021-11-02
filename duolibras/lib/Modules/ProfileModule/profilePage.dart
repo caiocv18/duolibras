@@ -25,7 +25,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   var isLoading = false;
   final nameTextfieldController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -33,69 +32,65 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer(builder: (ctx, UserModel userProvider, _) {
       return SafeArea(
-        bottom: false,
-        child: LayoutBuilder(builder: (ctx, constraint) {
-         return Stack(
-           children: 
-           [
-             Container(
-                  height: constraint.maxHeight,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          Constants.imageAssets.background_home),
-                      fit: BoxFit.none,
-                    ),
+          bottom: false,
+          child: LayoutBuilder(builder: (ctx, constraint) {
+            return Stack(children: [
+              Container(
+                height: constraint.maxHeight,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(Constants.imageAssets.background_home),
+                    fit: BoxFit.none,
                   ),
                 ),
-             isLoading ? CircularProgressIndicator() :
-             SingleChildScrollView(
-              child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 20),
-                      ProfileImageButton(SharedFeatures.instance.isLoggedIn, widget._viewModel, userProvider.user.imageUrl, () => {
-                        _onPressedLoginButton()
-                      }),
-                      SizedBox(height: 60),
-                      Container(
-                          child: CustomTextfield(
-                              nameTextfieldController,
-                              userProvider.user.name,
-                              SharedFeatures.instance.isLoggedIn,
-                              _handleSubmitNewName),
-                          width: constraint.maxWidth * 0.8),
-                      SizedBox(height: 60),
-                      _createProgressWidget(userProvider.user),
-                      SizedBox(height: 80),
-                      Container(
-                          width: constraint.maxWidth  * 0.4,
-                          height: 45,
-                          child: ExerciseButton(
-                            child: Center(
-                              child: Text(SharedFeatures.instance.isLoggedIn
-                                  ? "Sair"
-                                  : "Entrar"),
-                            ),
-                            size: 20,
-                            color: HexColor.fromHex("4982F6"),
-                            onPressed: () => _onPressedLoginButton(),
-                          )),
-                      SizedBox(height: 30),
-                    ],
-                  )
-                )
               ),
-           ]
-         );
-        })
-      );
+              isLoading
+                  ? CircularProgressIndicator()
+                  : SingleChildScrollView(
+                      child: Center(
+                          child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 20),
+                        ProfileImageButton(
+                            SharedFeatures.instance.isLoggedIn,
+                            widget._viewModel,
+                            userProvider.user.imageUrl,
+                            () => {_onPressedLoginButton()}),
+                        SizedBox(height: 60),
+                        Container(
+                            // height: 60,
+                            child: CustomTextfield(
+                                nameTextfieldController,
+                                userProvider.user.name,
+                                SharedFeatures.instance.isLoggedIn,
+                                _handleSubmitNewName),
+                            width: constraint.maxWidth * 0.8),
+                        SizedBox(height: 60),
+                        _createProgressWidget(userProvider.user),
+                        SizedBox(height: 80),
+                        Container(
+                            width: constraint.maxWidth * 0.4,
+                            height: 45,
+                            child: ExerciseButton(
+                              child: Center(
+                                child: Text(SharedFeatures.instance.isLoggedIn
+                                    ? "Sair"
+                                    : "Entrar"),
+                              ),
+                              size: 20,
+                              color: HexColor.fromHex("4982F6"),
+                              onPressed: () => _onPressedLoginButton(),
+                            )),
+                        SizedBox(height: 30),
+                      ],
+                    ))),
+            ]);
+          }));
     });
   }
 
@@ -123,18 +118,26 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(children: [
       Text(_getLevelTextByProgress(progress / 100),
           style: TextStyle(
-              fontSize: 24, fontFamily: "Nunito", fontWeight: FontWeight.w600, color: Colors.black)),
+              fontSize: 24,
+              fontFamily: "Nunito",
+              fontWeight: FontWeight.w600,
+              color: Colors.black)),
       SizedBox(
         height: 4,
       ),
       Text("${(progress * 100).toStringAsFixed(2)}%",
           style: TextStyle(
-              fontSize: 14, fontFamily: "Nunito", fontWeight: FontWeight.w500, color: Colors.black)),
+              fontSize: 14,
+              fontFamily: "Nunito",
+              fontWeight: FontWeight.w500,
+              color: Colors.black)),
     ]);
   }
 
   void _handleSubmitNewName(String newName) {
-    if (newName.isEmpty) { return ;}
+    if (newName.isEmpty) {
+      return;
+    }
     final userModel = locator<UserModel>().user;
 
     var user = User(
@@ -171,7 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         isLoading = true;
       });
-      widget._viewModel.signOut().then((value) => isLoading = false);
+      widget._viewModel.signOut(context).then((value) => isLoading = false);
     } else {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => SignInPage()));

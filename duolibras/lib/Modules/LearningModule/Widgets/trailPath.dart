@@ -20,6 +20,10 @@ class TrailPath extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (colorForRows.length <= 0) {
+      return;
+    }
+
     Paint paint = Paint()
       ..color = colorForRows.entries.elementAt(0).key
       ..style = PaintingStyle.fill
