@@ -23,6 +23,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  var isLoading = false;
   final nameTextfieldController = TextEditingController();
 
   @override
@@ -51,6 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
+             isLoading ? CircularProgressIndicator() :
              SingleChildScrollView(
               child: Center(
                   child: Column(
@@ -63,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       }),
                       SizedBox(height: 60),
                       Container(
-                        height: 60,
+                        // height: 60,
                           child: CustomTextfield(
                               nameTextfieldController,
                               userProvider.user.name,
@@ -88,7 +90,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           )),
                       SizedBox(height: 30),
                     ],
-                  ))),
+                  )
+                )
+              ),
            ]
          );
         })
@@ -165,7 +169,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _onPressedLoginButton() {
     if (SharedFeatures.instance.isLoggedIn) {
-      widget._viewModel.signOut();
+      setState(() {
+        isLoading = true;
+      });
+      widget._viewModel.signOut().then((value) => isLoading = false);
     } else {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => SignInPage()));

@@ -136,7 +136,7 @@ class _LearningScreenState extends State<LearningScreen>
       double maxHeight) {
     return Center(
         child: viewModel.state == ScreenState.Loading
-            ? CircularProgressIndicator()
+            ? null
             : Column(
                 children: [
                   SizedBox(height: 20),
