@@ -45,26 +45,19 @@ class _ErrorScreenState extends State<ErrorScreen> {
         child: Container(
             width: double.infinity,
             height: containerHeight * 0.9,
-            child: Stack(children: [
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(Constants.imageAssets.background_home),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              _buildBody(containerSize, context)
-            ])));
+            child: _buildBody(containerSize, context)));
   }
 
   Widget _buildBody(Size containerSize, BuildContext ctx) {
     return Container(
-      height: containerSize.height * 0.8,
+      height: containerSize.height * 0.9,
       decoration: BoxDecoration(
         color: Color.fromRGBO(234, 234, 234, 1),
-        border: Border.all(color: Colors.white),
+        image: DecorationImage(
+          image: AssetImage(Constants.imageAssets.background_home),
+          fit: BoxFit.cover,
+        ),
+        border: Border.all(color: Color.fromRGBO(234, 234, 234, 1)),
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20), topRight: Radius.circular(20)),
         boxShadow: [
@@ -173,7 +166,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
               onPressed: () {
                 if (widget._tryAgainClosure != null) widget._tryAgainClosure!();
               },
-              child: const Text('Tente novamente'),
+              child: const Text('Tentar novamente'),
             ),
           ],
         ),
