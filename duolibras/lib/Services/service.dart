@@ -15,8 +15,8 @@ import 'package:duolibras/Services/Models/trail.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Protocols/servicesProtocol.dart';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
-import 'package:username_gen/username_gen.dart';
 
 import 'Database/databaseErrors.dart';
 import 'Models/sectionProgress.dart';
@@ -65,7 +65,7 @@ class Service {
       SharedFeatures.instance.isLoggedIn = false;
 
       return await _database.getUser().onError((error, stackTrace) async {
-        final randomUsername = UsernameGen().generate();
+        final randomUsername = Uuid().v1().toString().substring(0, 3);
         final newUser = User(
             name: randomUsername,
             id: "",

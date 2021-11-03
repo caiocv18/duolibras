@@ -64,8 +64,9 @@ class ExerciseViewModel extends BaseViewModel {
     }
 
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
-    _handleFinishModule(exercise.correctAnswer == answer);
-    return exercise.correctAnswer == answer;
+    _handleFinishModule(
+        exercise.correctAnswer.toUpperCase() == answer.toUpperCase());
+    return exercise.correctAnswer.toUpperCase() == answer.toUpperCase();
   }
 
   bool isGestureCorrect(String label, double confidence, Exercise exercise) {
