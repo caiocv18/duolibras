@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as IL;
-import 'package:path_provider/path_provider.dart';
 
 import 'mlModelProtocol.dart';
 import 'Helpers/app_helper.dart';
@@ -138,14 +135,14 @@ class MLCamera {
           (image.width * 0.5).toInt(),
           (image.width * 0.6).toInt());
 
-      Future.delayed(Duration(milliseconds: 300)).then((value) async {
-        final tempDir = (await getTemporaryDirectory()).path;
+      // Future.delayed(Duration(milliseconds: 300)).then((value) async {
+      //   final tempDir = (await getTemporaryDirectory()).path;
 
-        var random = Random();
-        var randomInt = random.nextInt(1000);
+      //   var random = Random();
+      //   var randomInt = random.nextInt(1000);
 
-        File('$tempDir/TESTE1$randomInt.png').writeAsBytes(IL.encodePng(ci));
-      });
+      //   File('$tempDir/TESTE1$randomInt.png').writeAsBytes(IL.encodePng(ci));
+      // });
 
       return ci;
     }).toList();

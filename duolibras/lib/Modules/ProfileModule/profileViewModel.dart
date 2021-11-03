@@ -2,15 +2,18 @@ import 'dart:async';
 
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
+import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:duolibras/Services/authenticationService.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileViewModel {
   final _errorHandler = ErrorHandler();
+  final newUserDefault = SharedPreferences.getInstance();
 
   Future<User> updateUser(User user) {
     return Service.instance.postUser(user, false);
@@ -57,5 +60,21 @@ class ProfileViewModel {
           exitClosure: () => completer.complete());
       return completer.future;
     });
+  }
+
+  Future<HandDirection?> getHandDirection() async {
+    final index =
+        await newUserDefault.then((value) => value.getInt("handDirection"));
+
+    final handDirection = index != null
+        ? (index == 1 ? HandDirection.RIGHT : HandDirection.LEFT)
+        : null;
+
+    return handDirection;
+  }
+
+  Future setHandDirection(HandDirection direction) async {
+    await newUserDefault
+        .then((value) => value.setInt("handDirection", direction.index));
   }
 }

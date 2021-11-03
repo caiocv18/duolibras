@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:duolibras/Commons/Utils/utils.dart';
+import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
+import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
 import 'package:duolibras/Services/Models/user.dart';
@@ -20,34 +22,25 @@ abstract class RankingViewModelProtocol {
   void disposeStreams();
 }
 
-class RankingViewModel extends RankingViewModelProtocol {
+class RankingViewModel extends BaseViewModel {
+  List<User> usersRank = [];
   final _errorHandler = ErrorHandler();
-  BehaviorSubject<List<User>> _controller = BehaviorSubject<List<User>>();
 
-  RankingViewModel() {
-    usersRank = _controller.stream;
-  }
-
-  @override
-  void disposeStreams() {
-    _controller.close();
-  }
+  RankingViewModel();
 
   @override
   Future<void> fetchUsersRank(BuildContext context,
       {Function? exitClosure = null}) async {
-    loading = true;
+    setState(ScreenState.Loading);
+
     final currentUser = Provider.of<UserModel>(context, listen: false).user;
 
     return Service.instance.getUsersRanking().then((rankings) {
-      loading = false;
-      firstTime = false;
-
       if (!rankings.contains(currentUser)) {
         rankings.add(currentUser);
       }
-
-      _controller.sink.add(rankings);
+      usersRank = rankings;
+      setState(ScreenState.Normal);
     }).catchError((error, stackTrace) {
       final appError = Utils.logAppError(error);
       Completer<void> completer = Completer<void>();
@@ -56,9 +49,8 @@ class RankingViewModel extends RankingViewModelProtocol {
           tryAgainClosure: () => _errorHandler.tryAgainClosure(
               () => Service.instance.getUsersRanking(), context, completer),
           exitClosure: () {
-            loading = false;
-            firstTime = false;
-            _controller.sink.add([]);
+            usersRank = [];
+            setState(ScreenState.Error);
             completer.complete();
           });
 

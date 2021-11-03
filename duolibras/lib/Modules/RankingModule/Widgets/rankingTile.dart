@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 class RankingTile extends StatelessWidget {
   final int index;
   final User user;
-  final RankingViewModelProtocol viewModel;
+  final RankingViewModel viewModel;
 
   RankingTile(
       {required this.index, required this.user, required this.viewModel});
@@ -47,39 +47,38 @@ class RankingTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 19, vertical: 12),
       child: ExerciseButton(
         child: ListTile(
-            leading: Container(
-                child: 
-                  CircleAvatar(
-                    child: _imageUserWidget(userModel),
-                    radius: 25,
-                    backgroundColor: Colors.grey[400],
-                  ),
+          leading: Container(
+            child: CircleAvatar(
+              child: _imageUserWidget(userModel),
+              radius: 25,
+              backgroundColor: Colors.grey[400],
             ),
-            title: Container(
-              child: Text(
-                  viewModel.formatUserName(userModel.user.id == user.id
-                      ? userModel.user.name
-                      : user.name),
-                  style: TextStyle(
-                      overflow: TextOverflow.ellipsis,
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontFamily: "Nunito",
-                      fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.left,
-                  maxLines: 1),
-            ),
-            trailing: Container(
-              width: 50,
-              child: Text(
-                  "${userModel.user.id == user.id ? userModel.user.currentProgress : user.currentProgress} pts",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontFamily: "Nunito",
-                      fontWeight: FontWeight.w400),
-                  textAlign: TextAlign.left),
-            ),
+          ),
+          title: Container(
+            child: Text(
+                viewModel.formatUserName(userModel.user.id == user.id
+                    ? userModel.user.name
+                    : user.name),
+                style: TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontFamily: "Nunito",
+                    fontWeight: FontWeight.w600),
+                textAlign: TextAlign.left,
+                maxLines: 1),
+          ),
+          trailing: Container(
+            width: 50,
+            child: Text(
+                "${userModel.user.id == user.id ? userModel.user.currentProgress : user.currentProgress} pts",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: "Nunito",
+                    fontWeight: FontWeight.w400),
+                textAlign: TextAlign.left),
+          ),
         ),
         size: 25,
         color: HexColor.fromHex("93CAFA"),

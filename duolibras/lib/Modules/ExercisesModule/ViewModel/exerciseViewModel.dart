@@ -69,7 +69,7 @@ class ExerciseViewModel extends BaseViewModel {
   }
 
   bool isGestureCorrect(String label, double confidence, Exercise exercise) {
-    return exercise.correctAnswer == label && confidence > 0.9;
+    return exercise.correctAnswer == label && confidence > 0.85;
   }
 
   bool isSpellingCorrect(
@@ -77,7 +77,7 @@ class ExerciseViewModel extends BaseViewModel {
     final splittedAnswer = exercise.correctAnswer.split("");
 
     if (splittedAnswer[spelledLetters.length] == newLetter &&
-        confidence > 0.9) {
+        confidence > 0.85) {
       spelledLetters.add(newLetter);
       return true;
     }

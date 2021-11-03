@@ -16,7 +16,8 @@ class ProfileImageButton extends StatefulWidget {
   final String? imageUrl;
   Function goLogin;
 
-  ProfileImageButton(this.isEnabled, this.viewModel, this.imageUrl, this.goLogin);
+  ProfileImageButton(
+      this.isEnabled, this.viewModel, this.imageUrl, this.goLogin);
 
   @override
   State<ProfileImageButton> createState() => _ProfileImageButtonState();
@@ -27,9 +28,8 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
   Widget build(BuildContext context) {
     return Container(
         alignment: Alignment.center,
-        child: (
-          Stack(
-            clipBehavior: Clip.none, 
+        child: (Stack(
+            clipBehavior: Clip.none,
             alignment: AlignmentDirectional.bottomEnd,
             fit: StackFit.loose,
             children: [
@@ -42,46 +42,45 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
     if (widget.imageUrl != null) {
       if (widget.imageUrl!.contains("firebase"))
         return Image(image: NetworkImage(widget.imageUrl!));
-    } 
-    
+    }
+
     return Image(image: AssetImage(Constants.imageAssets.profileEmptyPhoto));
-    
   }
 
   Widget profileImageBoxDecoration() {
     final kGradientBoxDecoration = BoxDecoration(
       // image: DecorationImage(image: _getProfileImage(), fit: BoxFit.cover),
       shape: BoxShape.circle,
-      gradient: LinearGradient(colors: [HexColor.fromHex("4982F6"), HexColor.fromHex("2CC4FC")]),
+      gradient: LinearGradient(
+          colors: [HexColor.fromHex("4982F6"), HexColor.fromHex("2CC4FC")]),
     );
 
     return Container(
       height: 145,
       width: 145,
       child: Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: Container(
-                        decoration: BoxDecoration(image: DecorationImage(image: _getProfileImage().image, fit: BoxFit.cover), shape: BoxShape.circle)
-                      ),
-            ),
+        padding: const EdgeInsets.all(3.0),
+        child: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: _getProfileImage().image, fit: BoxFit.cover),
+                shape: BoxShape.circle)),
+      ),
       decoration: kGradientBoxDecoration,
     );
   }
 
   Widget cameraButton(BuildContext context) {
     return GestureDetector(
-      child: 
-      Container(
-        height: 51,
-        width: 51,
+      child: Container(
+          height: 51,
+          width: 51,
           decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image:  DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage(Constants.imageAssets.profileCameraButton)
-              )
-          )
-        ),
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image:
+                      AssetImage(Constants.imageAssets.profileCameraButton)))),
       onTap: () => widget.isEnabled ? _openCamera(context) : widget.goLogin(),
     );
   }
@@ -100,9 +99,8 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
         context,
         MaterialPageRoute(
           builder: (context) => TakePictureScreen(camera: frontalCamera),
-        )
-    ).then((imagePath) {
-      _uploadImage(imagePath, context);
+        )).then((imagePath) {
+      if (imagePath != null) _uploadImage(imagePath, context);
     });
   }
 

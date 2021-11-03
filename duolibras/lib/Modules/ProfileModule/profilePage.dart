@@ -5,6 +5,8 @@ import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
+import 'package:duolibras/Commons/Utils/utils.dart';
+import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/LoginModule/SignIn/signInPage.dart';
 import 'package:duolibras/Commons/Components/customTextfield.dart';
 import 'package:duolibras/Modules/ProfileModule/profileImageButton.dart';
@@ -14,6 +16,7 @@ import 'package:duolibras/Services/Models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   final _viewModel = ProfileViewModel();
@@ -25,6 +28,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   var isLoading = false;
   final nameTextfieldController = TextEditingController();
+  late HandDirection? _handDirection;
+
   @override
   void initState() {
     super.initState();
@@ -72,6 +77,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             width: constraint.maxWidth * 0.8),
                         SizedBox(height: 60),
                         _createProgressWidget(userProvider.user),
+                        SizedBox(height: 60),
+                        FutureBuilder(
+                            future: _createSelectHandWidget(constraint),
+                            builder: (context, snapshot) {
+                              Widget? widget =
+                                  Utils.tryCast(snapshot.data, fallback: null);
+                              return widget ?? SizedBox.shrink();
+                            }),
                         SizedBox(height: 80),
                         Container(
                             width: constraint.maxWidth * 0.4,
@@ -132,6 +145,59 @@ class _ProfilePageState extends State<ProfilePage> {
               fontWeight: FontWeight.w500,
               color: Colors.black)),
     ]);
+  }
+
+  Future<Widget> _createSelectHandWidget(BoxConstraints constraints) async {
+    _handDirection = await widget._viewModel.getHandDirection();
+
+    return Container(
+      width: constraints.maxWidth * 0.8,
+      child: Column(
+        children: <Widget>[
+          Text("Mão utilizada para fazer os gestos:",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 21,
+                  fontFamily: "Nunito",
+                  fontWeight: FontWeight.w700)),
+          SizedBox(height: 10),
+          ListTile(
+            title: const Text('Esquerda',
+                style: TextStyle(
+                    fontSize: 21,
+                    fontFamily: "Nunito",
+                    fontWeight: FontWeight.w500)),
+            leading: Radio<HandDirection>(
+              value: HandDirection.LEFT,
+              groupValue: _handDirection,
+              onChanged: (HandDirection? value) {
+                setState(() {
+                  _handDirection = value;
+                });
+                widget._viewModel.setHandDirection(value!);
+              },
+            ),
+          ),
+          ListTile(
+            title: const Text('Direita',
+                style: TextStyle(
+                    fontSize: 21,
+                    fontFamily: "Nunito",
+                    fontWeight: FontWeight.w500)),
+            leading: Radio<HandDirection>(
+              value: HandDirection.RIGHT,
+              groupValue: _handDirection,
+              onChanged: (HandDirection? value) {
+                setState(() {
+                  _handDirection = value;
+                });
+                widget._viewModel.setHandDirection(value!);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _handleSubmitNewName(String newName) {

@@ -3,6 +3,7 @@ import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
 import 'package:duolibras/Modules/Launch/launchViewModel.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
+import 'package:duolibras/Modules/RankingModule/ViewModel/rankingViewModel.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/Providers/userProvider.dart';
@@ -18,6 +19,9 @@ void setupLocator() {
 
 //Learning
   locator.registerFactory<LearningViewModel>(() => LearningViewModel());
+
+//Ranking
+  locator.registerFactory<RankingViewModel>(() => RankingViewModel());
 
 //Launch
   locator.registerSingleton(LaunchViewModel());

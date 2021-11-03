@@ -7,6 +7,7 @@ import 'package:duolibras/Services/Models/Providers/userProvider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -15,6 +16,8 @@ Future<void> main() async {
   setupLocator();
 
   SharedFeatures.instance.isLoggedIn = false;
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
 
   runApp(MyApp());
 }
@@ -26,16 +29,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (ctx) => locator<UserModel>(),
-      child: 
-        MaterialApp(
+      child: MaterialApp(
           title: 'Bilibras',
-          theme: ThemeData(
-            primarySwatch: Colors.blue
-          ),
-          onGenerateRoute: (settings) => MainRouter.instance.onGenerateRoute(settings),
+          theme: ThemeData(primarySwatch: Colors.blue),
+          onGenerateRoute: (settings) =>
+              MainRouter.instance.onGenerateRoute(settings),
           navigatorKey: MainRouter.instance.navigatorKey,
-          home: LaunchScreen(MainRouter.instance.initialLoadCompleted)
-        ),
+          home: LaunchScreen(MainRouter.instance.initialLoadCompleted)),
     );
   }
 }
