@@ -9,6 +9,7 @@ import 'package:duolibras/MachineLearning/Helpers/result.dart';
 import 'package:duolibras/MachineLearning/tfliteModel.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/feedbackExerciseScreen.dart';
+import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/boundingBox.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/moduleProgress.dart';
@@ -17,14 +18,33 @@ import 'package:duolibras/Services/service.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
 import '../exerciseFlow.dart';
+
+enum HandDirection { LEFT, RIGHT }
+
+extension HandDirectionExtension on HandDirection {
+  int get index {
+    return this == HandDirection.RIGHT ? 1 : 0;
+  }
+
+  Positioned get positionBox {
+    return Positioned(
+        top: 200,
+        width: 180,
+        left: this == HandDirection.RIGHT ? 200 : 0,
+        height: 200,
+        child: BoundingBox());
+  }
+}
 
 class ExerciseViewModel extends BaseViewModel {
   final Tuple2<List<Exercise>, Module> exercisesAndModule;
   final ExerciseFlowDelegate exerciseFlowDelegate;
   late List<Exercise> exercises;
   final _errorHandler = ErrorHandler();
+  final newUserDefault = SharedPreferences.getInstance();
 
   //ML Exercise
   late MLCamera _cameraHelper = MLCamera(
@@ -36,8 +56,6 @@ class ExerciseViewModel extends BaseViewModel {
   ExerciseViewModel(this.exercisesAndModule, this.exerciseFlowDelegate) {
     exercises = exercisesAndModule.item1;
   }
-
-
 
   bool isAnswerCorrect(String answer, String exerciseID) {
     if (answer.isEmpty) {
@@ -70,7 +88,8 @@ class ExerciseViewModel extends BaseViewModel {
       String answer, String exerciseID, BuildContext context) {
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
     final isAnswerCorrect = exercise.correctAnswer == answer;
-    exerciseFlowDelegate.totalPoints += isAnswerCorrect ? (exercise.score ?? 0) : 0.0;
+    exerciseFlowDelegate.totalPoints +=
+        isAnswerCorrect ? (exercise.score ?? 0) : 0.0;
 
     _handleMoveToNextExercise(exerciseID, context);
   }
@@ -236,6 +255,26 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
 
   Future<void> initializeCamera(GlobalKey key) {
     return _cameraHelper.initializeCamera(key);
+  }
+
+  Future<HandDirection?> getHandDirection() async {
+    final index =
+        await newUserDefault.then((value) => value.getInt("handDirection"));
+
+    final handDirection = index != null
+        ? (index == 1 ? HandDirection.RIGHT : HandDirection.LEFT)
+        : null;
+
+    _cameraHelper.setBoxDirection(handDirection);
+
+    return handDirection;
+  }
+
+  Future setHandDirection(HandDirection direction) async {
+    await newUserDefault
+        .then((value) => value.setInt("handDirection", direction.index));
+
+    _cameraHelper.setBoxDirection(direction);
   }
 
   void closeCamera() async {
