@@ -140,7 +140,10 @@ class _ExerciseFlowState extends State<ExerciseFlow>
         page = ExerciseMLScreen(widget._currentExercise, viewModel, true);
         break;
       case ExerciseFlow.routeFeedbackModulePage:
-        final arg = settings.arguments as Map<String, Object>;
+        final arg = settings.arguments as Map<String, FeedbackStatus?>;
+        if (arg == null) {
+          break;
+        }
         final feedBackStatus = arg["feedbackStatus"] as FeedbackStatus;
         page = FeedbackExerciseScreen(
             Tuple2(widget.exercises, widget.module), this);

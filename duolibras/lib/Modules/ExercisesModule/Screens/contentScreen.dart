@@ -44,28 +44,24 @@ class _ContentScreenState extends State<ContentScreen> {
       ),
       SafeArea(
         child: LayoutBuilder(builder: (ctx, constraint) {
-          final pages =
-              _buildPages(Size(constraint.maxWidth, constraint.maxHeight));
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(height: 16),
-                Container(
-                  height: constraint.maxHeight * 0.90,
-                  child: PageView.builder(
-                    controller: controller,
-                    // itemCount: pages.length,
-                    itemBuilder: (_, index) {
-                      return pages[index % pages.length];
-                    },
-                  ),
+          final pages = _buildPages(
+              Size(constraint.maxWidth, constraint.maxHeight * 0.92));
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                height: constraint.maxHeight * 0.92,
+                child: PageView.builder(
+                  allowImplicitScrolling: true,
+                  controller: controller,
+                  itemBuilder: (_, index) {
+                    return pages[index % pages.length];
+                  },
                 ),
-                SizedBox(height: 32.0),
-                _buildPageIndicator(),
-                SizedBox(height: 32.0),
-              ],
-            ),
+              ),
+              _buildPageIndicator(),
+              SizedBox(height: 32.0),
+            ],
           );
         }),
       ),
@@ -75,18 +71,22 @@ class _ContentScreenState extends State<ContentScreen> {
   List<Widget> _buildPages(Size containerSize) {
     return List.generate(widget._exercises.length, (index) {
       final exercise = widget._exercises[index];
-      return Container(
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 25.0),
           child: Column(
-        children: [
-          _buildTitleText(exercise),
-          SizedBox(height: 15),
-          _buildAnswerText(exercise, containerSize),
-          SizedBox(height: 15),
-          _buildDescriptionText(exercise, containerSize),
-          SizedBox(height: 15),
-          _buildImage(exercise, containerSize)
-        ],
-      ));
+            children: [
+              _buildTitleText(exercise),
+              SizedBox(height: 15),
+              _buildAnswerText(exercise, containerSize),
+              SizedBox(height: 15),
+              _buildDescriptionText(exercise, containerSize),
+              SizedBox(height: 15),
+              _buildImage(exercise, containerSize)
+            ],
+          ),
+        ),
+      );
     });
   }
 
