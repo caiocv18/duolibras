@@ -38,17 +38,22 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   download_assets: ^2.0.0
   image: ^3.0.8
-  flutter_app_name: ^0.1.1
   shared_preferences: ^2.0.8
   uuid: ^3.0.5
-  
+  flutter_launcher_icons: ^0.9.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-flutter_app_name:
-  name: "My Cool App"
-  
+flutter_icons:
+  ios: true
+  android: true
+  image_path_ios: "assets/icons/icon.png"
+  image_path_android: "assets/icons/icon.png"
+  adaptive_icon_background: "assets/icons/background.png"
+  adaptive_icon_foreground: "assets/icons/foreground.png"
+
 flutter:
   uses-material-design: true
   assets:
