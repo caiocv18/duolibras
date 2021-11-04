@@ -126,11 +126,6 @@ class _RankingScreenState extends State<RankingScreen> {
                 widget.selectNewPage(HomePages.Profile);
               },
             ),
-            // child: ExerciseButton(child: Text("Entrar",
-            //   textAlign: TextAlign.center,
-            //   style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w800, color: HexColor.fromHex('E97070'), fontSize: 18)),
-            //   onPressed: () => widget.selectNewPage(HomePages.Profile)
-            // )
           )
         ],
       ),
