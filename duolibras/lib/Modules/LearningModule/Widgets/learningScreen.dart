@@ -79,6 +79,7 @@ class _LearningScreenState extends State<LearningScreen>
         if (animation.isCompleted) {
           animationController.stop();
           isAnimating = false;
+          isLoadingPath = false;
         }
       });
     });
@@ -93,7 +94,7 @@ class _LearningScreenState extends State<LearningScreen>
   }
 
   void setTrailPathIndex() {
-    Future.delayed(Duration(milliseconds: 1200)).then((value) {
+    Future.delayed(Duration(milliseconds: 1000)).then((value) {
       if (!mounted) return;
 
       currentSectionIndex = Provider.of<UserModel>(this.context, listen: false)
@@ -103,7 +104,7 @@ class _LearningScreenState extends State<LearningScreen>
       if (currentSectionIndex == -99) {
         currentSectionIndex = 0;
       } else {
-        if (currentSectionIndex == widget._viewModel.allSections.length) {
+        if (currentSectionIndex + 1 == widget._viewModel.allSections.length) {
           animationController.duration = Duration(milliseconds: 150);
           animationController.forward().then((_) {
             animationController.duration = Duration(seconds: 2);
