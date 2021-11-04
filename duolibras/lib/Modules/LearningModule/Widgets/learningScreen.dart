@@ -39,7 +39,8 @@ class LearningScreen extends StatefulWidget {
   _LearningScreenState createState() => _LearningScreenState();
 }
 
-class _LearningScreenState extends State<LearningScreen> with SingleTickerProviderStateMixin {
+class _LearningScreenState extends State<LearningScreen>
+    with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController animationController;
   var currentSectionIndex = 0;
@@ -82,7 +83,7 @@ class _LearningScreenState extends State<LearningScreen> with SingleTickerProvid
       });
     });
 
-    if (!widget._firstTime)  {
+    if (!widget._firstTime) {
       setState(() {
         isLoadingPath = false;
       });
@@ -94,11 +95,12 @@ class _LearningScreenState extends State<LearningScreen> with SingleTickerProvid
   void setTrailPathIndex() {
     Future.delayed(Duration(milliseconds: 1200)).then((value) {
       if (!mounted) return;
+
       currentSectionIndex = Provider.of<UserModel>(this.context, listen: false)
           .user
           .trailSectionIndex;
 
-      if (currentSectionIndex == User.initialTrailSectionIndex) {
+      if (currentSectionIndex == -99) {
         currentSectionIndex = 0;
       } else {
         if (currentSectionIndex == widget._viewModel.allSections.length) {

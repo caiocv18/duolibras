@@ -16,14 +16,20 @@ class UserModel extends BaseViewModel {
           email: _user!.email,
           id: _user!.id,
           currentProgress: _user!.currentProgress,
+          trailSectionIndex: _user!.trailSectionIndex,
           imageUrl: _user!.imageUrl);
+
       user.sectionsProgress = _user!.sectionsProgress;
-      user.trailSectionIndex = _user!.trailSectionIndex;
       return user;
     }
 
     return User(
-        name: "", email: ",", id: "", currentProgress: 0, imageUrl: null);
+        name: "",
+        email: ",",
+        id: "",
+        currentProgress: 0,
+        trailSectionIndex: -99,
+        imageUrl: null);
   }
 
   String? _idOfLastModuleIncremented;
