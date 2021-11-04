@@ -9,7 +9,6 @@ import 'package:duolibras/Services/Models/user.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:rxdart/subjects.dart';
 
 abstract class RankingViewModelProtocol {
   Stream<List<User>>? usersRank;
