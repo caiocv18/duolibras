@@ -38,6 +38,7 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   download_assets: ^2.0.0
   image: ^3.0.8
+  flutter_app_name: ^0.1.1
   shared_preferences: ^2.0.8
   uuid: ^3.0.5
   
@@ -45,6 +46,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_app_name:
+  name: "My Cool App"
+  
 flutter:
   uses-material-design: true
   assets:

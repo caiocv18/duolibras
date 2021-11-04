@@ -143,12 +143,10 @@ class _RankingScreenState extends State<RankingScreen> {
       return;
     }
 
-    if (usersRank[index].currentProgress != newCurrentUser.currentProgress) {
-      usersRank[index].currentProgress = newCurrentUser.currentProgress;
-      usersRank.sort((a, b) {
-        return b.currentProgress.compareTo(a.currentProgress);
-      });
-    }
+    usersRank[index].currentProgress = newCurrentUser.currentProgress;
+    usersRank.sort((a, b) {
+      return b.currentProgress.compareTo(a.currentProgress);
+    });
   }
 
   @override
