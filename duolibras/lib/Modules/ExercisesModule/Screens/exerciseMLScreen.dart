@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:duolibras/Commons/Components/exerciseButton.dart';
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
@@ -87,7 +89,6 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(child: QuestionWidget("Faça o sinal em Libras")),
-            SizedBox(height: 15),
             SizedBox(
               height: 30,
             ),
@@ -99,17 +100,21 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                         width: containerSize.width * 0.7,
                         child: Column(
                           children: [
-                            ElevatedButton(
-                              child: Text("Abrir a Câmera"),
-                              onPressed: () => _startCamera(),
-                              style: ButtonStyle(
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(18.0),
-                                          side:
-                                              BorderSide(color: Colors.blue)))),
+                            Container(
+                              height: 50,
+                              width: 200,
+                              child: ExerciseButton(
+                                child: Center(
+                                  child: Text("Abrir a Câmera",
+                                      style: TextStyle(
+                                          fontSize: 23,
+                                          fontFamily: "Nunito",
+                                          fontWeight: FontWeight.w500)),
+                                ),
+                                size: 30,
+                                color: HexColor.fromHex("#93CAFA"),
+                                onPressed: () => _startCamera(),
+                              ),
                             ),
                           ],
                         ),
@@ -125,34 +130,47 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
 
   Widget chooseHandWidget() {
     return Column(children: [
-      Text("Qual a mão que você irá fazer o sinal?"),
+      Text("Qual a mão que você irá fazer o sinal?",
+          style: TextStyle(
+              fontSize: 20, fontFamily: "Nunito", fontWeight: FontWeight.w500)),
+      SizedBox(height: 20),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(
-            child: Text("Esquerda"),
-            onPressed: () => widget._viewModel
-                .setHandDirection(HandDirection.LEFT)
-                .then((value) => _startCamera()),
-            style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.blue)))),
+          Container(
+            height: 40,
+            width: 120,
+            child: ExerciseButton(
+              child: Center(
+                child: Text("Esquerda"),
+              ),
+              size: 20,
+              color: HexColor.fromHex("#93CAFA"),
+              onPressed: () => {
+                widget._viewModel
+                    .setHandDirection(HandDirection.LEFT)
+                    .then((value) => _startCamera())
+              },
+            ),
           ),
           SizedBox(
             width: 30,
           ),
-          ElevatedButton(
-            child: Text("Direita"),
-            onPressed: () => widget._viewModel
-                .setHandDirection(HandDirection.RIGHT)
-                .then((value) => _startCamera()),
-            style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.blue)))),
+          Container(
+            height: 40,
+            width: 120,
+            child: ExerciseButton(
+              child: Center(
+                child: Text("Direita"),
+              ),
+              size: 20,
+              color: HexColor.fromHex("#93CAFA"),
+              onPressed: () => {
+                widget._viewModel
+                    .setHandDirection(HandDirection.RIGHT)
+                    .then((value) => _startCamera())
+              },
+            ),
           ),
         ],
       ),
