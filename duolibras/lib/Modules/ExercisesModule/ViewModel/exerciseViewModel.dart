@@ -11,9 +11,10 @@ import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/feedbackExerciseScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/boundingBox.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
+import 'package:duolibras/Services/Models/exercisesCategory.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/moduleProgress.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,15 @@ class ExerciseViewModel extends BaseViewModel {
 
   ExerciseViewModel(this.exercisesAndModule, this.exerciseFlowDelegate) {
     exercises = exercisesAndModule.item1;
+
+    if (exercisesAndModule.item2.mlLabelsPath.isEmpty ||
+        exercisesAndModule.item2.mlModelPath.isEmpty) {
+      exercises = exercises
+          .where((element) =>
+              element.category != ExercisesCategory.mlSpelling &&
+              element.category != ExercisesCategory.ml)
+          .toList();
+    }
   }
 
   bool isAnswerCorrect(String answer, String exerciseID) {
@@ -70,7 +80,7 @@ class ExerciseViewModel extends BaseViewModel {
   }
 
   bool isGestureCorrect(String label, double confidence, Exercise exercise) {
-    return exercise.correctAnswer == label && confidence > 0.85;
+    return exercise.correctAnswer == label && confidence > 0.75;
   }
 
   bool isSpellingCorrect(
@@ -78,7 +88,7 @@ class ExerciseViewModel extends BaseViewModel {
     final splittedAnswer = exercise.correctAnswer.split("");
 
     if (splittedAnswer[spelledLetters.length] == newLetter &&
-        confidence > 0.85) {
+        confidence > 0.75) {
       spelledLetters.add(newLetter);
       return true;
     }
@@ -97,7 +107,7 @@ class ExerciseViewModel extends BaseViewModel {
 
   Future<void> _saveProgress(BuildContext context,
       {Function? exitClosure = null}) async {
-    final userProvider = Provider.of<UserModel>(context, listen: false);
+    final userProvider = Provider.of<UserViewModel>(context, listen: false);
     var sectionsProgressIndex = -1;
 
     try {
@@ -113,8 +123,13 @@ class ExerciseViewModel extends BaseViewModel {
     if (!isFirstTimeInModule) {
       print(
           "IS Completed: ${userProvider.user.sectionsProgress[sectionsProgressIndex].isCompleted}");
-      if (!userProvider
-          .user.sectionsProgress[sectionsProgressIndex].isCompleted) {
+
+      final moduleProgress = userProvider
+          .user.sectionsProgress[sectionsProgressIndex].modulesProgress
+          .firstWhere(
+              (element) => element.moduleId == exercisesAndModule.item2.id);
+
+      if (!moduleProgress.isCompleted) {
         userProvider.incrementUserProgress(10);
       }
     } else {
@@ -161,8 +176,9 @@ class ExerciseViewModel extends BaseViewModel {
 
   Future<void> _handleMoveToNextExercise(
       String exerciseID, BuildContext context) async {
-    final index = exercises.indexWhere((m) => m.id == exerciseID);
+    var index = exercises.indexWhere((m) => m.id == exerciseID);
 
+    //Verifica se é o último
     if (index + 1 == exercises.length) {
       await _saveProgress(context);
       exerciseFlowDelegate.exerciseProgressValue = index + 1;
@@ -170,9 +186,9 @@ class ExerciseViewModel extends BaseViewModel {
       return;
     }
 
-    final exercise = exercises[index + 1];
+    var nextExercise = exercises[index + 1];
     exerciseFlowDelegate.exerciseProgressValue = index + 1;
-    exerciseFlowDelegate.didFinishExercise(exercise, null);
+    exerciseFlowDelegate.didFinishExercise(nextExercise, null);
   }
 
   bool _handleFinishModule(bool isAnswerCorrect) {
@@ -233,7 +249,7 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
   }
 
   int _getUserModuleLevel(BuildContext ctx, String moduleID) {
-    final user = Provider.of<UserModel>(ctx, listen: false).user;
+    final user = Provider.of<UserViewModel>(ctx, listen: false).user;
 
     try {
       final module = user.sectionsProgress

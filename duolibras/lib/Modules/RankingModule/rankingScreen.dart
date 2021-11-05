@@ -9,7 +9,7 @@ import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Modules/HomeModule/homeScreen.dart';
 import 'package:duolibras/Modules/RankingModule/ViewModel/rankingViewModel.dart';
 import 'package:duolibras/Modules/RankingModule/Widgets/rankingTile.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +34,7 @@ class _RankingScreenState extends State<RankingScreen> {
     return BaseScreen<RankingViewModel>(
         onModelReady: (viewModel) => viewModel.fetchUsersRank(context),
         builder: (_, viewModel, __) {
-          return Consumer(builder: (ctx, UserModel userModel, _) {
+          return Consumer(builder: (ctx, UserViewModel userModel, _) {
             sortUsersRanking(userModel.user, viewModel.usersRank);
 
             return viewModel.state == ScreenState.Loading

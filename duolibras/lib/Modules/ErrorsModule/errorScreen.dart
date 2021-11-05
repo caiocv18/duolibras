@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:duolibras/Commons/Components/exerciseButton.dart';
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Services/Models/appError.dart';
 import 'package:flutter/cupertino.dart';
@@ -124,7 +126,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
               style: TextStyle(
                   fontSize: 24,
                   fontFamily: "Nunito",
-                  fontWeight: FontWeight.w700),
+                  fontWeight: FontWeight.w500),
             ),
           ));
     });
@@ -145,31 +147,37 @@ class _ErrorScreenState extends State<ErrorScreen> {
 
   Widget _buildTryAgainButton(Size containerSize) {
     if (state == ErrorScreenState.Normal) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(
-              child: Container(
-                decoration: const BoxDecoration(color: Colors.black),
-              ),
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.all(12.0),
-                primary: Colors.white,
-                textStyle: const TextStyle(
-                    fontSize: 20,
+      return Container(
+        height: 50,
+        width: 250,
+        child: ExerciseButton(
+          child: Center(
+            child: Text("Tentar novamente",
+                style: TextStyle(
+                    fontSize: 22,
                     fontFamily: "Nunito",
-                    fontWeight: FontWeight.w700),
-              ),
-              onPressed: () {
-                if (widget._tryAgainClosure != null) widget._tryAgainClosure!();
-              },
-              child: const Text('Tentar novamente'),
-            ),
-          ],
+                    fontWeight: FontWeight.w500)),
+          ),
+          size: 30,
+          color: HexColor.fromHex("#93CAFA"),
+          onPressed: () => () {
+            if (widget._tryAgainClosure != null) widget._tryAgainClosure!();
+          },
         ),
+        // TextButton(
+        //   style: TextButton.styleFrom(
+        //     padding: const EdgeInsets.all(12.0),
+        //     primary: Colors.white,
+        //     textStyle: const TextStyle(
+        //         fontSize: 20,
+        //         fontFamily: "Nunito",
+        //         fontWeight: FontWeight.w700),
+        //   ),
+        // onPressed: () {
+        //   if (widget._tryAgainClosure != null) widget._tryAgainClosure!();
+        // },
+        //   child: const Text('Tentar novamente'),
+        // ),
       );
     } else {
       return Center(

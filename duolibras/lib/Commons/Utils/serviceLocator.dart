@@ -6,7 +6,7 @@ import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
 import 'package:duolibras/Modules/RankingModule/ViewModel/rankingViewModel.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Models/module.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:tuple/tuple.dart';
@@ -27,7 +27,7 @@ void setupLocator() {
   locator.registerSingleton(LaunchViewModel());
 
   //user
-  locator.registerSingleton(UserModel());
+  locator.registerSingleton(UserViewModel());
 
   //Exercises
   locator.registerFactoryParam<ExerciseViewModel,

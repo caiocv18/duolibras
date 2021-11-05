@@ -6,7 +6,7 @@ import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/ProfileModule/profileViewModel.dart';
 import 'package:duolibras/Modules/ProfileModule/takePictureScreen.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 

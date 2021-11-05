@@ -4,7 +4,7 @@ import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
 import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,7 +32,7 @@ class RankingViewModel extends BaseViewModel {
       {Function? exitClosure = null}) async {
     setState(ScreenState.Loading);
 
-    final currentUser = Provider.of<UserModel>(context, listen: false).user;
+    final currentUser = Provider.of<UserViewModel>(context, listen: false).user;
 
     return Service.instance.getUsersRanking().then((rankings) {
       if (!rankings.contains(currentUser)) {

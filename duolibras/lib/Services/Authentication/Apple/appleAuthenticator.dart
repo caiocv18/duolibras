@@ -1,7 +1,7 @@
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Services/Authentication/AuthenticationErrors.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -17,7 +17,8 @@ class AppleAuthenticator {
         AppleIDAuthorizationScopes.email
       ];
 
-      final appleIdCredential = await SignInWithApple.getAppleIDCredential(scopes: scopes);
+      final appleIdCredential =
+          await SignInWithApple.getAppleIDCredential(scopes: scopes);
       final oAuthProvider = OAuthProvider('apple.com');
 
       final credential = oAuthProvider.credential(
@@ -31,11 +32,11 @@ class AppleAuthenticator {
       }
 
       if (scopes.contains(AppleIDAuthorizationScopes.fullName)) {
-        final displayName = '${appleIdCredential.givenName} ${appleIdCredential.familyName}';
+        final displayName =
+            '${appleIdCredential.givenName} ${appleIdCredential.familyName}';
         await firebaseUser.updateDisplayName(displayName);
       }
       return firebaseUser;
-      
     } catch (e) {
       return Future.error(AuthenticationErrors.LoginFailed);
     }
@@ -44,10 +45,9 @@ class AppleAuthenticator {
   Future<void> signOut() {
     return _auth.signOut().then((value) async {
       SharedFeatures.instance.isLoggedIn = false;
-      locator<UserModel>().setNewUser(await Service.instance.getUser());
-    }).catchError((error, stackTrace){
+      locator<UserViewModel>().setNewUser(await Service.instance.getUser());
+    }).catchError((error, stackTrace) {
       Future.error(AuthenticationErrors.LogoutFailed);
     });
   }
-
 }

@@ -65,7 +65,8 @@ class Service {
       SharedFeatures.instance.isLoggedIn = false;
 
       return await _database.getUser().onError((error, stackTrace) async {
-        final randomUsername = Uuid().v1().toString().substring(0, 3);
+        final randomUsername =
+            "Usuário_${Uuid().v1().toString().substring(0, 3)}";
         final newUser = User(
             name: randomUsername,
             id: "",

@@ -1,7 +1,7 @@
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Modules/RankingModule/ViewModel/rankingViewModel.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +14,7 @@ class RankingTile extends StatelessWidget {
   RankingTile(
       {required this.index, required this.user, required this.viewModel});
 
-  Widget _imageUserWidget(UserModel userModel) {
+  Widget _imageUserWidget(UserViewModel userModel) {
     if (userModel.user.id == user.id) {
       if (user.imageUrl == null) {
         return Container(height: 35, child: Icon(Icons.person));
@@ -40,7 +40,7 @@ class RankingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<UserModel>(context, listen: true);
+    final provider = Provider.of<UserViewModel>(context, listen: true);
     final userModel = provider;
 
     return Padding(

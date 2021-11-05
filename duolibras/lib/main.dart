@@ -3,7 +3,7 @@ import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 
 import 'package:duolibras/Modules/Launch/launchScreen.dart';
 import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (ctx) => locator<UserModel>(),
+      create: (ctx) => locator<UserViewModel>(),
       child: MaterialApp(
           title: 'Bilibras',
           theme: ThemeData(primarySwatch: Colors.blue),

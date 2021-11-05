@@ -9,7 +9,7 @@ import 'package:duolibras/Modules/LearningModule/ViewModel/sectionPage.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/sectionTitleWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/trailPath.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/Models/section.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:flutter/material.dart';
@@ -97,9 +97,10 @@ class _LearningScreenState extends State<LearningScreen>
     Future.delayed(Duration(milliseconds: 1000)).then((value) {
       if (!mounted) return;
 
-      currentSectionIndex = Provider.of<UserModel>(this.context, listen: false)
-          .user
-          .trailSectionIndex;
+      currentSectionIndex =
+          Provider.of<UserViewModel>(this.context, listen: false)
+              .user
+              .trailSectionIndex;
 
       if (currentSectionIndex == -99) {
         currentSectionIndex = 0;

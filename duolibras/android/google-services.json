@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "306607468782-gu2mbs0q365csuob8sie24r67uliqt1d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.duolibras",
+            "certificate_hash": "b453d3f13ce7f5b0ae3a946afb6a1ec109e0385a"
+          }
+        },
+        {
           "client_id": "306607468782-levcjrr50mjkog2754g78oa8a41tudda.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -42,7 +50,8 @@
               "client_id": "306607468782-rpoihho8jd6mghv4a9uts19cr24flmei.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.duolibras"
+                "bundle_id": "com.example.duolibras",
+                "app_store_id": "1498120078"
               }
             }
           ]
