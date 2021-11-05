@@ -8,6 +8,7 @@ class User {
   int currentProgress;
   String? imageUrl;
   int trailSectionIndex;
+  int xpProgress;
 
   User(
       {required this.name,
@@ -15,6 +16,7 @@ class User {
       required this.id,
       required this.currentProgress,
       required this.trailSectionIndex,
+      required this.xpProgress,
       required this.imageUrl});
 
   factory User.fromMap(Map<String, dynamic> parsedJson, String id) {
@@ -24,6 +26,7 @@ class User {
         currentProgress: parsedJson["currentProgress"],
         imageUrl: parsedJson["imageUrl"],
         trailSectionIndex: parsedJson["trailSectionIndex"],
+        xpProgress: parsedJson["xpProgress"],
         id: id);
     return user;
   }
@@ -39,6 +42,7 @@ class User {
       'email': email,
       'currentProgress': currentProgress,
       'trailSectionIndex': trailSectionIndex,
+      'xpProgress': xpProgress
     };
     if (imageUrl != null) map["imageUrl"] = imageUrl;
     return map;

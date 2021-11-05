@@ -71,7 +71,7 @@ class RankingTile extends StatelessWidget {
           trailing: Container(
             width: 50,
             child: Text(
-                "${userModel.user.id == user.id ? userModel.user.currentProgress : user.currentProgress} pts",
+                "${userModel.user.id == user.id ? userModel.user.xpProgress : user.xpProgress} pts",
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 14,

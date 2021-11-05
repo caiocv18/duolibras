@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
 import 'package:duolibras/Commons/ViewModel/screenState.dart';
@@ -35,7 +36,8 @@ class RankingViewModel extends BaseViewModel {
     final currentUser = Provider.of<UserViewModel>(context, listen: false).user;
 
     return Service.instance.getUsersRanking().then((rankings) {
-      if (!rankings.contains(currentUser)) {
+      if (!rankings.contains(currentUser) &&
+          SharedFeatures.instance.isLoggedIn) {
         rankings.add(currentUser);
       }
       usersRank = rankings;
