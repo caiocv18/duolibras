@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/moduleProgress.dart';
@@ -31,6 +33,17 @@ class WrapperSectionPage {
 
   bool get isEmpty {
     return pages.isEmpty;
+  }
+
+  int get totalModules {
+    var total = 0;
+    pages.forEach((section) {
+      section.modules.forEach((module) {
+        total += module.maxProgress;
+      });
+    });
+
+    return total;
   }
 
   int get total {

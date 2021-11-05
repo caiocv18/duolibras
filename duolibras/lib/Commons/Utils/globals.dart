@@ -13,7 +13,7 @@ class SharedFeatures {
   int get numberMaxOfPoints => _numberMaxOfPoints;
 
   void setNumberMaxOfModules(int num) {
-    _numberMaxOfPoints = (num * 3) * 10;
+    _numberMaxOfPoints = num * 10;
   }
 
   SharedFeatures._();

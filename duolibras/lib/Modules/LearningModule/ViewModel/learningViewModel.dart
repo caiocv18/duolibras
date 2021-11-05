@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:duolibras/Commons/Components/customAlert.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
@@ -19,6 +20,7 @@ import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:duolibras/Commons/Extensions/list_extension.dart';
 
@@ -91,7 +93,8 @@ class LearningViewModel extends BaseViewModel
       }
     }
 
-    SharedFeatures.instance.setNumberMaxOfModules(wrapperSectionPage.total);
+    SharedFeatures.instance
+        .setNumberMaxOfModules(wrapperSectionPage.totalModules);
     if (!this.isDisposed) {
       setState(ScreenState.Normal);
     }
@@ -202,18 +205,88 @@ class LearningViewModel extends BaseViewModel
         exercises = exercises
             .where((element) => element.category != ExercisesCategory.content)
             .toList();
-        if (exercises.isNotEmpty)
-          _navigateToExercisesModule(
-              sectionID, module, context, exercises, handler);
+        if (exercises.isNotEmpty) {
+          _checkIfCameraIsEnabled(exercises, context).then((value) {
+            _navigateToExercisesModule(
+                sectionID, module, context, value, handler);
+          });
+        }
       });
     } else {
       _getExerciseFromModule(sectionID, module.id, level, context)
           .then((exercises) {
-        if (exercises.isNotEmpty)
-          _navigateToExercisesModule(
-              sectionID, module, context, exercises, handler);
+        if (exercises.isNotEmpty) {
+          _checkIfCameraIsEnabled(exercises, context).then((value) {
+            _navigateToExercisesModule(
+                sectionID, module, context, value, handler);
+          });
+        }
       });
     }
+  }
+
+  Future<List<Exercise>> _checkIfCameraIsEnabled(
+      List<Exercise> exercises, BuildContext context) async {
+    Completer<List<Exercise>> completer = Completer();
+
+    if (exercises.indexWhere((element) =>
+            element.category == ExercisesCategory.ml ||
+            element.category == ExercisesCategory.mlSpelling) ==
+        -1) {
+      return exercises;
+    }
+
+    final permission = Permission.camera;
+    final isGranted = await permission.isGranted;
+
+    if (!isGranted) {
+      if (await permission.isPermanentlyDenied) {
+        return _showDialog(exercises, context);
+      } else {
+        Permission.camera.request().then((value) {
+          if (value.isGranted) {
+            completer.complete(exercises);
+          } else {
+            completer.complete(_showDialog(exercises, context));
+          }
+        });
+      }
+    } else {
+      completer.complete(exercises);
+    }
+
+    return completer.future;
+  }
+
+  Future<List<Exercise>> _showDialog(
+      List<Exercise> exercises, BuildContext context) async {
+    Completer<List<Exercise>> completer = Completer();
+
+    var newExercises = exercises
+        .where((element) =>
+            element.category != ExercisesCategory.mlSpelling &&
+            element.category != ExercisesCategory.ml)
+        .toList();
+
+    await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return CustomAlert(
+              title:
+                  "Vá nas configurações para habilitar a câmera e aproveitar o melhor do App, com os exercícios práticos!",
+              yesTitle: "Permitir",
+              noTitle: "Ok",
+              yesButton: () {
+                Navigator.of(context).pop();
+                openAppSettings();
+              },
+              noButton: () {
+                Navigator.of(context).pop();
+                completer.complete(newExercises);
+              });
+        });
+
+    return completer.future;
   }
 
   void _navigateToExercisesModule(String sectionID, Module module,

@@ -128,9 +128,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _createProgressTextWidget(double progress) {
-    final totalProgress = progress / 100;
+    final totalProgress = progress < 1 ? progress : 1;
+    final double percentageProgress = totalProgress.toDouble();
     return Column(children: [
-      Text(_getLevelTextByProgress(totalProgress > 100 ? 100 : totalProgress),
+      Text(_getLevelTextByProgress(percentageProgress),
           style: TextStyle(
               fontSize: 24,
               fontFamily: "Nunito",
@@ -139,7 +140,7 @@ class _ProfilePageState extends State<ProfilePage> {
       SizedBox(
         height: 4,
       ),
-      Text("${(progress * 100).toStringAsFixed(2)}%",
+      Text("${(percentageProgress * 100).toStringAsFixed(2)}%",
           style: TextStyle(
               fontSize: 14,
               fontFamily: "Nunito",
