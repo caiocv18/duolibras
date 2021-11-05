@@ -1,4 +1,4 @@
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/section.dart';
@@ -64,7 +64,8 @@ class WrapperSectionPage {
   }
 
   bool isModuleAvaiable(String sectionID, String moduleID, BuildContext ctx) {
-    final sp = Provider.of<UserModel>(ctx, listen: false).user.sectionsProgress;
+    final sp =
+        Provider.of<UserViewModel>(ctx, listen: false).user.sectionsProgress;
 
     if (!_isSectionAvaiable(sp, sectionID)) {
       return false;

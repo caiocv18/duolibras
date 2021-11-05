@@ -5,7 +5,7 @@ import 'package:duolibras/Services/Authentication/Apple/appleAuthenticator.dart'
 import 'package:duolibras/Services/Authentication/AuthenticationErrors.dart';
 import 'package:duolibras/Services/Authentication/Firebase/firebaseAuthenticator.dart';
 import 'package:duolibras/Services/Authentication/Google/googleAuthenticator.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/Models/appError.dart';
 import 'package:duolibras/Services/Models/user.dart' as myUser;
 import 'package:duolibras/Services/service.dart';
@@ -92,7 +92,7 @@ class AuthenticationService {
 
       //Resetando dados locais
       Service.instance.cleanDatabase();
-      locator<UserModel>().setNewUser(userUpdated);
+      locator<UserViewModel>().setNewUser(userUpdated);
       return;
     } else {
       throw PlatformException(code: "code");

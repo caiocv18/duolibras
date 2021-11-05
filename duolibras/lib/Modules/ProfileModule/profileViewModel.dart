@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:duolibras/Services/authenticationService.dart';
 import 'package:duolibras/Services/service.dart';
@@ -20,7 +20,7 @@ class ProfileViewModel {
   }
 
   Future<void> signOut(BuildContext context) async {
-    final userProvider = Provider.of<UserModel>(context, listen: false);
+    final userProvider = Provider.of<UserViewModel>(context, listen: false);
     userProvider.trailSectionIndex(userProvider.user.trailSectionIndex);
     await Future.delayed(Duration(seconds: 1));
     return AuthenticationService.sharedInstance
@@ -33,7 +33,7 @@ class ProfileViewModel {
   Future<void> uploadImage(FileImage image, BuildContext context,
       {Function? exitClosure = null}) {
     return Service.instance.uploadImage(image).then((url) async {
-      final newUser = Provider.of<UserModel>(context, listen: false);
+      final newUser = Provider.of<UserViewModel>(context, listen: false);
       newUser.setImageUrl(url);
 
       return Service.instance

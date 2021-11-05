@@ -10,17 +10,16 @@ import 'package:duolibras/Modules/LearningModule/ViewModel/sectionPage.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
+import 'package:duolibras/Services/Models/exercisesCategory.dart';
 import 'package:duolibras/Services/Models/module.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/section.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:rxdart/subjects.dart';
 import 'package:duolibras/Commons/Extensions/list_extension.dart';
 
 class LearningViewModel extends BaseViewModel
@@ -33,8 +32,9 @@ class LearningViewModel extends BaseViewModel
 
   Future<void> _getModules(
       List<Section> newSections, BuildContext context) async {
-    final sectionsProgress =
-        Provider.of<UserModel>(context, listen: false).user.sectionsProgress;
+    final sectionsProgress = Provider.of<UserViewModel>(context, listen: false)
+        .user
+        .sectionsProgress;
 
     for (var i = 0; i < newSections.length; i++) {
       await getModulesfromSection(newSections[i].id, context).then((modules) {
@@ -42,11 +42,6 @@ class LearningViewModel extends BaseViewModel
         Color color = modules.first.color;
         colorForModules.addAll({color: modules.length});
         sectionsForModules.addAll({i: modules.length});
-
-        modules.forEach((element) {
-          element.mlModelPath = newSections[i].mlModelPath ?? "";
-          element.mlLabelsPath = newSections[i].mlLabelsPath ?? "";
-        });
       });
     }
 
@@ -73,6 +68,26 @@ class LearningViewModel extends BaseViewModel
                   .toList()));
         }
       });
+    } else {
+      var contains;
+      for (var i = 0; i < wrapperSectionPage.pages.length; i++) {
+        wrapperSectionPage.pages[i].modules.forEach((module) {
+          contains = false;
+          sectionsProgress[i].modulesProgress.forEach((moduleProgress) {
+            if (module.id == moduleProgress.moduleId) {
+              contains = true;
+            }
+          });
+
+          if (!contains) {
+            sectionsProgress[i].modulesProgress.add(ModuleProgress(
+                id: UniqueKey().toString(),
+                moduleId: module.id,
+                progress: 0,
+                maxModuleProgress: module.maxProgress));
+          }
+        });
+      }
     }
 
     SharedFeatures.instance.setNumberMaxOfModules(wrapperSectionPage.total);
@@ -162,7 +177,7 @@ class LearningViewModel extends BaseViewModel
       exercises.shuffle();
       List<Exercise> newExercises = [];
 
-      for (var i = 0; i < 15; i++) {
+      for (var i = 0; i < quantity; i++) {
         if (!exercises.containsAt(i)) {
           return newExercises;
         } else {
@@ -178,9 +193,12 @@ class LearningViewModel extends BaseViewModel
       BuildContext context, Function? handler) async {
     final level = _getUserModuleLevel(context, sectionID, module);
 
-    if (level == module.maxProgress) {
-      _getANumberExerciseFromModule(sectionID, module.id, 30, context)
+    if (level > module.maxProgress) {
+      _getANumberExerciseFromModule(sectionID, module.id, 20, context)
           .then((exercises) {
+        exercises = exercises
+            .where((element) => element.category != ExercisesCategory.content)
+            .toList();
         if (exercises.isNotEmpty)
           _navigateToExercisesModule(
               sectionID, module, context, exercises, handler);
@@ -210,7 +228,7 @@ class LearningViewModel extends BaseViewModel
   }
 
   int _getUserModuleLevel(BuildContext ctx, String sectionID, Module module) {
-    final user = Provider.of<UserModel>(ctx, listen: false).user;
+    final user = Provider.of<UserViewModel>(ctx, listen: false).user;
 
     try {
       final moduleProgress = user.sectionsProgress
@@ -229,7 +247,7 @@ class LearningViewModel extends BaseViewModel
   }
 
   int shouldAnimatedTrail(BuildContext context) {
-    final userProvider = Provider.of<UserModel>(context, listen: false);
+    final userProvider = Provider.of<UserViewModel>(context, listen: false);
     final idOfLastModuleIncremented = userProvider.idOfLastModuleIncremented;
 
     if (idOfLastModuleIncremented == null) {

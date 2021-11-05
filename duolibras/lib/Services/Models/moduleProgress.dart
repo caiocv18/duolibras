@@ -5,7 +5,7 @@ class ModuleProgress {
   final int maxModuleProgress;
 
   bool get isCompleted {
-    return progress == maxModuleProgress;
+    return progress >= maxModuleProgress;
   }
 
   ModuleProgress(
@@ -20,7 +20,6 @@ class ModuleProgress {
         moduleId: parsedJson["moduleId"],
         progress: parsedJson["moduleProgress"],
         maxModuleProgress: parsedJson["maxModuleProgress"],
-
         id: docId);
   }
 

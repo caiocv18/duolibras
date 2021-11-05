@@ -141,9 +141,6 @@ class _ExerciseFlowState extends State<ExerciseFlow>
         break;
       case ExerciseFlow.routeFeedbackModulePage:
         final arg = settings.arguments as Map<String, FeedbackStatus?>;
-        if (arg == null) {
-          break;
-        }
         final feedBackStatus = arg["feedbackStatus"] as FeedbackStatus;
         page = FeedbackExerciseScreen(
             Tuple2(widget.exercises, widget.module), this);
@@ -292,13 +289,22 @@ class _ExerciseFlowState extends State<ExerciseFlow>
 
   List<Exercise> _getContentsFromExercisesList() {
     var contents = [widget._currentExercise];
-    final currentIndex = widget.exercises.indexOf(widget._currentExercise);
-    if (widget.exercises.length > currentIndex + 1) {
-      final nextExercise = widget.exercises[currentIndex + 1];
-      if (nextExercise.category == ExercisesCategory.content) {
-        contents.add(nextExercise);
-      }
+    var currentIndex = widget.exercises.indexOf(widget._currentExercise);
+    currentIndex += 1;
+    var nextExercise = widget.exercises[currentIndex];
+
+    while (currentIndex + 1 < widget.exercises.length &&
+        nextExercise.category == ExercisesCategory.content) {
+      contents.add(nextExercise);
+      currentIndex += 1;
+      nextExercise = widget.exercises[currentIndex];
     }
+
+    // if (widget.exercises.length > currentIndex + 1) {
+    //   if (nextExercise.category == ExercisesCategory.content) {
+    //     contents.add(nextExercise);
+    //   }
+    // }
 
     widget._currentExercise = contents.last;
     return contents;

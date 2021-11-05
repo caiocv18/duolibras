@@ -11,7 +11,7 @@ import 'package:duolibras/Modules/LoginModule/SignIn/signInPage.dart';
 import 'package:duolibras/Commons/Components/customTextfield.dart';
 import 'package:duolibras/Modules/ProfileModule/profileImageButton.dart';
 import 'package:duolibras/Modules/ProfileModule/profileViewModel.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (ctx, UserModel userProvider, _) {
+    return Consumer(builder: (ctx, UserViewModel userProvider, _) {
       return SafeArea(
           bottom: false,
           child: LayoutBuilder(builder: (ctx, constraint) {
@@ -120,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: Color.fromRGBO(234, 234, 234, 1),
         radius: 80,
       ),
-      Consumer(builder: (ctx, UserModel userProvider, _) {
+      Consumer(builder: (ctx, UserViewModel userProvider, _) {
         return _createProgressTextWidget(userProvider.user.currentProgress /
             SharedFeatures.instance.numberMaxOfPoints);
       })
@@ -128,8 +128,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _createProgressTextWidget(double progress) {
+    final totalProgress = progress / 100;
     return Column(children: [
-      Text(_getLevelTextByProgress(progress / 100),
+      Text(_getLevelTextByProgress(totalProgress > 100 ? 100 : totalProgress),
           style: TextStyle(
               fontSize: 24,
               fontFamily: "Nunito",
@@ -204,7 +205,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (newName.isEmpty) {
       return;
     }
-    final userModel = locator<UserModel>().user;
+    final userModel = locator<UserViewModel>().user;
 
     var user = User(
         name: nameTextfieldController.value.text,
@@ -218,7 +219,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     widget._viewModel.updateUser(user);
 
-    final userProvider = Provider.of<UserModel>(context, listen: false);
+    final userProvider = Provider.of<UserViewModel>(context, listen: false);
     userProvider.setUserName(nameTextfieldController.value.text);
 
     // setState(() {

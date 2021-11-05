@@ -5,12 +5,11 @@ import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/Launch/launchViewModel.dart';
-import 'package:duolibras/Services/Models/Providers/userProvider.dart';
+import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:flutter/material.dart';
 
 import 'Widgets/circularProgressIndicator.dart';
-
 
 class LaunchScreen extends StatefulWidget {
   final Function _loadCompleted;
@@ -22,7 +21,8 @@ class LaunchScreen extends StatefulWidget {
   _LaunchScreenState createState() => _LaunchScreenState();
 }
 
-class _LaunchScreenState extends State<LaunchScreen> with SingleTickerProviderStateMixin {
+class _LaunchScreenState extends State<LaunchScreen>
+    with SingleTickerProviderStateMixin {
   var animated = false;
   var isGettingUser = false;
   var isDownloaded = false;
@@ -31,7 +31,8 @@ class _LaunchScreenState extends State<LaunchScreen> with SingleTickerProviderSt
 
   @override
   void initState() {
-    _animationController = new AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _animationController =
+        new AnimationController(vsync: this, duration: Duration(seconds: 1));
     _animationController.addListener(() => setState(() {}));
     _animationController.repeat();
     getUser();
@@ -39,56 +40,57 @@ class _LaunchScreenState extends State<LaunchScreen> with SingleTickerProviderSt
   }
 
   void getUser() {
-    widget.viewModel.getInitialData(this.context).then((value) => {
-      widget._loadCompleted()
-    });
+    widget.viewModel
+        .getInitialData(this.context)
+        .then((value) => {widget._loadCompleted()});
   }
 
   @override
   Widget build(BuildContext context) {
-    return 
-    Scaffold(
-      backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-      body: 
-        SafeArea(
-          child: LayoutBuilder(builder: (ctx, constraint) {
-                return SingleChildScrollView(
-                  child: Stack(
-                    alignment: AlignmentDirectional.center,
-                    children: 
-                    [
-                      Container(
-                        height: constraint.maxHeight,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                                Constants.imageAssets.background_home),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                          Text("Preparando ambiente...", 
-                          style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700, fontSize: 24)),
-                        SizedBox(height: 30),
-                        RotationTransition(
-                          turns: Tween(begin: 0.0, end: 1.0).animate(_animationController),
-                          child: GradientCircularProgressIndicator(
-                            radius: 50,
-                            gradientColors: [HexColor.fromHex("4982F6"), HexColor.fromHex("2CC4FC")],
-                            strokeWidth: 10.0,
-                          ),
-                        ),
-                      ],
-                    )
-                    ],
+    return Scaffold(
+        backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+        body: SafeArea(child: LayoutBuilder(builder: (ctx, constraint) {
+          return SingleChildScrollView(
+            child: Stack(
+              alignment: AlignmentDirectional.center,
+              children: [
+                Container(
+                  height: constraint.maxHeight,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(Constants.imageAssets.background_home),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                );
-          })
-      ));
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Preparando ambiente...",
+                        style: TextStyle(
+                            fontFamily: "Nunito",
+                            fontWeight: FontWeight.w700,
+                            fontSize: 24)),
+                    SizedBox(height: 30),
+                    RotationTransition(
+                      turns: Tween(begin: 0.0, end: 1.0)
+                          .animate(_animationController),
+                      child: GradientCircularProgressIndicator(
+                        radius: 50,
+                        gradientColors: [
+                          HexColor.fromHex("4982F6"),
+                          HexColor.fromHex("2CC4FC")
+                        ],
+                        strokeWidth: 10.0,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        })));
   }
 
   @override
@@ -96,5 +98,4 @@ class _LaunchScreenState extends State<LaunchScreen> with SingleTickerProviderSt
     _animationController.dispose();
     super.dispose();
   }
-    
 }

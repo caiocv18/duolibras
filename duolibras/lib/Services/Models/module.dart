@@ -9,28 +9,30 @@ class Module {
   final String iconUrl;
   final String backgroundImageUrl;
   final Color color;
-  late String mlModelPath;
-  late String mlLabelsPath;
+  final String mlModelPath;
+  final String mlLabelsPath;
 
-   Module(
+  Module(
       {required this.title,
       required this.minProgress,
       required this.maxProgress,
       required this.id,
       required this.iconUrl,
       required this.backgroundImageUrl,
-      required this.color
-    });
+      required this.color,
+      required this.mlLabelsPath,
+      required this.mlModelPath});
 
   factory Module.fromMap(Map<String, dynamic> parsedJson, String docId) {
     return Module(
-      title: parsedJson["title"],
-      minProgress: parsedJson["minProgress"],
-      maxProgress: parsedJson["maxProgress"],
-      id: docId,
-      iconUrl: parsedJson["iconUrl"],
-      backgroundImageUrl: parsedJson["backgroundImageUrl"],
-      color: HexColor.fromHex(parsedJson["color"])
-    );
+        title: parsedJson["title"],
+        minProgress: parsedJson["minProgress"],
+        maxProgress: parsedJson["maxProgress"],
+        id: docId,
+        iconUrl: parsedJson["iconUrl"],
+        backgroundImageUrl: parsedJson["backgroundImageUrl"],
+        color: HexColor.fromHex(parsedJson["color"]),
+        mlLabelsPath: parsedJson["mlLabelsPath"],
+        mlModelPath: parsedJson["mlModelPath"]);
   }
 }

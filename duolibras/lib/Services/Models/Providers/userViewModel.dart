@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../sectionProgress.dart';
 
-class UserModel extends BaseViewModel {
+class UserViewModel extends BaseViewModel {
   User? _user;
 
   User get user {
@@ -98,7 +98,8 @@ class UserModel extends BaseViewModel {
                     .progress +
                 1 >
             _user!.sectionsProgress[sectionIndex].modulesProgress[modulesIndex]
-                .maxModuleProgress) {
+                    .maxModuleProgress +
+                1) {
           setState(ScreenState.Normal);
           return _user!.sectionsProgress[sectionIndex];
         }
