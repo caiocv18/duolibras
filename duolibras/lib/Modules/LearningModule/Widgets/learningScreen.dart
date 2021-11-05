@@ -31,7 +31,7 @@ abstract class LearningViewModelProtocol {
 
 class LearningScreen extends StatefulWidget {
   static String routeName = "/LearningScreen";
-  final LearningViewModel _viewModel;
+  LearningViewModel _viewModel;
   var _firstTime = true;
   LearningScreen(this._viewModel);
 
@@ -125,8 +125,10 @@ class _LearningScreenState extends State<LearningScreen>
   @override
   Widget build(BuildContext context) {
     return BaseScreen<LearningViewModel>(
-        onModelReady: (viewModel) =>
-            {viewModel.fetchSections(context).then((_) => setTrailPathIndex())},
+        onModelReady: (viewModel) {
+          widget._viewModel = viewModel;
+          viewModel.fetchSections(context).then((_) => setTrailPathIndex());
+        },
         builder: (_, viewModel, __) => LayoutBuilder(
                 builder: (BuildContext ctx, BoxConstraints constraints) {
               return Stack(
@@ -285,6 +287,7 @@ class _LearningScreenState extends State<LearningScreen>
 
   @override
   void dispose() {
+    widget._viewModel.isDisposed = true;
     super.dispose();
   }
 }
