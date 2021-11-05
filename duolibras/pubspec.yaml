@@ -53,6 +53,7 @@ flutter_icons:
   image_path_android: "assets/icons/icon.png"
   adaptive_icon_background: "assets/icons/background.png"
   adaptive_icon_foreground: "assets/icons/foreground.png"
+  remove_alpha_ios: true
 
 flutter:
   uses-material-design: true
