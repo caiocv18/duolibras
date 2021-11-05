@@ -7,15 +7,14 @@ class User {
   List<SectionProgress> sectionsProgress = [];
   int currentProgress;
   String? imageUrl;
-  int trailSectionIndex = initialTrailSectionIndex;
-
-  static final initialTrailSectionIndex = -99;
+  int trailSectionIndex;
 
   User(
       {required this.name,
       required this.email,
       required this.id,
       required this.currentProgress,
+      required this.trailSectionIndex,
       required this.imageUrl});
 
   factory User.fromMap(Map<String, dynamic> parsedJson, String id) {
@@ -24,8 +23,8 @@ class User {
         email: parsedJson["email"],
         currentProgress: parsedJson["currentProgress"],
         imageUrl: parsedJson["imageUrl"],
+        trailSectionIndex: parsedJson["trailSectionIndex"],
         id: id);
-    user.trailSectionIndex = parsedJson["trailSectionIndex"];
     return user;
   }
   @override

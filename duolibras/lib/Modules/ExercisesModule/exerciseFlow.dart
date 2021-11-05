@@ -46,10 +46,9 @@ class ExerciseFlow extends StatefulWidget {
   final String sectionID;
   late Exercise _currentExercise;
 
-  ExerciseFlow (this.exercises,this.module, this.sectionID) {
+  ExerciseFlow(this.exercises, this.module, this.sectionID) {
     _currentExercise = exercises.first;
   }
-
 
   @override
   _ExerciseFlowState createState() => _ExerciseFlowState();
@@ -74,7 +73,8 @@ class ExerciseFlow extends StatefulWidget {
   }
 }
 
-class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDelegate {
+class _ExerciseFlowState extends State<ExerciseFlow>
+    implements ExerciseFlowDelegate {
   final _navigatorKey = GlobalKey<NavigatorState>();
   late PreferredSizeWidget? _appBar;
   var _exerciseProgress = 0.0;
@@ -88,11 +88,12 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
   @override
   var totalPoints = 0;
 
-  late var viewModel = locator<ExerciseViewModel>(param1: Tuple2(widget.exercises, widget.module), param2: this);
+  late var viewModel = locator<ExerciseViewModel>(
+      param1: Tuple2(widget.exercises, widget.module), param2: this);
 
   @override
   String get sectionID => widget.sectionID;
-  
+
   @override
   void initState() {
     super.initState();
@@ -100,7 +101,11 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
 
   @override
   Widget build(BuildContext context) {
-    _appBar = _buildFlowAppBar(this.context, widget._currentExercise.category == ExercisesCategory.content ? TabType.ContentBar : TabType.ExerciseBar);
+    _appBar = _buildFlowAppBar(
+        this.context,
+        widget._currentExercise.category == ExercisesCategory.content
+            ? TabType.ContentBar
+            : TabType.ExerciseBar);
 
     return WillPopScope(
       onWillPop: _isExitDesired,
@@ -109,16 +114,17 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
         appBar: _appBar,
         body: Navigator(
           key: _navigatorKey,
-          initialRoute: ExerciseFlow.getRouteNameBy(widget._currentExercise.category),
+          initialRoute:
+              ExerciseFlow.getRouteNameBy(widget._currentExercise.category),
           onGenerateRoute: _onGenerateRoute,
         ),
       ),
     );
   }
 
-
   Route _onGenerateRoute(RouteSettings settings) {
-    viewModel = locator<ExerciseViewModel>(param1: Tuple2(widget.exercises, widget.module), param2: this);
+    viewModel = locator<ExerciseViewModel>(
+        param1: Tuple2(widget.exercises, widget.module), param2: this);
     late Widget page;
     switch (settings.name) {
       case ExerciseFlow.routeExerciseMultiChoicePage:
@@ -142,11 +148,13 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
         break;
       case ExerciseFlow.routeContentModulePage:
         page = ContentScreen(viewModel, _getContentsFromExercisesList());
-        final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
+        final ExerciseAppBarWidget? exerciseAppBar =
+            Utils.tryCast(_appBar, fallback: null);
         Future.delayed(Duration.zero, () async {
           if (exerciseAppBar != null) {
-            if (exerciseAppBar.showContentTabBar != null) exerciseAppBar.showContentTabBar!(TabType.ContentBar);
-         }
+            if (exerciseAppBar.showContentTabBar != null)
+              exerciseAppBar.showContentTabBar!(TabType.ContentBar);
+          }
         });
 
         break;
@@ -171,8 +179,7 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
             tabType,
             _onNextExercisePressed,
             _onExitPressed,
-            _onSkipPressed
-        )
+            _onSkipPressed)
         : null;
   }
 
@@ -180,55 +187,74 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
     return await showDialog<bool>(
             context: context,
             builder: (context) {
-                  return Dialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    backgroundColor: Colors.white,
-                    child: LayoutBuilder(builder: (ctx, constraint) {
-                      return Container(
-                        height: 223,
-                        child: Center(
-                            child: Column(
-                              children: [
-                                SizedBox(height: 35),
-                                Container(
-                                  width: 170,
-                                  child: 
-                                  Text("Tem certeza que deseja sair?", 
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700, color: Colors.black, fontSize: 18)),
-                                ),
-                                SizedBox(height: 10),
-                                Container(height: 2, width: constraint.maxWidth, color: Colors.grey[300]),
-                                // SizedBox(height: 10),
-                                Container(
-                                  width: 170,
-                                  height: 53,
-                                  child: TextButton(child: Text("Sim",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w800, color: HexColor.fromHex('E97070'), fontSize: 18)),
-                                    onPressed: () => Navigator.of(context).pop(true),
-                                  ),
-                                ),
-                                // SizedBox(height: 10),
-                                Container(height: 2, width: constraint.maxWidth, color: Colors.grey[300]),
-                                // SizedBox(height: 10),
-                                Container(
-                                  width: 170,
-                                  height: 53,
-                                  child: TextButton(child: Text("Não",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w400, color: Colors.black, fontSize: 18)),
-                                    onPressed: () => Navigator.of(context).pop(false),
-                                  )
-                                )
-                              ],
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0),
+                ),
+                backgroundColor: Colors.white,
+                child: LayoutBuilder(builder: (ctx, constraint) {
+                  return Container(
+                    height: 223,
+                    child: Center(
+                      child: Column(
+                        children: [
+                          SizedBox(height: 35),
+                          Container(
+                            width: 170,
+                            child: Text("Tem certeza que deseja sair?",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontFamily: "Nunito",
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black,
+                                    fontSize: 18)),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                              height: 2,
+                              width: constraint.maxWidth,
+                              color: Colors.grey[300]),
+                          // SizedBox(height: 10),
+                          Container(
+                            width: 170,
+                            height: 53,
+                            child: TextButton(
+                              child: Text("Sim",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontFamily: "Nunito",
+                                      fontWeight: FontWeight.w800,
+                                      color: HexColor.fromHex('E97070'),
+                                      fontSize: 18)),
+                              onPressed: () => Navigator.of(context).pop(true),
                             ),
                           ),
-                      );
-                    }),
+                          // SizedBox(height: 10),
+                          Container(
+                              height: 2,
+                              width: constraint.maxWidth,
+                              color: Colors.grey[300]),
+                          // SizedBox(height: 10),
+                          Container(
+                              width: 170,
+                              height: 53,
+                              child: TextButton(
+                                child: Text("Não",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontFamily: "Nunito",
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black,
+                                        fontSize: 18)),
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                              ))
+                        ],
+                      ),
+                    ),
                   );
+                }),
+              );
             }) ??
         false;
   }
@@ -247,14 +273,16 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
   Future<void> _onSkipPressed() async {
     _currentPage?.goNextExercise();
 
-    final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
+    final ExerciseAppBarWidget? exerciseAppBar =
+        Utils.tryCast(_appBar, fallback: null);
     if (exerciseAppBar != null) {
-      if (exerciseAppBar.showContentTabBar != null) exerciseAppBar.showContentTabBar!(TabType.ExerciseBar);
+      if (exerciseAppBar.showContentTabBar != null)
+        exerciseAppBar.showContentTabBar!(TabType.ExerciseBar);
     }
   }
 
   void _sortExercisesList() {
-    widget.exercises.sort((a,b){
+    widget.exercises.sort((a, b) {
       return a.order.compareTo(b.order);
     });
   }
@@ -262,9 +290,9 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
   List<Exercise> _getContentsFromExercisesList() {
     var contents = [widget._currentExercise];
     final currentIndex = widget.exercises.indexOf(widget._currentExercise);
-    if (widget.exercises.length > currentIndex + 1){
+    if (widget.exercises.length > currentIndex + 1) {
       final nextExercise = widget.exercises[currentIndex + 1];
-      if (nextExercise.category == ExercisesCategory.content){
+      if (nextExercise.category == ExercisesCategory.content) {
         contents.add(nextExercise);
       }
     }
@@ -275,9 +303,11 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
 
   @override
   void updateNumberOfLifes(int lifes) {
-    final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
+    final ExerciseAppBarWidget? exerciseAppBar =
+        Utils.tryCast(_appBar, fallback: null);
     if (exerciseAppBar != null) {
-      if (exerciseAppBar.onUpdateLifes != null) exerciseAppBar.onUpdateLifes!(lifes);
+      if (exerciseAppBar.onUpdateLifes != null)
+        exerciseAppBar.onUpdateLifes!(lifes);
     }
   }
 
@@ -297,10 +327,12 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
       return;
     }
 
-    final ExerciseAppBarWidget? exerciseAppBar = Utils.tryCast(_appBar, fallback: null);
+    final ExerciseAppBarWidget? exerciseAppBar =
+        Utils.tryCast(_appBar, fallback: null);
     if (exerciseAppBar != null) {
       _exerciseProgress += 1;
-      if (exerciseAppBar.onUpdateProgress != null) exerciseAppBar.onUpdateProgress!(_exerciseProgress);
+      if (exerciseAppBar.onUpdateProgress != null)
+        exerciseAppBar.onUpdateProgress!(_exerciseProgress);
     }
 
     widget._currentExercise = exercise;
@@ -374,5 +406,3 @@ class _ExerciseFlowState extends State<ExerciseFlow> implements ExerciseFlowDele
     _navigatorKey.currentState!.pushNamed(route);
   }
 }
-
-

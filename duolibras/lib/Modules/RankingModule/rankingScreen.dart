@@ -126,11 +126,6 @@ class _RankingScreenState extends State<RankingScreen> {
                 widget.selectNewPage(HomePages.Profile);
               },
             ),
-            // child: ExerciseButton(child: Text("Entrar",
-            //   textAlign: TextAlign.center,
-            //   style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w800, color: HexColor.fromHex('E97070'), fontSize: 18)),
-            //   onPressed: () => widget.selectNewPage(HomePages.Profile)
-            // )
           )
         ],
       ),
@@ -143,12 +138,10 @@ class _RankingScreenState extends State<RankingScreen> {
       return;
     }
 
-    if (usersRank[index].currentProgress != newCurrentUser.currentProgress) {
-      usersRank[index].currentProgress = newCurrentUser.currentProgress;
-      usersRank.sort((a, b) {
-        return b.currentProgress.compareTo(a.currentProgress);
-      });
-    }
+    usersRank[index].currentProgress = newCurrentUser.currentProgress;
+    usersRank.sort((a, b) {
+      return b.currentProgress.compareTo(a.currentProgress);
+    });
   }
 
   @override

@@ -22,31 +22,39 @@ class AuthenticationService {
   AuthenticationService._();
 
   Future<void> appleSignIn() async {
-    return _appleAuthenticator.signInWithApple()
-    .then((user) => _updateUserInDatabase(user))
-    .catchError(_handleAuthenticationException, test: (e) => e is AuthenticationErrors);
+    return _appleAuthenticator
+        .signInWithApple()
+        .then((user) => _updateUserInDatabase(user))
+        .catchError(_handleAuthenticationException,
+            test: (e) => e is AuthenticationErrors);
   }
 
   Future<void> googleSignIn() async {
-    return _googleAuthenticator.signInWithGoogle()
-    .then((user) => _updateUserInDatabase(user))
-    .catchError(_handleAuthenticationException, test: (e) => e is AuthenticationErrors);
+    return _googleAuthenticator
+        .signInWithGoogle()
+        .then((user) => _updateUserInDatabase(user))
+        .catchError(_handleAuthenticationException,
+            test: (e) => e is AuthenticationErrors);
   }
 
   Future<void> firebaseSignIn(String email) async {
-    return _firebaseAuthenticator.signInWithEmail(email).onError(_handleAuthenticationException,
-    test: (e) => e is AuthenticationErrors);
+    return _firebaseAuthenticator.signInWithEmail(email).onError(
+        _handleAuthenticationException,
+        test: (e) => e is AuthenticationErrors);
   }
 
   Future<void> signOut() {
-    return _firebaseAuthenticator.signOut().onError(_handleAuthenticationException,
-    test: (e) => e is AuthenticationErrors);
+    return _firebaseAuthenticator.signOut().onError(
+        _handleAuthenticationException,
+        test: (e) => e is AuthenticationErrors);
   }
 
   Future<void> handleFirebaseLink(Uri link, String email) async {
-    return _firebaseAuthenticator.signInWithEmailLink(email, link.toString())
-    .then((user) => _updateUserInDatabase(user))
-    .catchError(_handleAuthenticationException, test: (e) => e is AuthenticationErrors);
+    return _firebaseAuthenticator
+        .signInWithEmailLink(email, link.toString())
+        .then((user) => _updateUserInDatabase(user))
+        .catchError(_handleAuthenticationException,
+            test: (e) => e is AuthenticationErrors);
   }
 
   Future<void> _updateUserInDatabase(fireUser.User? user) async {
@@ -60,6 +68,7 @@ class AuthenticationService {
             id: user.uid,
             name: user.displayName ?? user.email ?? "",
             currentProgress: 0,
+            trailSectionIndex: -99,
             email: user.email ?? "",
             imageUrl: null);
 
@@ -73,13 +82,13 @@ class AuthenticationService {
         userModel = oldUser;
       }
 
-      SharedFeatures.instance.isLoggedIn = true;   
+      SharedFeatures.instance.isLoggedIn = true;
       var userUpdated = await Service.instance.postUser(userModel, isNewUser);
       userUpdated.sectionsProgress = await Service.instance
           .getSectionsProgress()
           .onError((error, stackTrace) {
-            return [];
-          });
+        return [];
+      });
 
       //Resetando dados locais
       Service.instance.cleanDatabase();
@@ -91,8 +100,11 @@ class AuthenticationService {
   }
 
   //Error handling
-  Future<dynamic> _handleAuthenticationException(Object error, StackTrace stackTrace) {
-    final AuthenticationErrors firebaseError = Utils.tryCast(error, fallback: AuthenticationErrors.Unknown);
-    return Future.error(AppError(firebaseError.type, firebaseError.errorDescription));
+  Future<dynamic> _handleAuthenticationException(
+      Object error, StackTrace stackTrace) {
+    final AuthenticationErrors firebaseError =
+        Utils.tryCast(error, fallback: AuthenticationErrors.Unknown);
+    return Future.error(
+        AppError(firebaseError.type, firebaseError.errorDescription));
   }
 }

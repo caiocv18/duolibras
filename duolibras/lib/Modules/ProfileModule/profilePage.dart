@@ -210,6 +210,7 @@ class _ProfilePageState extends State<ProfilePage> {
         name: nameTextfieldController.value.text,
         email: userModel.email,
         id: userModel.id,
+        trailSectionIndex: userModel.trailSectionIndex,
         currentProgress: userModel.currentProgress,
         imageUrl: userModel.imageUrl);
 
