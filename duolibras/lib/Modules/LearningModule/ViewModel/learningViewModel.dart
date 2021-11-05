@@ -26,6 +26,7 @@ import 'package:duolibras/Commons/Extensions/list_extension.dart';
 class LearningViewModel extends BaseViewModel
     with ModuleViewModel, LearningViewModelProtocol {
   final _errorHandler = ErrorHandler();
+  bool isDisposed = false;
   List<Section> allSections = [];
   Map<Color, int> colorForModules = {};
   Map<int, int> sectionsForModules = {};
@@ -76,7 +77,9 @@ class LearningViewModel extends BaseViewModel
     }
 
     SharedFeatures.instance.setNumberMaxOfModules(wrapperSectionPage.total);
-    setState(ScreenState.Normal);
+    if (!this.isDisposed) {
+      setState(ScreenState.Normal);
+    }
   }
 
   Future<List<Module>> getModulesfromSection(

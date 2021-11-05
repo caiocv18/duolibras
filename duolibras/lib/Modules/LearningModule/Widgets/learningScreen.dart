@@ -31,7 +31,7 @@ abstract class LearningViewModelProtocol {
 
 class LearningScreen extends StatefulWidget {
   static String routeName = "/LearningScreen";
-  final LearningViewModel _viewModel;
+  LearningViewModel _viewModel;
   var _firstTime = true;
   LearningScreen(this._viewModel);
 
@@ -39,7 +39,8 @@ class LearningScreen extends StatefulWidget {
   _LearningScreenState createState() => _LearningScreenState();
 }
 
-class _LearningScreenState extends State<LearningScreen> with SingleTickerProviderStateMixin {
+class _LearningScreenState extends State<LearningScreen>
+    with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController animationController;
   var currentSectionIndex = 0;
@@ -82,7 +83,7 @@ class _LearningScreenState extends State<LearningScreen> with SingleTickerProvid
       });
     });
 
-    if (!widget._firstTime)  {
+    if (!widget._firstTime) {
       setState(() {
         isLoadingPath = false;
       });
@@ -121,8 +122,10 @@ class _LearningScreenState extends State<LearningScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return BaseScreen<LearningViewModel>(
-        onModelReady: (viewModel) =>
-            {viewModel.fetchSections(context).then((_) => setTrailPathIndex())},
+        onModelReady: (viewModel) {
+          widget._viewModel = viewModel;
+          viewModel.fetchSections(context).then((_) => setTrailPathIndex());
+        },
         builder: (_, viewModel, __) => LayoutBuilder(
                 builder: (BuildContext ctx, BoxConstraints constraints) {
               return Stack(
@@ -281,6 +284,7 @@ class _LearningScreenState extends State<LearningScreen> with SingleTickerProvid
 
   @override
   void dispose() {
+    widget._viewModel.isDisposed = true;
     super.dispose();
   }
 }
