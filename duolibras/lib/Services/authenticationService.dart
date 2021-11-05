@@ -69,6 +69,7 @@ class AuthenticationService {
             name: user.displayName ?? user.email ?? "",
             currentProgress: 0,
             trailSectionIndex: -99,
+            xpProgress: 0,
             email: user.email ?? "",
             imageUrl: null);
 

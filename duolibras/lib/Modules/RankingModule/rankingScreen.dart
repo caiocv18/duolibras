@@ -138,9 +138,9 @@ class _RankingScreenState extends State<RankingScreen> {
       return;
     }
 
-    usersRank[index].currentProgress = newCurrentUser.currentProgress;
+    usersRank[index].xpProgress = newCurrentUser.xpProgress;
     usersRank.sort((a, b) {
-      return b.currentProgress.compareTo(a.currentProgress);
+      return b.xpProgress.compareTo(a.xpProgress);
     });
   }
 

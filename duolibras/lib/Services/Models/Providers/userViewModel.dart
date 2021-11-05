@@ -17,6 +17,7 @@ class UserViewModel extends BaseViewModel {
           id: _user!.id,
           currentProgress: _user!.currentProgress,
           trailSectionIndex: _user!.trailSectionIndex,
+          xpProgress: _user!.xpProgress,
           imageUrl: _user!.imageUrl);
 
       user.sectionsProgress = _user!.sectionsProgress;
@@ -29,6 +30,7 @@ class UserViewModel extends BaseViewModel {
         id: "",
         currentProgress: 0,
         trailSectionIndex: -99,
+        xpProgress: 0,
         imageUrl: null);
   }
 
@@ -127,6 +129,13 @@ class UserViewModel extends BaseViewModel {
       return _user!.sectionsProgress[sectionIndex];
     }
     return null;
+  }
+
+  void incrementUserXpProgress(int xp) {
+    if (_user != null) {
+      _user!.xpProgress += xp;
+      setState(ScreenState.Normal);
+    }
   }
 
   void addSectionProgress(SectionProgress sectionProgress) {

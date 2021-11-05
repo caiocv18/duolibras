@@ -213,6 +213,7 @@ class _ProfilePageState extends State<ProfilePage> {
         id: userModel.id,
         trailSectionIndex: userModel.trailSectionIndex,
         currentProgress: userModel.currentProgress,
+        xpProgress: userModel.xpProgress,
         imageUrl: userModel.imageUrl);
 
     user.sectionsProgress = userModel.sectionsProgress;

@@ -136,6 +136,8 @@ class ExerciseViewModel extends BaseViewModel {
       userProvider.incrementUserProgress(10);
     }
 
+    userProvider.incrementUserXpProgress(10);
+
     if (!isFirstTimeInModule) {
       sectionProgress = userProvider.incrementModulesProgress(
           exerciseFlowDelegate.sectionID,

@@ -72,6 +72,7 @@ class Service {
             id: "",
             email: "",
             currentProgress: 0,
+            xpProgress: 0,
             trailSectionIndex: -99,
             imageUrl: null);
         return _database.saveUser(newUser).then((_) => newUser).onError(

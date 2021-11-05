@@ -124,7 +124,7 @@ class FirebaseService extends ServicesProtocol {
     final completer = Completer<List<myUser.User>>();
     firestoreInstance
         .collection(Constants.firebaseService.usersCollection)
-        .orderBy("currentProgress")
+        .orderBy("xpProgress")
         .limit(30)
         .get()
         .then((response) => {
