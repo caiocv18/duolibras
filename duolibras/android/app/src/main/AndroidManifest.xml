@@ -2,7 +2,8 @@
     package="com.example.duolibras">
    <application
         android:label="Bilibras"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

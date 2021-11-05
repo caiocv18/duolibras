@@ -38,9 +38,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Podemos utilizar a câmera?</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Podemos utilizar o microfone?</string>
+	<string>Gostaríamos de utilizar a câmera para identificar o sinal em Libras.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Gostaríamos de utilizar a internet para se conectar com o nosso banco de dados.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
