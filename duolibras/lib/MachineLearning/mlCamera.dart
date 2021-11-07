@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as IL;
+import 'package:path_provider/path_provider.dart';
 
 import 'mlModelProtocol.dart';
 import 'Helpers/app_helper.dart';
@@ -33,7 +36,10 @@ class MLCamera {
     AppHelper.log("_initializeCamera", "Initializing camera..");
 
     _camera = CameraController(
-        await _getCamera(_direction), ResolutionPreset.high,
+        await _getCamera(_direction),
+        defaultTargetPlatform == TargetPlatform.iOS
+            ? ResolutionPreset.high
+            : ResolutionPreset.medium,
         enableAudio: false,
         imageFormatGroup: defaultTargetPlatform == TargetPlatform.iOS
             ? ImageFormatGroup.bgra8888
@@ -69,46 +75,68 @@ class MLCamera {
     if (_boxDirection == null) {
       return [];
     }
-    const int shift = (0xFF << 24);
 
-    var croppedImages = image.planes.map((e) {
-      var ci = IL.Image.fromBytes(
-        image.width,
-        image.height,
-        image.planes[0].bytes,
-        format: IL.Format.bgra,
-      );
+    try {
+      var croppedImages = image.planes.map((e) {
+        var img = IL.Image.fromBytes(
+          image.width,
+          image.height,
+          image.planes[0].bytes,
+          format: IL.Format.bgra,
+        );
 
-      for (int x = 0; x < image.width; x++) {
-        for (int planeOffset = 0;
-            planeOffset < image.height * image.width;
-            planeOffset += image.width) {
-          final pixelColor = e.bytes[planeOffset + x];
-          // color: 0x FF  FF  FF  FF
-          //           A   B   G   R
-          // Calculate pixel color
-          var newVal =
-              shift | (pixelColor << 16) | (pixelColor << 8) | pixelColor;
-
-          ci.data[planeOffset + x] = newVal;
+        final int width = image.width;
+        final int height = image.height;
+        final int uvRowStride = image.planes[1].bytesPerRow;
+        final int uvPixelStride = image.planes[1].bytesPerPixel!;
+        for (int x = 0; x < width; x++) {
+          // Fill image buffer with plane[0] from YUV420_888
+          for (int y = 0; y < height; y++) {
+            final int uvIndex =
+                uvPixelStride * (x / 2).floor() + uvRowStride * (y / 2).floor();
+            final int index = y * uvRowStride +
+                x; // Use the row stride instead of the image width as some devices pad the image data, and in those cases the image width != bytesPerRow. Using width will give you a distored image.
+            final yp = image.planes[0].bytes[index];
+            final up = image.planes[1].bytes[uvIndex];
+            final vp = image.planes[2].bytes[uvIndex];
+            int r = (yp + vp * 1436 / 1024 - 179).round().clamp(0, 255).toInt();
+            int g = (yp - up * 46549 / 131072 + 44 - vp * 93604 / 131072 + 91)
+                .round()
+                .clamp(0, 255)
+                .toInt();
+            int b = (yp + up * 1814 / 1024 - 227).round().clamp(0, 255).toInt();
+            img.setPixelRgba(x, y, r, g, b);
+          }
         }
-      }
 
-      if (_boxDirection == HandDirection.LEFT) {
-        ci = IL.flipHorizontal(ci);
-      }
+        if (height < width) {
+          img = IL.copyRotate(img, -90);
+        }
 
-      ci = IL.copyCrop(
-          ci,
-          (image.width * 0.53).toInt(),
-          (image.height * 0.47).toInt(),
-          (image.width * 0.5).toInt(),
-          (image.width * 0.6).toInt());
+        if (_boxDirection == HandDirection.LEFT) {
+          img = IL.flipHorizontal(img);
+        }
 
-      return ci;
-    }).toList();
+        img = IL.copyCrop(img, (0).toInt(), (img.height * 0.47).toInt(),
+            (img.width * 0.45).toInt(), (img.width * 0.55).toInt());
 
-    return croppedImages;
+        // Future.delayed(Duration(milliseconds: 1000)).then((value) async {
+        //   final tempDir = (await getTemporaryDirectory()).path;
+
+        //   var random = Random();
+        //   var randomInt = random.nextInt(1000);
+
+        //   File('$tempDir/TESTE1$randomInt.png').writeAsBytes(IL.encodePng(img));
+        // });
+
+        return img;
+      }).toList();
+
+      return croppedImages;
+    } catch (e) {
+      print(">>>>>>>>>>>> ERROR:" + e.toString());
+      return [];
+    }
   }
 
   List<IL.Image> _handleIOSImage(CameraImage image) {
@@ -135,14 +163,14 @@ class MLCamera {
           (image.width * 0.5).toInt(),
           (image.width * 0.6).toInt());
 
-      // Future.delayed(Duration(milliseconds: 300)).then((value) async {
-      //   final tempDir = (await getTemporaryDirectory()).path;
+      Future.delayed(Duration(milliseconds: 1000)).then((value) async {
+        final tempDir = (await getTemporaryDirectory()).path;
 
-      //   var random = Random();
-      //   var randomInt = random.nextInt(1000);
+        var random = Random();
+        var randomInt = random.nextInt(1000);
 
-      //   File('$tempDir/TESTE1$randomInt.png').writeAsBytes(IL.encodePng(ci));
-      // });
+        File('$tempDir/TESTE1$randomInt.png').writeAsBytes(IL.encodePng(ci));
+      });
 
       return ci;
     }).toList();
