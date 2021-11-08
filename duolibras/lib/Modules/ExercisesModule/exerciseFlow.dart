@@ -191,6 +191,8 @@ class _ExerciseFlowState extends State<ExerciseFlow>
             builder: (context) {
               return CustomAlert(
                 title: "Tem certeza que deseja sair?",
+                customHeight: 223,
+                titleWidth: 150,
                 yesTitle: "Sim",
                 noTitle: "Não",
                 yesButton: () => Navigator.of(context).pop(true),
