@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cc2012c-b84c-4a4b-82a4-0abb4311a000" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/duolibras/lib/Commons/Components/appBarWidget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/duolibras/lib/Commons/Components/appBarWidget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/duolibras.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/duolibras.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/duolibras/lib/MachineLearning/mlCamera.dart" beforeDir="false" afterPath="$PROJECT_DIR$/duolibras/lib/MachineLearning/mlCamera.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/duolibras/lib/MachineLearning/tfliteModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/duolibras/lib/MachineLearning/tfliteModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/duolibras/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/duolibras/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/duolibras/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/duolibras/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,14 +26,15 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+    <property name="settings.editor.selected.configurable" value="dart.settings" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -43,9 +49,25 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="440" y="94" key="SettingsEditor" timestamp="1636049767197">
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1636241753216">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1636049767197" />
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1636241753216" />
+    <state x="659" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1636247914563">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="659" y="321" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1636247914563" />
+    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1636247845921">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1636247845921" />
+    <state x="742" y="240" key="RollbackChangesDialog" timestamp="1636242087352">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="742" y="240" key="RollbackChangesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1636242087352" />
+    <state x="440" y="94" key="SettingsEditor" timestamp="1636241726643">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1636241726643" />
   </component>
 </project>
