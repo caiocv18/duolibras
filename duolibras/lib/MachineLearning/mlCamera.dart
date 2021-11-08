@@ -119,25 +119,16 @@ class MLCamera {
           }
         }
 
-        // if (height < width) {
-        //   img = IL.copyRotate(img, -90);
-        // }
-
-        if (_boxDirection == HandDirection.LEFT) {
-          img = IL.flipVertical(img);
+        if (height < width) {
+          img = IL.copyRotate(img, -90);
         }
 
-        img = IL.copyCrop(img, (0).toInt(), (0).toInt(),
-            (img.width * 0.55).toInt(), (img.width * 0.35).toInt());
+        if (_boxDirection == HandDirection.LEFT) {
+          img = IL.flipHorizontal(img);
+        }
 
-        Future.delayed(Duration(milliseconds: 1000)).then((value) async {
-          final tempDir = (await getTemporaryDirectory()).path;
-
-          var random = Random();
-          var randomInt = random.nextInt(1000);
-
-          File('$tempDir/TESTE1$randomInt.png').writeAsBytes(IL.encodePng(img));
-        });
+        img = IL.copyCrop(img, (0).toInt(), (img.height * 0.47).toInt(),
+            (img.width * 0.45).toInt(), (img.width * 0.55).toInt());
 
         return img;
       }).toList();
