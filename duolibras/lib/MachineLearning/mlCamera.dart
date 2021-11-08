@@ -173,15 +173,6 @@ class MLCamera {
           (image.width * 0.5).toInt(),
           (image.width * 0.6).toInt());
 
-      // Future.delayed(Duration(milliseconds: 1000)).then((value) async {
-      //   final tempDir = (await getTemporaryDirectory()).path;
-
-      //   var random = Random();
-      //   var randomInt = random.nextInt(1000);
-
-      //   File('$tempDir/TESTE1$randomInt.png').writeAsBytes(IL.encodePng(ci));
-      // });
-
       return ci;
     }).toList();
 

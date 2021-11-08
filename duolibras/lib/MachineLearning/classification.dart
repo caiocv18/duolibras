@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:duolibras/MachineLearning/mlModelProtocol.dart';
@@ -7,6 +8,7 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:download_assets/download_assets.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 import 'package:logger/logger.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:collection/collection.dart';
 
 abstract class Classifier {
@@ -53,9 +55,11 @@ abstract class Classifier {
   }
 
   Future<void> loadModel() async {
+    File modelFile = File(modelName);
+
     try {
       interpreter =
-          await Interpreter.fromAsset(modelName, options: _interpreterOptions);
+          Interpreter.fromFile(modelFile, options: _interpreterOptions);
 
       _inputShape = interpreter.getInputTensor(0).shape;
       _outputShape = interpreter.getOutputTensor(0).shape;
@@ -95,6 +99,22 @@ abstract class Classifier {
     _inputImage = TensorImage(_inputType);
     _inputImage.loadImage(image);
     _inputImage = _preProcess();
+
+    var buffer = _inputImage.getBuffer();
+
+    var newImage = Image.fromBytes(
+        _inputImage.width, _inputImage.height, buffer.asUint8List());
+
+    Future.delayed(Duration(milliseconds: 1000)).then((value) async {
+      final tempDir = (await getTemporaryDirectory()).path;
+
+      var random = Random();
+      var randomInt = random.nextInt(1000);
+
+      File('$tempDir/TESTE-RANGELNUB$randomInt.png')
+          .writeAsBytes(encodePng(newImage));
+    });
+
     final pre = DateTime.now().microsecondsSinceEpoch - pres;
 
     print('Time to load image: $pre ms');
