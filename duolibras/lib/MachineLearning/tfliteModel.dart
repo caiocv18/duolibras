@@ -52,9 +52,7 @@ class TFLiteModel extends MLModelProtocol {
           imageWidth: images.first.width,
           imageMean: 127.5, // defaults to 127.5
           imageStd: 127.5, // defaults to 127.5
-          rotation: defaultTargetPlatform == TargetPlatform.iOS
-              ? 90
-              : 0, // defaults to 90, Android only
+          rotation: 0, // defaults to 90, Android only
           threshold: 0.1, // defaults to 0.1
           asynch: true, // defaults to true
           numResults: 5);

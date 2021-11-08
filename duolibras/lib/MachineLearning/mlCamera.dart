@@ -109,25 +109,25 @@ class MLCamera {
           }
         }
 
-        if (height < width) {
-          img = IL.copyRotate(img, -90);
-        }
+        // if (height < width) {
+        //   img = IL.copyRotate(img, -90);
+        // }
 
         if (_boxDirection == HandDirection.LEFT) {
-          img = IL.flipHorizontal(img);
+          img = IL.flipVertical(img);
         }
 
-        img = IL.copyCrop(img, (0).toInt(), (img.height * 0.47).toInt(),
-            (img.width * 0.45).toInt(), (img.width * 0.55).toInt());
+        img = IL.copyCrop(img, (0).toInt(), (0).toInt(),
+            (img.width * 0.55).toInt(), (img.width * 0.35).toInt());
 
-        // Future.delayed(Duration(milliseconds: 1000)).then((value) async {
-        //   final tempDir = (await getTemporaryDirectory()).path;
+        Future.delayed(Duration(milliseconds: 1000)).then((value) async {
+          final tempDir = (await getTemporaryDirectory()).path;
 
-        //   var random = Random();
-        //   var randomInt = random.nextInt(1000);
+          var random = Random();
+          var randomInt = random.nextInt(1000);
 
-        //   File('$tempDir/TESTE1$randomInt.png').writeAsBytes(IL.encodePng(img));
-        // });
+          File('$tempDir/TESTE1$randomInt.png').writeAsBytes(IL.encodePng(img));
+        });
 
         return img;
       }).toList();
@@ -163,14 +163,14 @@ class MLCamera {
           (image.width * 0.5).toInt(),
           (image.width * 0.6).toInt());
 
-      Future.delayed(Duration(milliseconds: 1000)).then((value) async {
-        final tempDir = (await getTemporaryDirectory()).path;
+      // Future.delayed(Duration(milliseconds: 1000)).then((value) async {
+      //   final tempDir = (await getTemporaryDirectory()).path;
 
-        var random = Random();
-        var randomInt = random.nextInt(1000);
+      //   var random = Random();
+      //   var randomInt = random.nextInt(1000);
 
-        File('$tempDir/TESTE1$randomInt.png').writeAsBytes(IL.encodePng(ci));
-      });
+      //   File('$tempDir/TESTE1$randomInt.png').writeAsBytes(IL.encodePng(ci));
+      // });
 
       return ci;
     }).toList();

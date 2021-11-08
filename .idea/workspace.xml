@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cc2012c-b84c-4a4b-82a4-0abb4311a000" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/duolibras.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/duolibras.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/duolibras/lib/MachineLearning/mlCamera.dart" beforeDir="false" afterPath="$PROJECT_DIR$/duolibras/lib/MachineLearning/mlCamera.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/duolibras/lib/MachineLearning/tfliteModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/duolibras/lib/MachineLearning/tfliteModel.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/duolibras/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/duolibras/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/duolibras/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/duolibras/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,10 +46,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1636241753216">
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1636379033091">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1636241753216" />
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1636379033091" />
     <state x="659" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1636247914563">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -69,5 +66,9 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1636241726643" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1636380656934">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1636380656934" />
   </component>
 </project>
