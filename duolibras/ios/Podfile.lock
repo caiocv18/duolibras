@@ -492,12 +492,8 @@ PODS:
   - sqflite (0.0.2):
     - Flutter
     - FMDB (>= 2.7.5)
-  - TensorFlowLiteC (2.6.0):
-    - TensorFlowLiteC/Core (= 2.6.0)
-  - TensorFlowLiteC/Core (2.6.0)
-  - tflite (1.1.2):
+  - tflite_flutter (0.1.0):
     - Flutter
-    - TensorFlowLiteC
 
 DEPENDENCIES:
   - camera (from `.symlinks/plugins/camera/ios`)
@@ -513,8 +509,7 @@ DEPENDENCIES:
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
-  - TensorFlowLiteC (~> 2.6.0)
-  - tflite (from `.symlinks/plugins/tflite/ios`)
+  - tflite_flutter (from `.symlinks/plugins/tflite_flutter/ios`)
 
 SPEC REPOS:
   trunk:
@@ -539,7 +534,6 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - PromisesObjC
-    - TensorFlowLiteC
 
 EXTERNAL SOURCES:
   camera:
@@ -568,8 +562,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sign_in_with_apple/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
-  tflite:
-    :path: ".symlinks/plugins/tflite/ios"
+  tflite_flutter:
+    :path: ".symlinks/plugins/tflite_flutter/ios"
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
@@ -606,9 +600,8 @@ SPEC CHECKSUMS:
   shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
   sign_in_with_apple: 34f3f5456a45fd7ac5fb42905e2ad31dae061b4a
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
-  TensorFlowLiteC: 869f93708210ed939fc40f40c772a120b7f964d1
-  tflite: 7acd11db0915e2d90ab90474413068568eb605f0
+  tflite_flutter: 9157a660578930a99728974f247369af1c3595d5
 
-PODFILE CHECKSUM: c625da353d4841ceb401fe2e10d6ba470b915d97
+PODFILE CHECKSUM: cc1f88378b4bfcf93a6ce00d2c587857c6008d3b
 
 COCOAPODS: 1.11.2

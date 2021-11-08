@@ -11,5 +11,6 @@ abstract class MLModelProtocol {
   Future<void> loadModel();
   Future<void> close();
   void predict(List<IL.Image> images);
-  StreamController<List<Result>> tfLiteResultsController = StreamController.broadcast();
+  StreamController<List<Result>> tfLiteResultsController =
+      StreamController.broadcast();
 }

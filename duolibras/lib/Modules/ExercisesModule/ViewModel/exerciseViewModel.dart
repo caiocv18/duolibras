@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
+import 'package:duolibras/MachineLearning/classifierFloat.dart';
 import 'package:duolibras/MachineLearning/mlCamera.dart';
 import 'package:duolibras/MachineLearning/Helpers/result.dart';
 import 'package:duolibras/MachineLearning/tfliteModel.dart';
@@ -49,6 +50,8 @@ class ExerciseViewModel extends BaseViewModel {
 
   //ML Exercise
   late MLCamera _cameraHelper = MLCamera(
+      ClassifierFloat(1, exercisesAndModule.item2.mlLabelsPath,
+          exercisesAndModule.item2.mlModelPath),
       TFLiteModel(exercisesAndModule.item2.mlModelPath,
           exercisesAndModule.item2.mlLabelsPath),
       CameraLensDirection.front);
