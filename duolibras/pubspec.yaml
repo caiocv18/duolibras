@@ -45,6 +45,7 @@ dependencies:
   logger: ^1.1.0
   tflite_flutter_helper: ^0.2.1
   collection: ^1.15.0
+  permission_handler: ^8.2.6
 
 dev_dependencies:
   flutter_test:

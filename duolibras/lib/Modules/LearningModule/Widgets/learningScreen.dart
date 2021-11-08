@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:duolibras/Commons/Components/baseScreen.dart';
+import 'package:duolibras/Commons/Components/customAlert.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
@@ -10,10 +11,13 @@ import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/sectionTitleWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/trailPath.dart';
 import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
+import 'package:duolibras/Services/Models/exercise.dart';
+import 'package:duolibras/Services/Models/exercisesCategory.dart';
 import 'package:duolibras/Services/Models/section.dart';
 import 'package:duolibras/Services/Models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 abstract class LearningViewModelProtocol {
@@ -105,7 +109,8 @@ class _LearningScreenState extends State<LearningScreen>
       if (currentSectionIndex == -99) {
         currentSectionIndex = 0;
       } else {
-        if (currentSectionIndex + 1 == widget._viewModel.allSections.length) {
+        if (currentSectionIndex + 1 >=
+            widget._viewModel.wrapperSectionPage.total) {
           animationController.duration = Duration(milliseconds: 150);
           animationController.forward().then((_) {
             animationController.duration = Duration(seconds: 2);
@@ -145,10 +150,18 @@ class _LearningScreenState extends State<LearningScreen>
                       ),
                     ),
                   ),
-                  SingleChildScrollView(
-                      controller: scrollController,
-                      child: _buildBody(
-                          context, viewModel, constraints.maxHeight)),
+                  if (viewModel.state == ScreenState.Loading) ...[
+                    Center(
+                        child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: CircularProgressIndicator(),
+                    ))
+                  ] else ...[
+                    SingleChildScrollView(
+                        controller: scrollController,
+                        child: _buildBody(
+                            context, viewModel, constraints.maxHeight))
+                  ],
                   SectionTitleWidget(scrollController, viewModel.allSections,
                       viewModel.sectionsForModules)
                 ],

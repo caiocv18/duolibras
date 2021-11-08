@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>306607468782-5nv4ggu34ot0fdpk3fhvr44fphveo8gq.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.306607468782-5nv4ggu34ot0fdpk3fhvr44fphveo8gq</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>306607468782-gu2mbs0q365csuob8sie24r67uliqt1d.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDyzLPC1f4WjDFyTCVimKekYa572SNCtiY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>306607468782</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.br.bilibras</string>
+	<key>PROJECT_ID</key>
+	<string>libras-tcc</string>
+	<key>STORAGE_BUCKET</key>
+	<string>libras-tcc.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:306607468782:ios:1a73d8880c8da237c743ff</string>
+</dict>
+</plist>

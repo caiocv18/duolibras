@@ -1,3 +1,4 @@
+import 'package:duolibras/Commons/Components/customAlert.dart';
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
@@ -13,6 +14,7 @@ import 'package:duolibras/Services/Models/exercisesCategory.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'Screens/exerciseScreen.dart';
 
@@ -187,73 +189,14 @@ class _ExerciseFlowState extends State<ExerciseFlow>
     return await showDialog<bool>(
             context: context,
             builder: (context) {
-              return Dialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50.0),
-                ),
-                backgroundColor: Colors.white,
-                child: LayoutBuilder(builder: (ctx, constraint) {
-                  return Container(
-                    height: 223,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          SizedBox(height: 35),
-                          Container(
-                            width: 170,
-                            child: Text("Tem certeza que deseja sair?",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontFamily: "Nunito",
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                    fontSize: 18)),
-                          ),
-                          SizedBox(height: 10),
-                          Container(
-                              height: 2,
-                              width: constraint.maxWidth,
-                              color: Colors.grey[300]),
-                          // SizedBox(height: 10),
-                          Container(
-                            width: 170,
-                            height: 53,
-                            child: TextButton(
-                              child: Text("Sim",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontFamily: "Nunito",
-                                      fontWeight: FontWeight.w800,
-                                      color: HexColor.fromHex('E97070'),
-                                      fontSize: 18)),
-                              onPressed: () => Navigator.of(context).pop(true),
-                            ),
-                          ),
-                          // SizedBox(height: 10),
-                          Container(
-                              height: 2,
-                              width: constraint.maxWidth,
-                              color: Colors.grey[300]),
-                          // SizedBox(height: 10),
-                          Container(
-                              width: 170,
-                              height: 53,
-                              child: TextButton(
-                                child: Text("Não",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontFamily: "Nunito",
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black,
-                                        fontSize: 18)),
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                              ))
-                        ],
-                      ),
-                    ),
-                  );
-                }),
+              return CustomAlert(
+                title: "Tem certeza que deseja sair?",
+                customHeight: 223,
+                titleWidth: 150,
+                yesTitle: "Sim",
+                noTitle: "Não",
+                yesButton: () => Navigator.of(context).pop(true),
+                noButton: () => Navigator.of(context).pop(false),
               );
             }) ??
         false;
@@ -291,20 +234,15 @@ class _ExerciseFlowState extends State<ExerciseFlow>
     var contents = [widget._currentExercise];
     var currentIndex = widget.exercises.indexOf(widget._currentExercise);
     currentIndex += 1;
-    var nextExercise = widget.exercises[currentIndex];
-
-    while (currentIndex + 1 < widget.exercises.length &&
-        nextExercise.category == ExercisesCategory.content) {
-      contents.add(nextExercise);
-      currentIndex += 1;
-      nextExercise = widget.exercises[currentIndex];
+    if (currentIndex < widget.exercises.length) {
+      var nextExercise = widget.exercises[currentIndex];
+      while (currentIndex + 1 < widget.exercises.length &&
+          nextExercise.category == ExercisesCategory.content) {
+        contents.add(nextExercise);
+        currentIndex += 1;
+        nextExercise = widget.exercises[currentIndex];
+      }
     }
-
-    // if (widget.exercises.length > currentIndex + 1) {
-    //   if (nextExercise.category == ExercisesCategory.content) {
-    //     contents.add(nextExercise);
-    //   }
-    // }
 
     widget._currentExercise = contents.last;
     return contents;

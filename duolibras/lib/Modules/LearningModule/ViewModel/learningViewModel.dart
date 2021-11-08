@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:duolibras/Commons/Components/customAlert.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
@@ -9,6 +10,7 @@ import 'package:duolibras/Modules/ExercisesModule/exerciseFlow.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/sectionPage.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/learningScreen.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
+import 'package:duolibras/Modules/LearningModule/mainRouter.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Models/exercisesCategory.dart';
 import 'package:duolibras/Services/Models/module.dart';
@@ -19,6 +21,7 @@ import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:duolibras/Commons/Extensions/list_extension.dart';
 
@@ -91,7 +94,8 @@ class LearningViewModel extends BaseViewModel
       }
     }
 
-    SharedFeatures.instance.setNumberMaxOfModules(wrapperSectionPage.total);
+    SharedFeatures.instance
+        .setNumberMaxOfModules(wrapperSectionPage.totalModules);
     if (!this.isDisposed) {
       setState(ScreenState.Normal);
     }
@@ -194,6 +198,11 @@ class LearningViewModel extends BaseViewModel
   @override
   Future<void> didSelectModule(String sectionID, Module module,
       BuildContext context, Function? handler) async {
+    if (state != ScreenState.Normal) {
+      return;
+    }
+
+    setState(ScreenState.Loading);
     final level = _getUserModuleLevel(context, sectionID, module);
 
     if (level > module.maxProgress) {
@@ -202,28 +211,110 @@ class LearningViewModel extends BaseViewModel
         exercises = exercises
             .where((element) => element.category != ExercisesCategory.content)
             .toList();
-        if (exercises.isNotEmpty)
-          _navigateToExercisesModule(
-              sectionID, module, context, exercises, handler);
+        setState(ScreenState.Normal);
+        if (exercises.isNotEmpty) {
+          _checkIfCameraIsEnabled(exercises, context).then((value) {
+            _navigateToExercisesModule(sectionID, module, value, handler);
+          });
+        }
       });
     } else {
       _getExerciseFromModule(sectionID, module.id, level, context)
           .then((exercises) {
-        if (exercises.isNotEmpty)
-          _navigateToExercisesModule(
-              sectionID, module, context, exercises, handler);
+        setState(ScreenState.Normal);
+        if (exercises.isNotEmpty) {
+          _checkIfCameraIsEnabled(exercises, context).then((value) {
+            _navigateToExercisesModule(sectionID, module, value, handler);
+          });
+        }
       });
     }
   }
 
+  Future<List<Exercise>> _checkIfCameraIsEnabled(
+      List<Exercise> exercises, BuildContext context) async {
+    Completer<List<Exercise>> completer = Completer();
+
+    if (exercises.indexWhere((element) =>
+            element.category == ExercisesCategory.ml ||
+            element.category == ExercisesCategory.mlSpelling) ==
+        -1) {
+      return exercises;
+    }
+
+    final permission = Permission.camera;
+    final isGranted = await permission.isGranted;
+
+    if (!isGranted) {
+      if (await permission.isPermanentlyDenied) {
+        return _showDialog(exercises);
+      } else {
+        Permission.camera.request().then((value) {
+          if (value.isGranted) {
+            completer.complete(exercises);
+          } else {
+            completer.complete(_showDialog(exercises));
+          }
+        });
+      }
+    } else {
+      completer.complete(exercises);
+    }
+
+    return completer.future;
+  }
+
+  Future<List<Exercise>> _showDialog(List<Exercise> exercises) async {
+    Completer<List<Exercise>> completer = Completer();
+
+    var newExercises = exercises
+        .where((element) =>
+            element.category != ExercisesCategory.mlSpelling &&
+            element.category != ExercisesCategory.ml)
+        .toList();
+    setState(ScreenState.Normal);
+    final context = MainRouter.instance.navigatorKey.currentContext;
+
+    if (context == null) {
+      return newExercises;
+    }
+
+    await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return CustomAlert(
+            title:
+                "Vá nas configurações para habilitar a câmera e aproveitar o melhor do App, com os exercícios práticos!",
+            yesTitle: "Permitir",
+            noTitle: "Ok",
+            yesButton: () {
+              Navigator.of(context).pop();
+              openAppSettings();
+            },
+            noButton: () {
+              Navigator.of(context).pop();
+              completer.complete(newExercises);
+            },
+            customHeight: 250,
+            titleWidth: 250,
+          );
+        });
+
+    return completer.future;
+  }
+
   void _navigateToExercisesModule(String sectionID, Module module,
-      BuildContext context, List<Exercise> exercises, Function? handler) {
-    Navigator.of(context).pushNamed(ExerciseFlow.routePrefixExerciseFlow,
-        arguments: {
-          "exercises": exercises,
-          "module": module,
-          "sectionID": sectionID
-        }).then((value) {
+      List<Exercise> exercises, Function? handler) {
+    if (MainRouter.instance.navigatorKey.currentState == null) {
+      return;
+    }
+
+    MainRouter.instance.navigatorKey.currentState!
+        .pushNamed(ExerciseFlow.routePrefixExerciseFlow, arguments: {
+      "exercises": exercises,
+      "module": module,
+      "sectionID": sectionID
+    }).then((value) {
       if (handler != null) {
         handler(value);
       }
