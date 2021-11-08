@@ -150,10 +150,18 @@ class _LearningScreenState extends State<LearningScreen>
                       ),
                     ),
                   ),
-                  SingleChildScrollView(
-                      controller: scrollController,
-                      child: _buildBody(
-                          context, viewModel, constraints.maxHeight)),
+                  if (viewModel.state == ScreenState.Loading) ...[
+                    Center(
+                        child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: CircularProgressIndicator(),
+                    ))
+                  ] else ...[
+                    SingleChildScrollView(
+                        controller: scrollController,
+                        child: _buildBody(
+                            context, viewModel, constraints.maxHeight))
+                  ],
                   SectionTitleWidget(scrollController, viewModel.allSections,
                       viewModel.sectionsForModules)
                 ],
