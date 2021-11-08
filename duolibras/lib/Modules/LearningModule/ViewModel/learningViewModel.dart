@@ -272,18 +272,21 @@ class LearningViewModel extends BaseViewModel
         context: context,
         builder: (context) {
           return CustomAlert(
-              title:
-                  "Vá nas configurações para habilitar a câmera e aproveitar o melhor do App, com os exercícios práticos!",
-              yesTitle: "Permitir",
-              noTitle: "Ok",
-              yesButton: () {
-                Navigator.of(context).pop();
-                openAppSettings();
-              },
-              noButton: () {
-                Navigator.of(context).pop();
-                completer.complete(newExercises);
-              });
+            title:
+                "Vá nas configurações para habilitar a câmera e aproveitar o melhor do App, com os exercícios práticos!",
+            yesTitle: "Permitir",
+            noTitle: "Ok",
+            yesButton: () {
+              Navigator.of(context).pop();
+              openAppSettings();
+            },
+            noButton: () {
+              Navigator.of(context).pop();
+              completer.complete(newExercises);
+            },
+            customHeight: 250,
+            titleWidth: 250,
+          );
         });
 
     return completer.future;

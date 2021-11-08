@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 
 class CustomAlert extends StatefulWidget {
   final String title;
+  final double customHeight;
+  final double titleWidth;
   final String? yesTitle;
   final String? noTitle;
   final Function? yesButton;
   final Function? noButton;
+
   CustomAlert(
       {required this.title,
       required this.yesTitle,
+      required this.customHeight,
+      required this.titleWidth,
       required this.noTitle,
       required this.yesButton,
       required this.noButton});
@@ -28,13 +33,13 @@ class _CustomAlertState extends State<CustomAlert> {
       backgroundColor: Colors.white,
       child: LayoutBuilder(builder: (ctx, constraint) {
         return Container(
-          height: 250,
+          height: widget.customHeight,
           child: Center(
             child: Column(
               children: [
                 SizedBox(height: 30),
                 Container(
-                  width: 250,
+                  width: widget.titleWidth,
                   child: Text(widget.title,
                       textAlign: TextAlign.center,
                       style: TextStyle(
