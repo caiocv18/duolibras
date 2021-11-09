@@ -52,7 +52,7 @@ class MLCamera {
             isAvailable = false;
             mlModel.predict(defaultTargetPlatform == TargetPlatform.iOS
                 ? _handleIOSImage(image).first
-                : _handleAndroidImage(image).first);
+                : _handleAndroidImage(image) ?? IL.Image(0, 0));
             Future.delayed(Duration(milliseconds: 500))
                 .then((_) => isAvailable = true);
           }

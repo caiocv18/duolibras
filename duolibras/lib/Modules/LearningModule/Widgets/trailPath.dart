@@ -162,10 +162,10 @@ class TrailPath extends CustomPainter {
     Path pathLine = Path();
     if (_position == _Position.Right) {
       pathLine.moveTo(size.width * 0.7, initialHeight);
-      pathLine.lineTo((size.width * 0.3), initialHeight);
+      pathLine.lineTo((size.width * 0.7), initialHeight);
     } else {
       pathLine.moveTo(size.width * 0.3, initialHeight);
-      pathLine.lineTo(size.width * 0.3, initialHeight);
+      pathLine.lineTo(size.width * 0.7, initialHeight);
     }
 
     final initialOffset = _position == _Position.Right

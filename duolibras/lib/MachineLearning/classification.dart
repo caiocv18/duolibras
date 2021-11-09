@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:duolibras/MachineLearning/Helpers/app_helper.dart';
+import 'package:duolibras/MachineLearning/mlModelProtocol.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
@@ -50,11 +52,7 @@ abstract class Classifier extends MLModelProtocol {
               inferencePriority3: TfLiteGpuInferencePriority.auto));
       _interpreterOptions = InterpreterOptions()..addDelegate(gpuDelegate);
     } else {
-      final gpuDelegate = GpuDelegate(
-        options: GpuDelegateOptions(
-            allowPrecisionLoss: true, waitType: TFLGpuDelegateWaitType.active),
-      );
-      _interpreterOptions = InterpreterOptions()..addDelegate(gpuDelegate);
+      _interpreterOptions = InterpreterOptions();
     }
 
     if (numThreads != null) {
@@ -126,6 +124,8 @@ abstract class Classifier extends MLModelProtocol {
         .getMapWithFloatValue();
     final pred = getTopProbability(labeledProb);
 
+    AppHelper.log("Predict: ", "label: ${pred.key} | acuracia: ${pred.value}");
+
     if (!tfLiteResultsController.isClosed) {
       tfLiteResultsController.add(PredictResult(pred.key, pred.value));
     }
@@ -133,7 +133,11 @@ abstract class Classifier extends MLModelProtocol {
 
   @override
   void close() {
-    interpreter.close();
+    try {
+      interpreter.close();
+    } catch (e) {
+      print(e);
+    }
   }
 }
 
