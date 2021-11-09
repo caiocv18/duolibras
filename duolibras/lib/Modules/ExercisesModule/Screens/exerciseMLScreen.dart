@@ -350,8 +350,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
 
     widget._viewModel.getMlModelStream().listen((value) {
       //Update results on screen
-      _handleCameraPrediction(
-          value.first.label, value.first.confidence, this.context);
+      _handleCameraPrediction(value.label, value.accuracy, this.context);
     }, onDone: () {}, onError: (error) {});
 
     setState(() {

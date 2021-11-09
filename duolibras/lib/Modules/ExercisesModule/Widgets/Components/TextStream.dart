@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:duolibras/MachineLearning/Helpers/app_helper.dart';
-import 'package:duolibras/MachineLearning/Helpers/result.dart';
+import 'package:duolibras/MachineLearning/mlModelProtocol.dart';
 import 'package:flutter/material.dart';
 
 // A screen that allows users to take a picture using a given camera.
 class TextStream extends StatefulWidget {
-  final StreamController<List<Result>> tfLiteResultsController;
+  final StreamController<List<PredictResult>> tfLiteResultsController;
   final Function handlerPrediction;
   final String label;
 
@@ -34,9 +34,9 @@ class TextStreamState extends State<TextStream> {
           //Update results on screen
           setState(() {
             resultText = value.first.label;
-            confidence = value.first.confidence;
+            confidence = value.first.accuracy;
             print("Result Text: ${resultText}, confidence${confidence}");
-            widget.handlerPrediction(resultText, value.first.confidence);
+            widget.handlerPrediction(resultText, value.first.accuracy);
           });
         },
         onDone: () {},

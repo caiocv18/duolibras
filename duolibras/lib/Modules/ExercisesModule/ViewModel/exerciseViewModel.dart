@@ -4,11 +4,9 @@ import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Commons/ViewModel/baseViewModel.dart';
-import 'package:duolibras/MachineLearning/classifierFloat.dart';
 import 'package:duolibras/MachineLearning/classifierQuant.dart';
 import 'package:duolibras/MachineLearning/mlCamera.dart';
-import 'package:duolibras/MachineLearning/Helpers/result.dart';
-import 'package:duolibras/MachineLearning/tfliteModel.dart';
+import 'package:duolibras/MachineLearning/mlModelProtocol.dart';
 import 'package:duolibras/Modules/ErrorsModule/errorHandler.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/feedbackExerciseScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/boundingBox.dart';
@@ -53,8 +51,8 @@ class ExerciseViewModel extends BaseViewModel {
   late MLCamera _cameraHelper = MLCamera(
       ClassifierQuant(2, exercisesAndModule.item2.mlLabelsPath,
           exercisesAndModule.item2.mlModelPath),
-      TFLiteModel(exercisesAndModule.item2.mlModelPath,
-          exercisesAndModule.item2.mlLabelsPath),
+      // TFLiteModel(exercisesAndModule.item2.mlModelPath,
+      //     exercisesAndModule.item2.mlLabelsPath),
       CameraLensDirection.front);
   List<String> spelledLetters = [];
 
@@ -272,7 +270,7 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
     return _cameraHelper.camera;
   }
 
-  Stream<List<Result>> getMlModelStream() {
+  Stream<PredictResult> getMlModelStream() {
     return _cameraHelper.mlModel.tfLiteResultsController.stream;
   }
 
@@ -302,6 +300,6 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
 
   void closeCamera() async {
     await _cameraHelper.close();
-    await _cameraHelper.mlModel.close();
+    _cameraHelper.mlModel.close();
   }
 }

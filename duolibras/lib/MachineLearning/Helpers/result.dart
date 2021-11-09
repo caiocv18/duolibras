@@ -1,7 +1,7 @@
-class Result {
-  double confidence;
-  int id;
-  String label;
+// class Result {
+//   double confidence;
+//   int id;
+//   String label;
 
-  Result(this.confidence, this.id, this.label);
-}
+//   Result(this.confidence, this.id, this.label);
+// }

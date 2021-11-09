@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9cc2012c-b84c-4a4b-82a4-0abb4311a000" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/duolibras/lib/MachineLearning/mlCamera.dart" beforeDir="false" afterPath="$PROJECT_DIR$/duolibras/lib/MachineLearning/mlCamera.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/duolibras/lib/MachineLearning/tfliteModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/duolibras/lib/MachineLearning/tfliteModel.dart" afterDir="false" />
-    </list>
+    <list default="true" id="9cc2012c-b84c-4a4b-82a4-0abb4311a000" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
