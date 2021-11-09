@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:306607468782:android:fe194666eee9626fc743ff",
         "android_client_info": {
-          "package_name": "com.example.duolibras"
+          "package_name": "com.br.bilibras"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "306607468782-levcjrr50mjkog2754g78oa8a41tudda.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.duolibras",
+            "package_name": "com.br.bilibras",
             "certificate_hash": "cdfb5f865a65f3e744c0b0a94c02c1780642ba1c"
           }
         },
