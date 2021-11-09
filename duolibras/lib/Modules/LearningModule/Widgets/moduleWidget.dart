@@ -85,6 +85,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
             child: Text(widget._module.title,
                 style: TextStyle(
                     fontSize: 24,
+                    fontFamily: "Nunito",
                     fontWeight: FontWeight.w500,
                     color: Colors.black)),
           ),
@@ -112,6 +113,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
             child: Text(widget._module.title,
                 style: TextStyle(
                     fontSize: 24,
+                    fontFamily: "Nunito",
                     fontWeight: FontWeight.w500,
                     color: Colors.black)),
           ),

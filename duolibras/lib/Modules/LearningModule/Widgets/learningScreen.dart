@@ -139,17 +139,17 @@ class _LearningScreenState extends State<LearningScreen>
               return Stack(
                 alignment: AlignmentDirectional.topCenter,
                 children: [
-                  Container(
-                    height: constraints.maxHeight,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image:
-                            AssetImage(Constants.imageAssets.background_home),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   height: constraints.maxHeight,
+                  //   width: double.infinity,
+                  //   decoration: BoxDecoration(
+                  //     image: DecorationImage(
+                  //       image:
+                  //           AssetImage(Constants.imageAssets.background_home),
+                  //       fit: BoxFit.cover,
+                  //     ),
+                  //   ),
+                  // ),
                   if (viewModel.state == ScreenState.Loading) ...[
                     Center(
                         child: Padding(
@@ -159,8 +159,10 @@ class _LearningScreenState extends State<LearningScreen>
                   ] else ...[
                     SingleChildScrollView(
                         controller: scrollController,
-                        child: _buildBody(
-                            context, viewModel, constraints.maxHeight))
+                        child: Stack(children: [
+                          _buildBackgroundImages(viewModel),
+                          _buildBody(context, viewModel, constraints.maxHeight),
+                        ]))
                   ],
                   SectionTitleWidget(scrollController, viewModel.allSections,
                       viewModel.sectionsForModules)
@@ -216,7 +218,12 @@ class _LearningScreenState extends State<LearningScreen>
     }
     return Column(
         children: List.generate(totalImages, (index) {
-      return Image(image: AssetImage(Constants.imageAssets.background_home));
+      return Container(
+          height: 1000,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(Constants.imageAssets.background_home),
+                  fit: BoxFit.cover)));
     }));
   }
 

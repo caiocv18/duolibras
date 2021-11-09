@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:duolibras/MachineLearning/mlModelProtocol.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
@@ -47,8 +46,8 @@ abstract class Classifier extends MLModelProtocol {
               isPrecisionLossAllowed: true,
               inferencePreference: TfLiteGpuInferenceUsage.fastSingleAnswer,
               inferencePriority1: TfLiteGpuInferencePriority.minLatency,
-              inferencePriority2: TfLiteGpuInferencePriority.minLatency,
-              inferencePriority3: TfLiteGpuInferencePriority.minLatency));
+              inferencePriority2: TfLiteGpuInferencePriority.auto,
+              inferencePriority3: TfLiteGpuInferencePriority.auto));
       _interpreterOptions = InterpreterOptions()..addDelegate(gpuDelegate);
     } else {
       final gpuDelegate = GpuDelegate(
