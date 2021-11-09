@@ -2,21 +2,17 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:duolibras/MachineLearning/mlModelProtocol.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:download_assets/download_assets.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart' as FH;
 import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:collection/collection.dart';
 
 abstract class Classifier {
   late Interpreter interpreter;
   late InterpreterOptions _interpreterOptions;
-
-  var logger = Logger();
 
   late List<int> _inputShape;
   late List<int> _outputShape;
@@ -51,8 +47,8 @@ abstract class Classifier {
               isPrecisionLossAllowed: true,
               inferencePreference: TfLiteGpuInferenceUsage.fastSingleAnswer,
               inferencePriority1: TfLiteGpuInferencePriority.minLatency,
-              inferencePriority2: TfLiteGpuInferencePriority.minLatency,
-              inferencePriority3: TfLiteGpuInferencePriority.minLatency));
+              inferencePriority2: TfLiteGpuInferencePriority.auto,
+              inferencePriority3: TfLiteGpuInferencePriority.auto));
       _interpreterOptions = InterpreterOptions()..addDelegate(gpuDelegate);
     } else {
       final gpuDelegate = GpuDelegate(
