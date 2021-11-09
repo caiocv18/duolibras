@@ -51,7 +51,7 @@ class ExerciseViewModel extends BaseViewModel {
 
   //ML Exercise
   late MLCamera _cameraHelper = MLCamera(
-      ClassifierQuant(1, exercisesAndModule.item2.mlLabelsPath,
+      ClassifierQuant(2, exercisesAndModule.item2.mlLabelsPath,
           exercisesAndModule.item2.mlModelPath),
       TFLiteModel(exercisesAndModule.item2.mlModelPath,
           exercisesAndModule.item2.mlLabelsPath),
