@@ -1,16 +1,19 @@
 import 'dart:async';
-
-import 'package:camera/camera.dart';
 import 'package:image/image.dart' as IL;
-
-import 'Helpers/result.dart';
 
 abstract class MLModelProtocol {
   bool modelsIsLoaded = false;
   bool isOpen = false;
-  Future<void> loadModel();
-  Future<void> close();
-  void predict(List<IL.Image> images);
-  StreamController<List<Result>> tfLiteResultsController =
+  Future<bool> loadModel();
+  void close();
+  void predict(IL.Image image);
+  StreamController<PredictResult> tfLiteResultsController =
       StreamController.broadcast();
+}
+
+class PredictResult {
+  final String label;
+  final double accuracy;
+
+  const PredictResult(this.label, this.accuracy);
 }

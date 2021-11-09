@@ -1,22 +1,14 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:math';
-
 import 'package:camera/camera.dart';
-import 'package:duolibras/MachineLearning/classification.dart';
-import 'package:duolibras/MachineLearning/classifierFloat.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as IL;
-import 'package:path_provider/path_provider.dart';
 
 import 'mlModelProtocol.dart';
 import 'Helpers/app_helper.dart';
 
 class MLCamera {
-  Classifier classifier;
-
   bool isDetecting = false;
   CameraLensDirection _direction;
   var isAvailable = true;
@@ -26,7 +18,7 @@ class MLCamera {
   CameraController get camera => _camera;
   HandDirection? _boxDirection;
 
-  MLCamera(this.classifier, this._mlModel, this._direction) {}
+  MLCamera(this._mlModel, this._direction) {}
 
   Future<CameraDescription> _getCamera(CameraLensDirection dir) async {
     return await availableCameras().then(
@@ -58,15 +50,9 @@ class MLCamera {
         try {
           if (isAvailable) {
             isAvailable = false;
-            var pred = classifier.predict(
-                defaultTargetPlatform == TargetPlatform.iOS
-                    ? _handleIOSImage(image).first
-                    : _handleAndroidImage(image).first);
-            print(pred);
-
-            // mlModel.predict(defaultTargetPlatform == TargetPlatform.iOS
-            //     ? _handleIOSImage(image)
-            //     : _handleAndroidImage(image));
+            mlModel.predict(defaultTargetPlatform == TargetPlatform.iOS
+                ? _handleIOSImage(image).first
+                : _handleAndroidImage(image).first);
             Future.delayed(Duration(milliseconds: 500))
                 .then((_) => isAvailable = true);
           }
