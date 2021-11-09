@@ -164,7 +164,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
 
   Widget _buildUnavailableIcon() {
     return CircleAvatar(
-      backgroundImage: AssetImage(Constants.imageAssets.moduleUnavailable),
+      backgroundImage: NetworkImage(widget._module.unavailableImageUrl),
       radius: 50,
       // child: Container(
       //     height: 100,

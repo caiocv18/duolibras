@@ -8,6 +8,7 @@ class Module {
   final String id;
   final String iconUrl;
   final String backgroundImageUrl;
+  final String unavailableImageUrl;
   final Color color;
   final String mlModelPath;
   final String mlLabelsPath;
@@ -19,6 +20,7 @@ class Module {
       required this.id,
       required this.iconUrl,
       required this.backgroundImageUrl,
+      required this.unavailableImageUrl,
       required this.color,
       required this.mlLabelsPath,
       required this.mlModelPath});
@@ -31,6 +33,7 @@ class Module {
         id: docId,
         iconUrl: parsedJson["iconUrl"],
         backgroundImageUrl: parsedJson["backgroundImageUrl"],
+        unavailableImageUrl: parsedJson["unavailableImageUrl"],
         color: HexColor.fromHex(parsedJson["color"]),
         mlLabelsPath: parsedJson["mlLabelsPath"],
         mlModelPath: parsedJson["mlModelPath"]);
