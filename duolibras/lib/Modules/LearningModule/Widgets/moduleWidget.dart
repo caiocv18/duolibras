@@ -1,4 +1,5 @@
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
+import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
@@ -122,48 +123,55 @@ class _ModuleWidgetState extends State<ModuleWidget> {
   }
 
   Widget _buildIcon(User user) {
-    return Stack(alignment: Alignment.center, children: [
-      CircularProgressIndicator(
-        backgroundColor: HexColor.fromHex("D2D7E4"),
-        valueColor:
-            AlwaysStoppedAnimation<Color>(Color.fromRGBO(255, 215, 0, 1)),
-        value: _getModuleProgress(user),
-        strokeWidth: 60,
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.amber,
       ),
-      CircleAvatar(
-        backgroundColor: Colors.white,
-        radius: 40,
-        child:
-            Container(child: Image.network(widget._module.backgroundImageUrl)),
-      ),
-      CircleAvatar(
-        child:
-            Container(height: 50, child: Image.network(widget._module.iconUrl)),
-        radius: 35,
-        backgroundColor: 1 == _getModuleProgress(locator<UserViewModel>().user)
-            ? Colors.transparent
-            : Colors.transparent,
-      )
-    ]);
+      child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            width: 93,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                    image: NetworkImage(widget._module.backgroundImageUrl),
+                    fit: BoxFit.contain)),
+          )),
+    );
+    // return Stack(alignment: Alignment.center, children: [
+    //   CircularProgressIndicator(
+    //     valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+    //     value: _getModuleProgress(user),
+    //     strokeWidth: 70,
+    //   ),
+    //   CircleAvatar(
+    //     backgroundColor: Colors.white,
+    //     radius: 50,
+    //     child:
+    //         Container(child: Image.network(widget._module.backgroundImageUrl)),
+    //   ),
+    //   // CircleAvatar(
+    //   //   child:
+    //   //       Container(height: 50, child: Image.network(widget._module.iconUrl)),
+    //   //   radius: 35,
+    //   //   backgroundColor: 1 == _getModuleProgress(locator<UserViewModel>().user)
+    //   //       ? Colors.transparent
+    //   //       : Colors.transparent,
+    //   // )
+    // ]);
   }
 
   Widget _buildUnavailableIcon() {
-    return Stack(alignment: Alignment.center, children: [
-      CircleAvatar(
-        backgroundColor: HexColor.fromHex("D2D7E4"),
-        radius: 50,
-      ),
-      CircleAvatar(
-        child: Container(
-            height: 50,
-            child: Icon(
-              Icons.lock,
-              color: HexColor.fromHex("4982F6"),
-            )),
-        radius: 35,
-        backgroundColor: HexColor.fromHex("D2D7E4"),
-      )
-    ]);
+    return CircleAvatar(
+      backgroundImage: AssetImage(Constants.imageAssets.moduleUnavailable),
+      radius: 50,
+      // child: Container(
+      //     height: 100,
+      //     width: 100,
+      //     child: Image(
+      //         image: AssetImage(Constants.imageAssets.moduleUnavailable))),
+    );
   }
 
   void _handleCompleteModule(bool? completed) {
