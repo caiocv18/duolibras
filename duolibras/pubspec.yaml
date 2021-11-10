@@ -71,7 +71,8 @@ flutter:
     - assets/images/google_icon.png
     - assets/images/background_login/
     - assets/images/background_home/
-    
+    - assets/images/moduleWidget/
+
   fonts:
     - family: Nunito
       fonts:
