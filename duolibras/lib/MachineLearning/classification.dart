@@ -43,13 +43,7 @@ abstract class Classifier extends MLModelProtocol {
 
   Classifier(int? numThreads, this.labelsPath, this.modelsPath) {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      final gpuDelegate = GpuDelegateV2(
-          options: GpuDelegateOptionsV2(
-              isPrecisionLossAllowed: true,
-              inferencePreference: TfLiteGpuInferenceUsage.fastSingleAnswer,
-              inferencePriority1: TfLiteGpuInferencePriority.minLatency,
-              inferencePriority2: TfLiteGpuInferencePriority.auto,
-              inferencePriority3: TfLiteGpuInferencePriority.auto));
+      final gpuDelegate = GpuDelegateV2();
       _interpreterOptions = InterpreterOptions()..addDelegate(gpuDelegate);
     } else {
       _interpreterOptions = InterpreterOptions();
