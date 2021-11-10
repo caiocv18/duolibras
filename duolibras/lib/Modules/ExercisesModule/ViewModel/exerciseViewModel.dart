@@ -17,6 +17,7 @@ import 'package:duolibras/Services/Models/moduleProgress.dart';
 import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -275,7 +276,16 @@ extension FeedbackScreenViewModel on ExerciseViewModel {
   }
 
   Future<void> initializeCamera(GlobalKey key) {
-    return _cameraHelper.initializeCamera(key);
+    try {
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        return Future.delayed(Duration(milliseconds: 500))
+            .then((value) => _cameraHelper.initializeCamera(key));
+      } else {
+        return _cameraHelper.initializeCamera(key);
+      }
+    } catch (e) {
+      return initializeCamera(key);
+    }
   }
 
   Future<HandDirection?> getHandDirection() async {

@@ -201,7 +201,10 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                     ],
                   );
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  return Container(
+                      height: containerSize.height,
+                      width: double.infinity,
+                      child: Center(child: CircularProgressIndicator()));
                 }
               },
             ),
@@ -414,9 +417,6 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
 
   @override
   void dispose() {
-    widget.timerHandler.cancelTimer();
-    widget._viewModel.closeCamera();
-
     super.dispose();
   }
 }

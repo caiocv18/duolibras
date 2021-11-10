@@ -310,7 +310,7 @@ class _ExerciseFlowState extends State<ExerciseFlow>
         return;
     }
 
-    _navigatorKey.currentState!.pushNamed(routeName);
+    _navigatorKey.currentState!.pushReplacementNamed(routeName);
   }
 
   @override

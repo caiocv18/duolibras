@@ -92,7 +92,7 @@ class MLCamera {
           (img.width * 0.53).toInt(),
           (img.height * 0.47).toInt(),
           (img.width * 0.47).toInt(),
-          (img.height * 0.337).toInt());
+          (img.height * 0.34).toInt());
 
       return img;
     } catch (e) {
@@ -133,7 +133,6 @@ class MLCamera {
 
   Future<void> close() async {
     try {
-      await _camera.stopImageStream();
       await _camera.dispose();
     } catch (e) {
       print(e);
