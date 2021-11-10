@@ -40,7 +40,7 @@ class MLCamera {
         await _getCamera(_direction),
         defaultTargetPlatform == TargetPlatform.iOS
             ? ResolutionPreset.high
-            : ResolutionPreset.high,
+            : ResolutionPreset.medium,
         enableAudio: false,
         imageFormatGroup: defaultTargetPlatform == TargetPlatform.iOS
             ? ImageFormatGroup.bgra8888
@@ -92,7 +92,7 @@ class MLCamera {
           (img.width * 0.53).toInt(),
           (img.height * 0.47).toInt(),
           (img.width * 0.47).toInt(),
-          (img.width * 0.6).toInt());
+          (img.height * 0.337).toInt());
 
       return img;
     } catch (e) {

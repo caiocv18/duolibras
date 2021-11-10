@@ -126,51 +126,31 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.amber,
       ),
-      child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            width: 93,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    image: NetworkImage(widget._module.backgroundImageUrl),
-                    fit: BoxFit.contain)),
-          )),
+      child: Stack(alignment: AlignmentDirectional.center, children: [
+        CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+          value: _getModuleProgress(user),
+          strokeWidth: 80,
+        ),
+        Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: 93,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      image: NetworkImage(widget._module.backgroundImageUrl),
+                      fit: BoxFit.contain)),
+            )),
+      ]),
     );
-    // return Stack(alignment: Alignment.center, children: [
-    //   CircularProgressIndicator(
-    //     valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-    //     value: _getModuleProgress(user),
-    //     strokeWidth: 70,
-    //   ),
-    //   CircleAvatar(
-    //     backgroundColor: Colors.white,
-    //     radius: 50,
-    //     child:
-    //         Container(child: Image.network(widget._module.backgroundImageUrl)),
-    //   ),
-    //   // CircleAvatar(
-    //   //   child:
-    //   //       Container(height: 50, child: Image.network(widget._module.iconUrl)),
-    //   //   radius: 35,
-    //   //   backgroundColor: 1 == _getModuleProgress(locator<UserViewModel>().user)
-    //   //       ? Colors.transparent
-    //   //       : Colors.transparent,
-    //   // )
-    // ]);
   }
 
   Widget _buildUnavailableIcon() {
     return CircleAvatar(
       backgroundImage: NetworkImage(widget._module.unavailableImageUrl),
       radius: 50,
-      // child: Container(
-      //     height: 100,
-      //     width: 100,
-      //     child: Image(
-      //         image: AssetImage(Constants.imageAssets.moduleUnavailable))),
     );
   }
 
