@@ -11,7 +11,7 @@ import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWid
 import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseScreen.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+// import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class ExerciseWritingScreen extends ExerciseStateful {
   static String routeName = "/ExerciseWritingScreen";
@@ -37,11 +37,11 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
           widget._exercise.id, this.context);
     };
 
-    final keyboardVisibilityController = KeyboardVisibilityController();
-    keyboardVisibilityController.onChange.listen((bool visible) {
-      // setState(() {
-      // });
-    });
+    // final keyboardVisibilityController = KeyboardVisibilityController();
+    // keyboardVisibilityController.onChange.listen((bool visible) {
+    //   // setState(() {
+    //   // });
+    // });
 
     super.initState();
   }
