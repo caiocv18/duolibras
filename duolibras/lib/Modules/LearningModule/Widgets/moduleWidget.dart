@@ -1,5 +1,5 @@
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
-import 'package:duolibras/Commons/Utils/Constants.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
@@ -149,6 +149,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
 
   Widget _buildUnavailableIcon() {
     return CircleAvatar(
+      backgroundColor: Colors.transparent,
       backgroundImage: NetworkImage(widget._module.unavailableImageUrl),
       radius: 50,
     );

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
+import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/inputAnswerWidget.dart';
@@ -139,11 +140,7 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
                       onPressed: () {
                         if (_state == ExerciseScreenState.DidAnswer) return;
                         setState(() {
-                          _state = ExerciseScreenState.DidAnswer;
-                          didAnswerCorrect = widget._viewModel.isAnswerCorrect(
-                              inputController.text.toUpperCase().trim(),
-                              widget._exercise.id);
-                          widget._viewModel.showNextArrow();
+                          _handleAnswer();
                         });
                       },
                     )),
@@ -153,5 +150,14 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
         ),
       ),
     );
+  }
+
+  void _handleAnswer() {
+    _state = ExerciseScreenState.DidAnswer;
+    didAnswerCorrect = widget._viewModel.isAnswerCorrect(
+        inputController.text.toUpperCase().trim(), widget._exercise.id);
+    widget._viewModel.showNextArrow();
+    Utils.showFeedback(
+        didAnswerCorrect ? FeedbackTypes.success : FeedbackTypes.error);
   }
 }

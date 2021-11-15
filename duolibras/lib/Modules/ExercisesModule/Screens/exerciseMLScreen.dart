@@ -11,6 +11,7 @@ import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWid
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/timeBar.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'exerciseScreen.dart';
 
 class ExerciseMLScreen extends ExerciseStateful {
@@ -398,6 +399,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   }
 
   void _finishExercise(bool rightAnswer) {
+    Utils.showFeedback(rightAnswer ? FeedbackTypes.success : FeedbackTypes.error);
     widget.timerHandler.cancelTimer();
 
     setState(() {

@@ -348,6 +348,9 @@ class _ExerciseFlowState extends State<ExerciseFlow>
     final route = ExerciseFlow.getRouteNameBy(widget._currentExercise.category);
     setState(() {
       _exerciseProgress = 0;
+      exerciseProgressValue = 0;
+      totalPoints = 0;
+      lifes = 3;
       isToShowAppBar = true;
     });
     _navigatorKey.currentState!.pushNamed(route);

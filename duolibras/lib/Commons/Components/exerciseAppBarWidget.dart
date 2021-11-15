@@ -118,7 +118,7 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 _buildExitButton(size),
                 if (!_showNextExerciseArrow)
-                _buildLifeWidget(widget._numberOfLifes),
+                  _buildLifeWidget(widget._numberOfLifes),
                 if (_showNextExerciseArrow) _buildNextExerciseButton(size)
               ]),
               SizedBox(height: widget._height / 4),
@@ -218,7 +218,7 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
       width: containerSize.width * 0.21,
       child: OutlinedButton(
           onPressed: () => widget._onSkipPressed(),
-          child: Text("Pular",
+          child: Text("Próximo",
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 14,

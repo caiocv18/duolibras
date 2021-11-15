@@ -211,7 +211,7 @@ class _LearningScreenState extends State<LearningScreen>
   }
 
   Widget _buildBackgroundImages(LearningViewModel viewModel) {
-    final pagesTotal = viewModel.wrapperSectionPage.total;
+    final pagesTotal = viewModel.wrapperSectionPage.total * 2;
     int totalImages = 1;
     if (pagesTotal > 3) {
       totalImages = (pagesTotal / 3).round();
@@ -219,7 +219,7 @@ class _LearningScreenState extends State<LearningScreen>
     return Column(
         children: List.generate(totalImages, (index) {
       return Container(
-          height: 1000,
+          height: 600,
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage(Constants.imageAssets.background_home),

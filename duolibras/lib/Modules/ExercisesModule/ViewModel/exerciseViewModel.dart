@@ -19,6 +19,7 @@ import 'package:duolibras/Services/service.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';

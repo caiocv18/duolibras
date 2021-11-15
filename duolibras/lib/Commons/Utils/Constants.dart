@@ -6,6 +6,7 @@ class Constants {
   static FirebaseServiceConstants firebaseService =
       const FirebaseServiceConstants();
   static ImageAssets imageAssets = const ImageAssets();
+  static SoundAssets soundAssets = const SoundAssets();
 }
 
 class DatabaseConstants {
@@ -67,4 +68,11 @@ class ImageAssets {
   String get profileCameraButton =>
       "${_basicPath}profileScreen/camera_button.png";
   String get profileEmptyPhoto => "${_basicPath}profileScreen/empty_photo.png";
+}
+
+class SoundAssets {
+  const SoundAssets();
+
+  String get successSound => "successSound.wav";
+  String get errorSound => "errorSound.wav";
 }

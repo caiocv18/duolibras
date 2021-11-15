@@ -52,6 +52,7 @@ class _ContentScreenState extends State<ContentScreen> {
               Container(
                 height: constraint.maxHeight * 0.92,
                 child: PageView.builder(
+                  physics: pages.length > 1 ? null : NeverScrollableScrollPhysics(),
                   allowImplicitScrolling: true,
                   controller: controller,
                   itemBuilder: (_, index) {
@@ -59,6 +60,7 @@ class _ContentScreenState extends State<ContentScreen> {
                   },
                 ),
               ),
+              if(pages.length > 1)
               _buildPageIndicator(),
               SizedBox(height: 32.0),
             ],

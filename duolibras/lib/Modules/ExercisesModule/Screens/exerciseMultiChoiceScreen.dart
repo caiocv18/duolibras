@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:duolibras/Commons/Utils/constants.dart';
+import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/imagesMultiChoice.dart';
@@ -29,52 +30,41 @@ class ExerciseMultiChoiceScreen extends ExerciseStateful {
 }
 
 class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
-
   ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
   var answerPicked = "";
 
   @override
   void initState() {
     widget.handleNextExercise = () {
-      handleSubmitAnswer(
-        answerPicked, 
-        widget._exercise.correctAnswer,
-        widget._exercise.id, 
-        this.context
-      );
+      handleSubmitAnswer(answerPicked, widget._exercise.correctAnswer,
+          widget._exercise.id, this.context);
     };
-    
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-         body: Stack(
-           children: 
-           [
-               Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(
-                              Constants.imageAssets.background_home),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-               ),
-             SafeArea(
-                  bottom: false,
-                  child: LayoutBuilder(builder: (ctx, constraint) {
-                    return SingleChildScrollView(child:  
-                      _buildBody(widget._exercise, widget._viewModel, Size(constraint.maxWidth, constraint.maxHeight), context),
-                    );
-                  })
-                 ),
-              
-            ]
-         ));
+        body: Stack(children: [
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(Constants.imageAssets.background_home),
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+      SafeArea(
+          bottom: false,
+          child: LayoutBuilder(builder: (ctx, constraint) {
+            return SingleChildScrollView(
+              child: _buildBody(widget._exercise, widget._viewModel,
+                  Size(constraint.maxWidth, constraint.maxHeight), context),
+            );
+          })),
+    ]));
   }
 
   Widget _createMultiChoiceWidget(Exercise exercise, BuildContext ctx) {
@@ -82,25 +72,35 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
         ? MultiChoicesWidget(exercise.answers ?? [], exercise.correctAnswer,
             (answer) {
             // if (_state == ExerciseScreenState.DidAnswer) return;
-            widget._viewModel.isAnswerCorrect(answer, widget._exercise.id);
+            final answerIsCorrect =
+                widget._viewModel.isAnswerCorrect(answer, widget._exercise.id);
             setState(() {
               _state = ExerciseScreenState.DidAnswer;
               answerPicked = answer;
+              Utils.showFeedback(answerIsCorrect
+                  ? FeedbackTypes.success
+                  : FeedbackTypes.error);
               widget._viewModel.showNextArrow();
             });
           })
-        : ImagesMultiChoice(exercise.answers ?? [], exercise.correctAnswer, (answer) {
+        : ImagesMultiChoice(exercise.answers ?? [], exercise.correctAnswer,
+            (answer) {
             if (_state == ExerciseScreenState.DidAnswer) return;
-            widget._viewModel.isAnswerCorrect(answer, widget._exercise.id);
+            final answerIsCorrect =
+                widget._viewModel.isAnswerCorrect(answer, widget._exercise.id);
             setState(() {
               _state = ExerciseScreenState.DidAnswer;
               answerPicked = answer;
+              Utils.showFeedback(answerIsCorrect
+                  ? FeedbackTypes.success
+                  : FeedbackTypes.error);
               widget._viewModel.showNextArrow();
             });
           });
   }
 
-  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel, Size containerSize, BuildContext ctx) {
+  Widget _buildBody(Exercise exercise, ExerciseViewModel viewModel,
+      Size containerSize, BuildContext ctx) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -127,7 +127,8 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
     );
   }
 
-  void handleSubmitAnswer(String answer, String correctAnswer,String exerciseID, BuildContext ctx) {
+  void handleSubmitAnswer(String answer, String correctAnswer,
+      String exerciseID, BuildContext ctx) {
     if (widget._exercise.category == ExercisesCategory.multipleChoicesText) {
       widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
     } else {
