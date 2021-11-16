@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'dart:math' as math;
 
 import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
@@ -21,6 +22,9 @@ class ExerciseMLScreen extends ExerciseStateful {
   final Exercise _exercise;
   final bool _isSpelling;
   final timerHandler = TimerHandler(Duration(seconds: 1));
+  final maxCorrectAnswers = 10;
+  var _progress = 0.0;
+  late double progressStep = 1.0 / maxCorrectAnswers;
 
   ExerciseMLScreen(this._exercise, this._viewModel, this._isSpelling);
 
@@ -225,25 +229,60 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     if (scale < 1) scale = 1 / scale;
 
     return Stack(alignment: AlignmentDirectional.bottomStart, children: [
-      Container(
-          width: containerSize.width * 0.93,
-          height: containerSize.height * 0.65,
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(200, 205, 219, 1),
-            borderRadius: BorderRadius.all(
-              Radius.circular(20.0),
+      Center(
+          child: TweenAnimationBuilder(
+        tween: Tween(begin: 0.0, end: widget._progress),
+        duration: Duration(milliseconds: 500),
+        builder: (context, valueObj, child) {
+          final value = double.parse(valueObj.toString());
+          return Container(
+            width: containerSize.width * 0.95,
+            height: containerSize.height * 0.67,
+            child: Stack(
+              children: [
+                ShaderMask(
+                  shaderCallback: (rect) {
+                    return SweepGradient(
+                            startAngle: 3 * math.pi / 2,
+                            endAngle: 7 * math.pi / 2,
+                            tileMode: TileMode.repeated,
+                            stops: [value, value],
+                            colors: [Colors.lightGreen, Colors.transparent],
+                            center: Alignment.center)
+                        .createShader(rect);
+                  },
+                  child: Container(
+                    width: containerSize.width * 0.95,
+                    height: containerSize.height * 0.67,
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(200, 205, 219, 1),
+                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(20.0))),
+                    ),
+                  ),
+                ),
+                Center(
+                    child: Container(
+                        width: containerSize.width * 0.89,
+                        height: containerSize.height * 0.63,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            child: Transform.scale(
+                                scale: scale,
+                                child: CameraPreview(
+                                    widget._viewModel.getCamera())))))
+              ],
             ),
-          ),
-          child: Center(
-              child: Container(
-                  width: containerSize.width * 0.89,
-                  height: containerSize.height * 0.63,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      child: Transform.scale(
-                          scale: scale,
-                          child:
-                              CameraPreview(widget._viewModel.getCamera())))))),
+          );
+        },
+        onEnd: () {
+          handleOnEndAnimate();
+        },
+      )),
       TimeBar(
           Size(containerSize.width * 0.93, containerSize.height * 0.04),
           totalTime,
@@ -377,10 +416,29 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
             .isGestureCorrect(label, confidence, widget._exercise) &&
         !_finishedExercise) {
       // controllerTopCenter.play();
+      widget._viewModel.correctAnswers++;
+      widget._viewModel.wrongAnswers = 0;
+
       setState(() {
-        spelledText = label;
+        widget._progress += widget.progressStep;
       });
-      _finishExercise(true);
+
+      if (widget._viewModel.correctAnswers ==
+          (widget._viewModel.maxCorrectAnswers + 1)) {
+        print("ENTROU NESSA BAGAÇA");
+        handleOnEndAnimate();
+      }
+    } else {
+      widget._viewModel.wrongAnswers++;
+      if (widget._viewModel.wrongAnswers == widget._viewModel.maxWrongAnswers) {
+        widget._viewModel.correctAnswers = 0;
+        setState(() {
+          if (widget._progress != 0.0) {
+            Utils.showFeedback(FeedbackTypes.error);
+          }
+          widget._progress = 0.0;
+        });
+      }
     }
   }
 
@@ -388,18 +446,58 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
       String newLetter, double confidence, BuildContext ctx) {
     if (widget._viewModel
         .isSpellingCorrect(newLetter, confidence, widget._exercise)) {
+      widget._viewModel.correctAnswers++;
+      widget._viewModel.wrongAnswers = 0;
+
       setState(() {
-        spelledText = widget._viewModel.spelledLetters.join();
+        widget._progress += widget.progressStep;
       });
-      if (spelledText == widget._exercise.correctAnswer) {
-        // controllerTopCenter.play();
+
+      if (widget._viewModel.correctAnswers ==
+          (widget._viewModel.maxCorrectAnswers + 1)) {
+        handleOnEndAnimate();
+      }
+    } else {
+      widget._viewModel.wrongAnswers++;
+      if (widget._viewModel.wrongAnswers == widget._viewModel.maxWrongAnswers) {
+        widget._viewModel.correctAnswers = 0;
+        setState(() {
+          if (widget._progress != 0.0) {
+            Utils.showFeedback(FeedbackTypes.error);
+          }
+          widget._progress = 0.0;
+        });
+      }
+    }
+  }
+
+  void handleOnEndAnimate() {
+    if (widget._viewModel.correctAnswers >=
+        widget._viewModel.maxCorrectAnswers) {
+      if (widget._isSpelling) {
+        setState(() {
+          spelledText = widget._viewModel.spelledLetters.join();
+        });
+
+        if (spelledText == widget._exercise.correctAnswer) {
+          _finishExercise(true);
+        } else {
+          setState(() {
+            widget._progress = 0.0;
+          });
+        }
+      } else {
+        setState(() {
+          spelledText = widget._exercise.correctAnswer;
+        });
         _finishExercise(true);
       }
     }
   }
 
   void _finishExercise(bool rightAnswer) {
-    Utils.showFeedback(rightAnswer ? FeedbackTypes.success : FeedbackTypes.error);
+    Utils.showFeedback(
+        rightAnswer ? FeedbackTypes.success : FeedbackTypes.error);
     widget.timerHandler.cancelTimer();
 
     setState(() {

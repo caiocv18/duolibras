@@ -48,6 +48,10 @@ class ExerciseViewModel extends BaseViewModel {
   late List<Exercise> exercises;
   final _errorHandler = ErrorHandler();
   final newUserDefault = SharedPreferences.getInstance();
+  final maxCorrectAnswers = 10;
+  final maxWrongAnswers = 3;
+  var correctAnswers = 0;
+  var wrongAnswers = 0;
 
   //ML Exercise
   late MLCamera _cameraHelper = MLCamera(
@@ -84,7 +88,7 @@ class ExerciseViewModel extends BaseViewModel {
   }
 
   bool isGestureCorrect(String label, double confidence, Exercise exercise) {
-    return exercise.correctAnswer == label && confidence > 0.75;
+    return exercise.correctAnswer == label && confidence >= 0.5;
   }
 
   bool isSpellingCorrect(
@@ -92,8 +96,10 @@ class ExerciseViewModel extends BaseViewModel {
     final splittedAnswer = exercise.correctAnswer.split("");
 
     if (splittedAnswer[spelledLetters.length] == newLetter &&
-        confidence > 0.75) {
-      spelledLetters.add(newLetter);
+        confidence >= 0.5) {
+      if (correctAnswers == 9) {
+        spelledLetters.add(newLetter);
+      }
       return true;
     }
     return false;
