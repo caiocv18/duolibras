@@ -72,26 +72,26 @@ class LearningViewModel extends BaseViewModel
                   .toList()));
         }
       });
-    } else {
-      var contains;
-      for (var i = 0; i < wrapperSectionPage.pages.length; i++) {
-        wrapperSectionPage.pages[i].modules.forEach((module) {
-          contains = false;
-          sectionsProgress[i].modulesProgress.forEach((moduleProgress) {
-            if (module.id == moduleProgress.moduleId) {
-              contains = true;
-            }
-          });
+    }
 
-          if (!contains) {
-            sectionsProgress[i].modulesProgress.add(ModuleProgress(
-                id: UniqueKey().toString(),
-                moduleId: module.id,
-                progress: 0,
-                maxModuleProgress: module.maxProgress));
+    var contains;
+    for (var i = 0; i < wrapperSectionPage.pages.length; i++) {
+      wrapperSectionPage.pages[i].modules.forEach((module) {
+        contains = false;
+        sectionsProgress[i].modulesProgress.forEach((moduleProgress) {
+          if (module.id == moduleProgress.moduleId) {
+            contains = true;
           }
         });
-      }
+
+        if (!contains) {
+          sectionsProgress[i].modulesProgress.add(ModuleProgress(
+              id: UniqueKey().toString(),
+              moduleId: module.id,
+              progress: 0,
+              maxModuleProgress: module.maxProgress));
+        }
+      });
     }
 
     SharedFeatures.instance
