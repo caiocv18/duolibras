@@ -1,23 +1,38 @@
-import 'package:duolibras/Commons/Utils/constants.dart';
+import 'dart:async';
+
+import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../AuthenticationErrors.dart';
 
 class FirebaseAuthenticator {
   static final _auth = FirebaseAuth.instance;
 
+  Future<User> signInWithEmailMock(String email) async {
+    UserCredential result = await _auth
+        .signInWithEmailAndPassword(email: email.trim(), password: "123456")
+        .onError((error, stackTrace) {
+      return Future.error(AuthenticationErrors.LoginFailed);
+    });
+
+    if (result.user == null) {
+      return Future.error(AuthenticationErrors.LoginFailed);
+    }
+
+    final User user = result.user!;
+    return user;
+  }
+
   Future<void> signInWithEmail(String userEmail) async {
     final settings = ActionCodeSettings(
-        url: FirebaseAuthenticatorConstants().url,
+        url: Constants.firebaseService.url,
         handleCodeInApp: true,
-        iOSBundleId: FirebaseAuthenticatorConstants().iosBundleId,
-        androidPackageName: FirebaseAuthenticatorConstants().androidPackageName,
-        androidMinimumVersion:
-            FirebaseAuthenticatorConstants().androidMinimumVersion,
+        iOSBundleId: Constants.firebaseService.iosBundleId,
+        androidPackageName: Constants.firebaseService.androidPackageName,
+        androidMinimumVersion: Constants.firebaseService.androidMinimumVersion,
         androidInstallApp: true);
 
     return await _auth

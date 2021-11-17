@@ -30,14 +30,11 @@ class FirebaseServiceConstants {
   String get trailsCollection => "trails";
   String get sectionProgressCollection => "sectionProgress";
   String get dynamicAssetsCollection => "dynamicAssets";
-}
-
-class FirebaseAuthenticatorConstants {
-  const FirebaseAuthenticatorConstants();
   String get url => "https://duolibras.page.link/naxz";
   String get iosBundleId => "com.br.bilibras";
   String get androidPackageName => "com.br.bilibras";
   String get androidMinimumVersion => "12";
+  String get emailMock => "teste@bilibras.com";
 }
 
 class ImageAssets {

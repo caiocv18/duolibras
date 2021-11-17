@@ -1,3 +1,4 @@
+import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Commons/Utils/globals.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
@@ -10,6 +11,7 @@ import 'package:duolibras/Services/Models/appError.dart';
 import 'package:duolibras/Services/Models/user.dart' as myUser;
 import 'package:duolibras/Services/service.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fireUser;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AuthenticationService {
@@ -38,9 +40,17 @@ class AuthenticationService {
   }
 
   Future<void> firebaseSignIn(String email) async {
-    return _firebaseAuthenticator.signInWithEmail(email).onError(
-        _handleAuthenticationException,
-        test: (e) => e is AuthenticationErrors);
+    if (Constants.firebaseService.emailMock == email.trim()) {
+      return _firebaseAuthenticator
+          .signInWithEmailMock(email)
+          .then((user) => _updateUserInDatabase(user))
+          .catchError(_handleAuthenticationException,
+              test: (e) => e is AuthenticationErrors);
+    }
+
+    return await _firebaseAuthenticator.signInWithEmail(email)
+    .catchError((error, stackTrace) =>
+        _handleAuthenticationException(error, stackTrace));
   }
 
   Future<void> signOut() {

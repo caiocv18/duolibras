@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
+import 'package:duolibras/Commons/Utils/Constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/inputAnswerWidget.dart';
 import 'package:duolibras/Modules/LoginModule/ViewModel/loginViewModel.dart';
 import 'package:duolibras/Services/Authentication/authenticationModel.dart';
@@ -17,7 +18,8 @@ class FirebaseSignInWidget extends StatefulWidget {
   _FirebaseSignInWidget createState() => _FirebaseSignInWidget();
 }
 
-class _FirebaseSignInWidget extends State<FirebaseSignInWidget> with WidgetsBindingObserver {
+class _FirebaseSignInWidget extends State<FirebaseSignInWidget>
+    with WidgetsBindingObserver {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   final emailTextfieldController = TextEditingController();
   var _isSigningIn = false;
@@ -37,35 +39,34 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> with WidgetsBind
     final containerSize = Size(mediaQuery.size.width, containerHeight);
 
     return Center(
-      child: 
-      _isSigningIn ?
-      Column(
-        children: [
-          SizedBox(height: containerSize.height * 0.1), 
-          CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("93CAFA")),
-          ),
-        ],
-      ) :
-      Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 45.0),
-            Container(
-                child: emailTextfield(),
-                height: containerSize.height * 0.08,
-                width: containerSize.width * 0.8),
-            SizedBox(height: 35.0),
-            Container(
-                child: loginButton(context),
-                height: 50,
-                width: containerSize.width * 0.8)
-          ],
-        ),
-      )
-    );
+        child: _isSigningIn
+            ? Column(
+                children: [
+                  SizedBox(height: containerSize.height * 0.1),
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        HexColor.fromHex("93CAFA")),
+                  ),
+                ],
+              )
+            : Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: 45.0),
+                    Container(
+                        child: emailTextfield(),
+                        height: containerSize.height * 0.08,
+                        width: containerSize.width * 0.8),
+                    SizedBox(height: 35.0),
+                    Container(
+                        child: loginButton(context),
+                        height: 50,
+                        width: containerSize.width * 0.8)
+                  ],
+                ),
+              ));
   }
 
   Widget emailTextfield() {
@@ -77,16 +78,15 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> with WidgetsBind
         child: Center(
           child: Text("Entrar",
               style: TextStyle(
-                color: Colors.black,
-                fontSize: 22,
-                fontFamily: "Nunito",
-                fontWeight: FontWeight.w500),
-                textAlign: TextAlign.center),
+                  color: Colors.black,
+                  fontSize: 22,
+                  fontFamily: "Nunito",
+                  fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center),
         ),
         size: 20,
         color: HexColor.fromHex("93CAFA"),
-        onPressed: () => signIn(ctx)
-        );
+        onPressed: () => signIn(ctx));
   }
 
   @override
@@ -99,17 +99,20 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> with WidgetsBind
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
-      final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
+      final PendingDynamicLinkData? data =
+          await FirebaseDynamicLinks.instance.getInitialLink();
       if (data != null) {
         widget._viewModel
-            .handleFirebaseEmailLinkSignIn(emailTextfieldController.text, data.link)
+            .handleFirebaseEmailLinkSignIn(
+                emailTextfieldController.text, data.link)
             .then((value) => {Navigator.of(context).pop(true)})
             .catchError((error, stackTrace) {
-              print(error);
-            });
+          print(error);
+        });
       }
 
-      FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData? dynamicLink) async {
+      FirebaseDynamicLinks.instance.onLink(
+          onSuccess: (PendingDynamicLinkData? dynamicLink) async {
         if (dynamicLink != null) {
           final Uri deepLink = dynamicLink.link;
           widget._viewModel
@@ -117,8 +120,10 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> with WidgetsBind
                   emailTextfieldController.text, deepLink)
               .then((value) => {Navigator.of(context).pop(true)})
               .catchError((error, stackTrace) {
-                print(error);
-              });
+            print(error);
+          });
+        } else {
+          Navigator.of(context).pop(true);
         }
       }, onError: (OnLinkErrorException e) async {
         print('onLinkError');
@@ -131,13 +136,20 @@ class _FirebaseSignInWidget extends State<FirebaseSignInWidget> with WidgetsBind
     setState(() {
       _isSigningIn = true;
     });
-    await widget._viewModel.login(ctx, LoginType.Firebase,
-        loginModel: AuthenticationModel(email: emailTextfieldController.text)).then((value) {
-          setState(() {
-            _isSigningIn = false;
-          });
-        });
+    await widget._viewModel
+        .login(ctx, LoginType.Firebase,
+            loginModel:
+                AuthenticationModel(email: emailTextfieldController.text))
+        .then((value) {
+      setState(() {
+        _isSigningIn = false;
+      });
+      if (emailTextfieldController.text.trim() ==
+          Constants.firebaseService.emailMock) {
+        Navigator.of(context).pop(true);
+      }
+    }).onError((error, stackTrace) {
+      print(stackTrace);
+    });
   }
-
-
 }
