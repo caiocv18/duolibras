@@ -76,13 +76,10 @@ class ExerciseViewModel extends BaseViewModel {
 
   bool isAnswerCorrect(String answer, String exerciseID) {
     if (answer.isEmpty) {
-      _handleFinishModule(false);
       return false;
     }
 
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
-    _handleFinishModule(
-        exercise.correctAnswer.toUpperCase() == answer.toUpperCase());
     return exercise.correctAnswer.toUpperCase() == answer.toUpperCase();
   }
 
@@ -107,11 +104,15 @@ class ExerciseViewModel extends BaseViewModel {
   void didSubmitTextAnswer(
       String answer, String exerciseID, BuildContext context) {
     final exercise = exercises.where((exe) => exe.id == exerciseID).first;
-    final isAnswerCorrect = exercise.correctAnswer == answer;
+    final isAnswerCorrect = exercise.category == ExercisesCategory.content
+        ? true
+        : exercise.correctAnswer.toUpperCase() == answer.toUpperCase();
     exerciseFlowDelegate.totalPoints +=
         isAnswerCorrect ? (exercise.score ?? 0) : 0.0;
 
-    _handleMoveToNextExercise(exerciseID, context);
+    final isGameOver = _handleFinishModule(isAnswerCorrect);
+
+    if (!isGameOver) _handleMoveToNextExercise(exerciseID, context);
   }
 
   Future<void> _saveProgress(BuildContext context,

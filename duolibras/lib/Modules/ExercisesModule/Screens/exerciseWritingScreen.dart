@@ -15,6 +15,9 @@ import 'package:duolibras/Modules/ExercisesModule/Screens/exerciseScreen.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:flutter/material.dart';
 
+import 'nextExerciseHandler.dart';
+import 'nextExerciseScreen.dart';
+
 class ExerciseWritingScreen extends ExerciseStateful {
   static String routeName = "/ExerciseWritingScreen";
 
@@ -30,6 +33,7 @@ class ExerciseWritingScreen extends ExerciseStateful {
 class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
   ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
   var didAnswerCorrect = null;
+  var _showNextExerciseScreen = false;
   final inputController = TextEditingController();
 
   @override
@@ -75,7 +79,7 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
                 width: double.infinity,
                 child: _buildBody(widget._exercise, widget._viewModel,
                     containerSize, context),
-              ))
+              )),
         ]));
   }
 
@@ -154,8 +158,13 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
     _state = ExerciseScreenState.DidAnswer;
     didAnswerCorrect = widget._viewModel.isAnswerCorrect(
         inputController.text.toUpperCase().trim(), widget._exercise.id);
-    widget._viewModel.showNextArrow();
     Utils.showFeedback(
         didAnswerCorrect ? FeedbackTypes.success : FeedbackTypes.error);
+    NextExerciseHandler.showNextExerciseScreen(context,
+        handleNextExercise: () => handleSubmitAnswer(inputController.text,
+            widget._exercise.correctAnswer, widget._exercise.id, this.context),
+        exitClosure: () {
+          widget._viewModel.showNextArrow();
+        });
   }
 }

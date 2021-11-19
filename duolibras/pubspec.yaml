@@ -75,6 +75,7 @@ flutter:
     - assets/images/moduleWidget/
     - assets/successSound.wav
     - assets/errorSound.wav
+    - assets/images/nextExerciseScreen/
 
   fonts:
     - family: Nunito

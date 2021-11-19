@@ -6,6 +6,7 @@ class ExerciseButton extends StatefulWidget {
       required this.child,
       required this.size,
       required this.color,
+      this.isCircle = false,
       this.duration = const Duration(milliseconds: 160),
       this.onPressed,
       this.backgroundColor = Colors.white})
@@ -16,6 +17,7 @@ class ExerciseButton extends StatefulWidget {
   final Duration duration;
   final VoidCallback? onPressed;
   final Color backgroundColor;
+  final bool isCircle;
 
   final double size;
 
@@ -30,7 +32,8 @@ class _ExerciseButtonState extends State<ExerciseButton>
 
   TickerFuture? _downTicker;
 
-  double get buttonDepth => widget.size * 0.2;
+  double get buttonDepth =>
+      widget.isCircle ? widget.size * 0.03 : widget.size * 0.2;
 
   void _setupAnimation() {
     _animationController?.stop();
@@ -90,7 +93,7 @@ class _ExerciseButtonState extends State<ExerciseButton>
   @override
   Widget build(BuildContext context) {
     final vertPadding = widget.size * 0.25;
-    final horzPadding = widget.size * 0.50;
+    final horzPadding = widget.isCircle ? vertPadding : widget.size * 0.50;
     final radius = BorderRadius.circular(horzPadding * 1.5);
 
     return Container(
@@ -111,13 +114,6 @@ class _ExerciseButtonState extends State<ExerciseButton>
           child: IntrinsicHeight(
             child: Stack(
               children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    color:
-                        widget.color, //_hslRelativeColor(s: -0.20, l: -0.20),
-                    borderRadius: radius,
-                  ),
-                ),
                 AnimatedBuilder(
                   animation: _pressedAnimation!,
                   builder: (BuildContext context, Widget? child) {

@@ -34,7 +34,7 @@ class FirebaseServiceConstants {
   String get iosBundleId => "com.br.bilibras";
   String get androidPackageName => "com.br.bilibras";
   String get androidMinimumVersion => "12";
-  String get emailMock => "teste@bilibras.com";
+  String get emailMock => "teste@bylibras.com";
 }
 
 class ImageAssets {
@@ -43,6 +43,10 @@ class ImageAssets {
 
   String get nextExerciseArrow =>
       "${_basicPath}nextExerciseArrow/nextExerciseArrow.png";
+  String get nextExerciseButtonArrow =>
+      "${_basicPath}nextExerciseScreen/nextExerciseButtonArrow.png";
+  String get nextExerciseCloseButton =>
+      "${_basicPath}nextExerciseScreen/closeButton.png";
   String get lifeIcon => "${_basicPath}navBar/heartFilled.png";
   String get lifeIconEmpty => "${_basicPath}navBar/heartEmpty.png";
   String get backArrow => "${_basicPath}navBar/backArrow.png";

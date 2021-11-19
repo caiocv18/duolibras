@@ -13,6 +13,9 @@ import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:duolibras/Services/Models/exercisesCategory.dart';
 import 'package:flutter/material.dart';
 
+import 'nextExerciseHandler.dart';
+import 'nextExerciseScreen.dart';
+
 class ExerciseMultiChoiceScreen extends ExerciseStateful {
   static String routeName = "/ExerciseMultiChoiceScreen";
 
@@ -32,7 +35,7 @@ class ExerciseMultiChoiceScreen extends ExerciseStateful {
 class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
   ExerciseScreenState _state = ExerciseScreenState.NotAnswered;
   var answerPicked = "";
-
+  var _showNextExerciseScreen = false;
   @override
   void initState() {
     widget.handleNextExercise = () {
@@ -59,10 +62,12 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
       SafeArea(
           bottom: false,
           child: LayoutBuilder(builder: (ctx, constraint) {
-            return SingleChildScrollView(
-              child: _buildBody(widget._exercise, widget._viewModel,
-                  Size(constraint.maxWidth, constraint.maxHeight), context),
-            );
+            return Stack(children: [
+              SingleChildScrollView(
+                child: _buildBody(widget._exercise, widget._viewModel,
+                    Size(constraint.maxWidth, constraint.maxHeight), context),
+              ),
+            ]);
           })),
     ]));
   }
@@ -80,8 +85,16 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
               Utils.showFeedback(answerIsCorrect
                   ? FeedbackTypes.success
                   : FeedbackTypes.error);
-              widget._viewModel.showNextArrow();
             });
+            NextExerciseHandler.showNextExerciseScreen(context,
+                handleNextExercise: () => handleSubmitAnswer(
+                    answerPicked,
+                    widget._exercise.correctAnswer,
+                    widget._exercise.id,
+                    this.context),
+                exitClosure: () {
+                  widget._viewModel.showNextArrow();
+                });
           })
         : ImagesMultiChoice(exercise.answers ?? [], exercise.correctAnswer,
             (answer) {
@@ -94,8 +107,16 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
               Utils.showFeedback(answerIsCorrect
                   ? FeedbackTypes.success
                   : FeedbackTypes.error);
-              widget._viewModel.showNextArrow();
             });
+            NextExerciseHandler.showNextExerciseScreen(context,
+                handleNextExercise: () => handleSubmitAnswer(
+                    answerPicked,
+                    widget._exercise.correctAnswer,
+                    widget._exercise.id,
+                    this.context),
+                exitClosure: () {
+                  widget._viewModel.showNextArrow();
+                });
           });
   }
 
@@ -129,10 +150,6 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
 
   void handleSubmitAnswer(String answer, String correctAnswer,
       String exerciseID, BuildContext ctx) {
-    if (widget._exercise.category == ExercisesCategory.multipleChoicesText) {
-      widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
-    } else {
-      widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
-    }
+    widget._viewModel.didSubmitTextAnswer(answer, exerciseID, ctx);
   }
 }

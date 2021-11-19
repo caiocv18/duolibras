@@ -1,6 +1,5 @@
 import 'package:duolibras/Commons/Components/customAlert.dart';
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
-import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Commons/Utils/serviceLocator.dart';
 import 'package:duolibras/Modules/ExercisesModule/Screens/contentScreen.dart';
@@ -14,7 +13,6 @@ import 'package:duolibras/Services/Models/exercisesCategory.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'Screens/exerciseScreen.dart';
 

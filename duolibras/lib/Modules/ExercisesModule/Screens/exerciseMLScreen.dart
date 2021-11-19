@@ -8,6 +8,8 @@ import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
+import 'package:duolibras/Modules/ExercisesModule/Screens/nextExerciseHandler.dart';
+import 'package:duolibras/Modules/ExercisesModule/Screens/nextExerciseScreen.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWidget.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/timeBar.dart';
@@ -35,6 +37,7 @@ class ExerciseMLScreen extends ExerciseStateful {
 class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
   var _showingCamera = false;
   var _finishedExercise = false;
+  // var _showNextExerciseScreen = false;
   var spelledText = "";
   var _isRightAnswer = false;
   final completer = Completer<void>();
@@ -79,7 +82,7 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                   ? _cameraBody(widget._exercise,
                       Size(constraint.maxWidth, constraint.maxHeight), context)
                   : _buildOnboardingBody(widget._exercise, widget._viewModel,
-                      Size(constraint.maxWidth, constraint.maxHeight), context)
+                      Size(constraint.maxWidth, constraint.maxHeight), context),
             ]));
           }))
     ]));
@@ -541,7 +544,11 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
       _isRightAnswer = rightAnswer;
       Future.delayed(Duration(milliseconds: 100)).then((value) {
         widget._viewModel.closeCamera();
-        widget._viewModel.showNextArrow();
+        NextExerciseHandler.showNextExerciseScreen(context,
+            handleNextExercise: () => _submitAnswer(context),
+            exitClosure: () {
+              widget._viewModel.showNextArrow();
+            });
       });
     });
   }
