@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
@@ -60,24 +61,25 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(height: 20),
+                        SizedBox(height: constraint.maxHeight * 0.03),
                         ProfileImageButton(
                             SharedFeatures.instance.isLoggedIn,
                             widget._viewModel,
                             userProvider.user.imageUrl,
                             () => {_onPressedLoginButton()}),
-                        SizedBox(height: 60),
+                        SizedBox(height: constraint.maxHeight * 0.1),
                         Container(
-                            // height: 60,
+                            height: constraint.maxHeight * 0.09,
                             child: CustomTextfield(
                                 nameTextfieldController,
                                 userProvider.user.name,
                                 SharedFeatures.instance.isLoggedIn,
                                 _handleSubmitNewName),
-                            width: constraint.maxWidth * 0.8),
-                        SizedBox(height: 60),
-                        _createProgressWidget(userProvider.user),
-                        SizedBox(height: 60),
+                            width: constraint.maxWidth * 0.75),
+                        SizedBox(height: constraint.maxHeight * 0.1),
+                        _createProgressWidget(userProvider.user,
+                            Size(constraint.maxHeight, constraint.maxWidth)),
+                        SizedBox(height: constraint.maxHeight * 0.1),
                         FutureBuilder(
                             future: _createSelectHandWidget(constraint),
                             builder: (context, snapshot) {
@@ -85,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Utils.tryCast(snapshot.data, fallback: null);
                               return widget ?? SizedBox.shrink();
                             }),
-                        SizedBox(height: 80),
+                        SizedBox(height: constraint.maxHeight * 0.1),
                         Container(
                             width: constraint.maxWidth * 0.4,
                             height: 45,
@@ -107,18 +109,19 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  Widget _createProgressWidget(User user) {
+  Widget _createProgressWidget(User user, Size screenSize) {
+    // return Container(decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: HexColor.fromHex("D2D7E4")), color: Colors.transparent));
     return Stack(alignment: Alignment.center, children: [
-      CircularProgressIndicator(
-        backgroundColor: HexColor.fromHex("D2D7E4"),
-        valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("4982F6")),
-        value:
-            (user.currentProgress / SharedFeatures.instance.numberMaxOfPoints),
-        strokeWidth: 160,
-      ),
-      CircleAvatar(
-        backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-        radius: 80,
+      Container(
+        height: screenSize.width * 0.25,
+        width: screenSize.width * 0.25,
+        child: CircularProgressIndicator(
+          backgroundColor: HexColor.fromHex("D2D7E4"),
+          valueColor: AlwaysStoppedAnimation<Color>(HexColor.fromHex("4982F6")),
+          value: (user.currentProgress /
+              SharedFeatures.instance.numberMaxOfPoints),
+          strokeWidth: screenSize.width * 0.02,
+        ),
       ),
       Consumer(builder: (ctx, UserViewModel userProvider, _) {
         return _createProgressTextWidget(userProvider.user.currentProgress /
@@ -131,16 +134,21 @@ class _ProfilePageState extends State<ProfilePage> {
     final totalProgress = progress < 1 ? progress : 1;
     final double percentageProgress = totalProgress.toDouble();
     return Column(children: [
-      Text(_getLevelTextByProgress(percentageProgress),
+      AutoSizeText(_getLevelTextByProgress(percentageProgress),
+          maxFontSize: 24,
+          minFontSize: 20,
+          maxLines: 1,
           style: TextStyle(
-              fontSize: 24,
               fontFamily: "Nunito",
               fontWeight: FontWeight.w600,
               color: Colors.black)),
       SizedBox(
         height: 4,
       ),
-      Text("${(percentageProgress * 100).toStringAsFixed(2)}%",
+      AutoSizeText("${(percentageProgress * 100).toStringAsFixed(0)}%",
+          maxFontSize: 14,
+          minFontSize: 12,
+          maxLines: 1,
           style: TextStyle(
               fontSize: 14,
               fontFamily: "Nunito",
@@ -153,22 +161,24 @@ class _ProfilePageState extends State<ProfilePage> {
     _handDirection = await widget._viewModel.getHandDirection();
 
     return Container(
-      width: constraints.maxWidth * 0.8,
+      width: constraints.maxWidth * 0.75,
       child: Column(
         children: <Widget>[
-          Text("Mão utilizada para fazer os gestos:",
+          AutoSizeText("Mão utilizada para fazer os gestos:",
+              maxFontSize: 21,
+              minFontSize: 18,
+              maxLines: 2,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 21,
-                  fontFamily: "Nunito",
-                  fontWeight: FontWeight.w700)),
+              style:
+                  TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700)),
           SizedBox(height: 10),
           ListTile(
-            title: const Text('Esquerda',
+            title: const AutoSizeText('Esquerda',
+                maxFontSize: 20,
+                minFontSize: 17,
+                maxLines: 1,
                 style: TextStyle(
-                    fontSize: 21,
-                    fontFamily: "Nunito",
-                    fontWeight: FontWeight.w500)),
+                    fontFamily: "Nunito", fontWeight: FontWeight.w500)),
             leading: Radio<HandDirection>(
               value: HandDirection.LEFT,
               groupValue: _handDirection,
@@ -181,11 +191,12 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           ListTile(
-            title: const Text('Direita',
+            title: const AutoSizeText('Direita',
+                maxFontSize: 20,
+                minFontSize: 17,
+                maxLines: 1,
                 style: TextStyle(
-                    fontSize: 21,
-                    fontFamily: "Nunito",
-                    fontWeight: FontWeight.w500)),
+                    fontFamily: "Nunito", fontWeight: FontWeight.w500)),
             leading: Radio<HandDirection>(
               value: HandDirection.RIGHT,
               groupValue: _handDirection,

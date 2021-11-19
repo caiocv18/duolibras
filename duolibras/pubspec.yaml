@@ -44,6 +44,7 @@ dependencies:
   collection: ^1.15.0
   permission_handler:
   audioplayers:
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

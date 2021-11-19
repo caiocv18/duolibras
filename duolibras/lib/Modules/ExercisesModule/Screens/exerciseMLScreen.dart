@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'dart:math' as math;
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:camera/camera.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
@@ -12,7 +13,6 @@ import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/questionWid
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/timeBar.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'exerciseScreen.dart';
 
 class ExerciseMLScreen extends ExerciseStateful {
@@ -197,11 +197,12 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
                     children: <Widget>[
                       _buildQuestionText(),
                       _buildAnswerText(),
-                      SizedBox(height: containerSize.height * 0.04),
-                      _finishedExercise
-                          ? _buildFeedback(containerSize)
-                          : _buildCameraPreview(containerSize),
-                      SizedBox(height: containerSize.height * 0.04),
+                      SizedBox(height: containerSize.height * 0.03),
+                      // _finishedExercise
+                      //     ? _buildFeedback(containerSize)
+                      //     :
+                      _buildCameraPreview(containerSize),
+                      SizedBox(height: containerSize.height * 0.03),
                       _buildSpelledLetters()
                     ],
                   );
@@ -228,81 +229,69 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
     // to prevent scaling down, invert the value
     if (scale < 1) scale = 1 / scale;
 
-    return Stack(alignment: AlignmentDirectional.bottomStart, children: [
-      Center(
-          child: TweenAnimationBuilder(
-        tween: Tween(begin: 0.0, end: widget._progress),
-        duration: Duration(milliseconds: 500),
-        builder: (context, valueObj, child) {
-          final value = double.parse(valueObj.toString());
-          return Container(
-            width: containerSize.width * 0.95,
-            height: containerSize.height * 0.67,
-            child: Stack(
-              children: [
-                ShaderMask(
-                  shaderCallback: (rect) {
-                    return SweepGradient(
-                            startAngle: 3 * math.pi / 2,
-                            endAngle: 7 * math.pi / 2,
-                            tileMode: TileMode.repeated,
-                            stops: [value, value],
-                            colors: [Colors.lightGreen, Colors.transparent],
-                            center: Alignment.center)
-                        .createShader(rect);
-                  },
-                  child: Container(
-                    width: containerSize.width * 0.95,
-                    height: containerSize.height * 0.67,
-                    decoration: BoxDecoration(
-                        color: Color.fromRGBO(200, 205, 219, 1),
-                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(20.0))),
-                    ),
-                  ),
+    return Container(
+      width: containerSize.width * 0.95,
+      height: containerSize.height * 0.7,
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: containerSize.width * 0.95,
+                height: containerSize.height * 0.67,
+                decoration: BoxDecoration(
+                    color: Color.fromRGBO(200, 205, 219, 1),
+                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.all(Radius.circular(20.0))),
                 ),
-                Center(
-                    child: Container(
-                        width: containerSize.width * 0.89,
-                        height: containerSize.height * 0.63,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            child: Transform.scale(
-                                scale: scale,
-                                child: CameraPreview(
-                                    widget._viewModel.getCamera())))))
-              ],
-            ),
-          );
-        },
-        onEnd: () {
-          handleOnEndAnimate();
-        },
-      )),
-      TimeBar(
-          Size(containerSize.width * 0.93, containerSize.height * 0.04),
-          totalTime,
-          [Color.fromRGBO(73, 130, 246, 1), Color.fromRGBO(44, 196, 252, 1)],
-          widget.timerHandler, () {
-        widget._viewModel.isAnswerCorrect("", widget._exercise.id);
-        _finishExercise(false);
-      }),
-      FutureBuilder(
-        future: widget._viewModel.getHandDirection(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            HandDirection direction =
-                Utils.tryCast(snapshot.data!, fallback: HandDirection.RIGHT);
-            return direction.positionBox;
-          }
-          return Container();
-        },
-      )
-    ]);
+              ),
+              Center(
+                  child: Container(
+                      width: containerSize.width * 0.90,
+                      height: containerSize.height * 0.64,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          child: Transform.scale(
+                              scale: scale,
+                              child: CameraPreview(
+                                  widget._viewModel.getCamera()))))),
+              FutureBuilder(
+                future: widget._viewModel.getHandDirection(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    HandDirection direction = Utils.tryCast(snapshot.data!,
+                        fallback: HandDirection.RIGHT);
+                    if (!_finishedExercise) return direction.positionBox;
+                  }
+                  return Container();
+                },
+              )
+            ],
+          ),
+          SizedBox(height: 7),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TimeBar(
+                  Size(containerSize.width * 0.93, containerSize.height * 0.02),
+                  totalTime,
+                  [
+                    Color.fromRGBO(73, 130, 246, 1),
+                    Color.fromRGBO(44, 196, 252, 1)
+                  ],
+                  widget.timerHandler, () {
+                widget._viewModel.isAnswerCorrect("", widget._exercise.id);
+                _finishExercise(false);
+              }),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildQuestionText() {
@@ -312,8 +301,11 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
           width: constraint.maxWidth * 0.89,
           height: 33,
           child: Center(
-            child: Text(
+            child: AutoSizeText(
               question ?? "",
+              maxFontSize: 22,
+              minFontSize: 19,
+              maxLines: 1,
               style: TextStyle(
                   fontSize: 24,
                   fontFamily: "Nunito",
@@ -347,30 +339,71 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
 
   Widget _buildSpelledLetters() {
     return LayoutBuilder(builder: (ctx, constraint) {
-      return Center(
-          child: Container(
-              width: constraint.maxWidth * 0.89,
-              height: 54,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                      width: 5,
-                      color: _finishedExercise
-                          ? (_isRightAnswer
-                              ? Color.fromRGBO(147, 202, 250, 1)
-                              : Color.fromRGBO(233, 112, 112, 1))
-                          : Colors.white),
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-              child: Center(
-                child: Text(
-                  spelledText,
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontFamily: "Nunito",
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 2.0),
-                ),
-              )));
+      return Stack(children: [
+        Center(
+            child: TweenAnimationBuilder(
+          tween: Tween(
+              begin: 0.0, end: _finishedExercise ? 1.0 : widget._progress),
+          duration: Duration(milliseconds: _finishedExercise ? 0 : 500),
+          builder: (BuildContext context, double value, Widget? child) {
+            final color = _finishedExercise
+                ? (_isRightAnswer
+                    ? Color.fromRGBO(100, 193, 149, 0.9)
+                    : Color.fromRGBO(233, 112, 112, 0.9))
+                : Color.fromRGBO(100, 193, 149, 0.9);
+
+            return Container(
+                child: Stack(alignment: Alignment.center, children: [
+              ShaderMask(
+                  shaderCallback: (rect) {
+                    return SweepGradient(
+                            startAngle: 3 * math.pi / 2,
+                            endAngle: 7 * math.pi / 2,
+                            tileMode: TileMode.repeated,
+                            stops: [value, value],
+                            colors: [color, Colors.transparent],
+                            center: Alignment.center)
+                        .createShader(rect);
+                  },
+                  child: Center(
+                    child: Container(
+                      width: constraint.maxWidth * 0.89,
+                      height: constraint.maxWidth * 0.13,
+                      decoration: BoxDecoration(
+                          color: color,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(20.0))),
+                    ),
+                  )),
+              Center(
+                  child: Container(
+                      width: constraint.maxWidth * 0.86,
+                      height: constraint.maxWidth * 0.10,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      child: Center(
+                        child: Text(
+                          spelledText,
+                          style: TextStyle(
+                              color: _finishedExercise
+                                  ? (_isRightAnswer
+                                      ? Color.fromRGBO(100, 193, 149, 1.0)
+                                      : Color.fromRGBO(233, 112, 112, 1.0))
+                                  : Color.fromRGBO(100, 193, 149, 1.0),
+                              fontSize: 24,
+                              fontFamily: "Nunito",
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 2.0),
+                        ),
+                      ))),
+            ]));
+          },
+          onEnd: () {
+            handleOnEndAnimate();
+          },
+        )),
+      ]);
     });
   }
 
@@ -489,6 +522,9 @@ class _ExerciseMLScreenState extends State<ExerciseMLScreen> {
       } else {
         setState(() {
           spelledText = widget._exercise.correctAnswer;
+          widget._viewModel.correctAnswers = 0;
+          widget._viewModel.wrongAnswers = 0;
+          widget._progress = 0.0;
         });
         _finishExercise(true);
       }

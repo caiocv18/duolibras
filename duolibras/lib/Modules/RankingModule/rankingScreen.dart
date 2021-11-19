@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:duolibras/Commons/Components/baseScreen.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
@@ -95,26 +96,30 @@ class _RankingScreenState extends State<RankingScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Faça login para ver a pontuação de outros jogadores!",
+          AutoSizeText("Faça login para ver a pontuação de outros jogadores!",
+              minFontSize: 20,
+              maxFontSize: 24,
+              maxLines: 2,
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 24,
                 fontFamily: "Nunito",
                 fontWeight: FontWeight.w700,
               ),
               textAlign: TextAlign.center),
-          SizedBox(height: 40),
+          SizedBox(height: screenSize.height * 0.05),
           Container(
             width: screenSize.width * 0.8,
             height: screenSize.height * 0.1,
             child: ExerciseButton(
               child: Center(
-                child: Text(
+                child: AutoSizeText(
                   "Entrar",
+                  minFontSize: 19,
+                  maxFontSize: 22,
+                  maxLines: 1,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 22,
                     fontFamily: 'Nunito',
                   ),
                 ),

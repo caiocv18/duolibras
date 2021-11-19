@@ -1,6 +1,4 @@
-import 'package:duolibras/Commons/Extensions/color_extension.dart';
-import 'package:duolibras/Commons/Utils/constants.dart';
-import 'package:duolibras/Commons/Utils/serviceLocator.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:duolibras/Services/Models/module.dart';
 import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
 import 'package:duolibras/Services/Models/user.dart';
@@ -70,22 +68,25 @@ class _ModuleWidgetState extends State<ModuleWidget> {
         padding: EdgeInsets.only(left: leftPadding, right: rightPadding),
         child: Container(
           // color: colors.first,
-          height: 200,
+          height: constraints.maxHeight,
           width: constraints.maxWidth * 0.9,
-          child: _buildBody(widget._rowAlignment),
+          child: _buildBody(widget._rowAlignment,
+              Size(constraints.maxWidth, constraints.maxHeight)),
         ),
       );
     });
   }
 
-  Widget _buildBody(MainAxisAlignment alignment) {
+  Widget _buildBody(MainAxisAlignment alignment, Size screenSize) {
     return Consumer(builder: (ctx, UserViewModel userProvider, _) {
       return Row(mainAxisAlignment: alignment, children: [
         if (alignment != MainAxisAlignment.start)
           Flexible(
-            child: Text(widget._module.title,
+            child: AutoSizeText(widget._module.title,
+                minFontSize: 20,
+                maxFontSize: 24,
+                maxLines: 1,
                 style: TextStyle(
-                    fontSize: 24,
                     fontFamily: "Nunito",
                     fontWeight: FontWeight.w500,
                     color: Colors.black)),
@@ -102,18 +103,20 @@ class _ModuleWidgetState extends State<ModuleWidget> {
               alignment: Alignment.center,
               children: [
                 if (widget._isAvaiable)
-                  _buildIcon(userProvider.user)
+                  _buildIcon(userProvider.user, screenSize)
                 else
-                  _buildUnavailableIcon()
+                  _buildUnavailableIcon(screenSize)
               ],
             ),
           ),
         ),
         if (alignment == MainAxisAlignment.start)
           Flexible(
-            child: Text(widget._module.title,
+            child: AutoSizeText(widget._module.title,
+                minFontSize: 20,
+                maxFontSize: 24,
+                maxLines: 1,
                 style: TextStyle(
-                    fontSize: 24,
                     fontFamily: "Nunito",
                     fontWeight: FontWeight.w500,
                     color: Colors.black)),
@@ -122,21 +125,20 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     });
   }
 
-  Widget _buildIcon(User user) {
+  Widget _buildIcon(User user, Size screenSize) {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
       ),
       child: Stack(alignment: AlignmentDirectional.center, children: [
         CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
-          value: _getModuleProgress(user),
-          strokeWidth: 80,
-        ),
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+            value: _getModuleProgress(user),
+            strokeWidth: screenSize.width * 0.16),
         Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              width: 93,
+              width: screenSize.width * 0.2,
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
@@ -147,11 +149,11 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     );
   }
 
-  Widget _buildUnavailableIcon() {
+  Widget _buildUnavailableIcon(Size screenSize) {
     return CircleAvatar(
       backgroundColor: Colors.transparent,
       backgroundImage: NetworkImage(widget._module.unavailableImageUrl),
-      radius: 50,
+      radius: screenSize.width * 0.1,
     );
   }
 

@@ -19,7 +19,6 @@ import 'package:duolibras/Services/service.dart';
 import 'package:duolibras/Services/Models/sectionProgress.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
@@ -88,7 +87,7 @@ class ExerciseViewModel extends BaseViewModel {
   }
 
   bool isGestureCorrect(String label, double confidence, Exercise exercise) {
-    return exercise.correctAnswer == label && confidence >= 0.5;
+    return exercise.correctAnswer == label && confidence >= 0.6;
   }
 
   bool isSpellingCorrect(
@@ -96,7 +95,7 @@ class ExerciseViewModel extends BaseViewModel {
     final splittedAnswer = exercise.correctAnswer.split("");
 
     if (splittedAnswer[spelledLetters.length] == newLetter &&
-        confidence >= 0.5) {
+        confidence >= 0.6) {
       if (correctAnswers == 9) {
         spelledLetters.add(newLetter);
       }

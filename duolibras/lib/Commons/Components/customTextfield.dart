@@ -29,7 +29,8 @@ class _CustomTextfieldState extends State<CustomTextfield> {
       return Container(
         width: constraint.maxWidth,
         child: TextField(
-          style: TextStyle(fontSize: 23, fontFamily: "Nunito", fontWeight: FontWeight.w500),
+          style: TextStyle(
+              fontSize: 21, fontFamily: "Nunito", fontWeight: FontWeight.w500),
           readOnly: !isEditing,
           focusNode: focusNode,
           autofocus: false,
@@ -40,25 +41,28 @@ class _CustomTextfieldState extends State<CustomTextfield> {
             widget._onSubmitHandler(widget.inputController.text);
           }),
           decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(
+                  top: constraint.maxHeight / 2,
+                  left: constraint.maxWidth * 0.1),
               suffixIcon: isEditing
-              ? IconButton(
-                  onPressed: () {
-                    widget.inputController.clear();
-                    setState(() {
-                      isEditing = false;
-                      FocusScope.of(context).unfocus();
-                    });
-                  },
-                  icon: Icon(Icons.cancel, color: Colors.grey))
-              : IconButton(
-                  onPressed: () {
-                    setState(() {
-                      openKeyboard();
-                      isEditing = true;
-                    });
-                  },
-                  icon: Image.asset(Constants.imageAssets.edit_button),
-                ),
+                  ? IconButton(
+                      onPressed: () {
+                        widget.inputController.clear();
+                        setState(() {
+                          isEditing = false;
+                          FocusScope.of(context).unfocus();
+                        });
+                      },
+                      icon: Icon(Icons.cancel, color: Colors.grey))
+                  : IconButton(
+                      onPressed: () {
+                        setState(() {
+                          openKeyboard();
+                          isEditing = true;
+                        });
+                      },
+                      icon: Image.asset(Constants.imageAssets.edit_button),
+                    ),
               border: OutlineInputBorder(
                 borderSide: BorderSide(
                   width: 0,
@@ -69,16 +73,14 @@ class _CustomTextfieldState extends State<CustomTextfield> {
               filled: true,
               hintText: !isEditing ? widget.hintText : "",
               hintStyle: TextStyle(color: Colors.grey[800]),
-              fillColor: Colors.white
-          ),
+              fillColor: Colors.white),
         ),
       );
     });
   }
 
-    // to open keyboard call this function;
+  // to open keyboard call this function;
   void openKeyboard() {
     FocusScope.of(context).requestFocus(focusNode);
   }
-
 }

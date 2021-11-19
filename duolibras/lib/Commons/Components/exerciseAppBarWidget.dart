@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -154,13 +155,15 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
 
   Widget _buildExitButton(Size containerSize) {
     return Container(
-      width: containerSize.width * 0.22,
+      width: containerSize.width * 0.21,
       child: OutlinedButton(
           onPressed: () => widget._onExitPressed(),
-          child: Text("Desistir",
+          child: AutoSizeText("Desistir",
+              minFontSize: 12,
+              maxFontSize: 14,
+              maxLines: 1,
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 14,
                   fontFamily: "Nunito",
                   fontWeight: FontWeight.w600)),
           style: ButtonStyle(
@@ -218,10 +221,12 @@ class _ExerciseAppBarWidgetState extends State<ExerciseAppBarWidget> {
       width: containerSize.width * 0.21,
       child: OutlinedButton(
           onPressed: () => widget._onSkipPressed(),
-          child: Text("Próximo",
+          child: AutoSizeText("Próximo",
+              minFontSize: 12,
+              maxFontSize: 14,
+              maxLines: 1,
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 14,
                   fontFamily: "Nunito",
                   fontWeight: FontWeight.w600)),
           style: ButtonStyle(

@@ -9,13 +9,14 @@ class TrailPath extends CustomPainter {
   Map<Color, int> colorForRows;
   int index;
   var lastPosition = _Position.Left;
+  double moduleHeight;
 
   int get maxLevelProgress {
     return mainPath.computeMetrics().length;
   }
 
-  TrailPath(
-      this.mainPath, this._animationController, this.colorForRows, this.index)
+  TrailPath(this.mainPath, this._animationController, this.colorForRows,
+      this.index, this.moduleHeight)
       : super(repaint: _animationController);
 
   @override
@@ -105,7 +106,7 @@ class TrailPath extends CustomPainter {
       }
       initialPosition =
           initialPosition == _Position.Right ? _Position.Left : _Position.Right;
-      initialHeight += 200;
+      initialHeight += moduleHeight;
     }
     mainPath.addPath(tempPath, const Offset(0, 0));
     canvas.drawPath(tempPath, paint);
@@ -123,12 +124,12 @@ class TrailPath extends CustomPainter {
     Path path = Path();
     path.moveTo(size.width * 0.3, initialHeight); //300
 
-    path.cubicTo(0, initialHeight - 5, 0, initialHeight + 205, size.width * 0.3,
-        initialHeight + 200);
+    path.cubicTo(0, initialHeight - 5, 0, initialHeight + moduleHeight + 5,
+        size.width * 0.3, initialHeight + moduleHeight);
 
     if (drawLine) {
       Path pathLine = Path();
-      pathLine.moveTo(size.width * 0.3, initialHeight + 200);
+      pathLine.moveTo(size.width * 0.3, initialHeight + moduleHeight);
       pathLine.relativeLineTo(size.width * 0.4, 0);
       path.extendWithPath(pathLine, const Offset(0, 0));
     }
@@ -141,12 +142,17 @@ class TrailPath extends CustomPainter {
     Path path = Path();
     path.moveTo(size.width * 0.7, initialHeight); //300
 
-    path.cubicTo(size.width, initialHeight - 5, size.width, initialHeight + 205,
-        size.width * 0.7, initialHeight + 200);
+    path.cubicTo(
+        size.width,
+        initialHeight - 5,
+        size.width,
+        initialHeight + moduleHeight + 5,
+        size.width * 0.7,
+        initialHeight + moduleHeight);
 
     if (drawLine) {
       Path pathLine = Path();
-      pathLine.moveTo(size.width * 0.7, initialHeight + 200);
+      pathLine.moveTo(size.width * 0.7, initialHeight + moduleHeight);
       pathLine.relativeLineTo(-(size.width * 0.4), 0);
 
       path.extendWithPath(pathLine, const Offset(0, 0));

@@ -1,7 +1,9 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/Utils/utils.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
@@ -114,12 +116,14 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
                     width: containerSize.width * 0.7,
                     child: ExerciseButton(
                       child: Center(
-                        child: Text(
+                        child: AutoSizeText(
                           "Verificar",
+                          maxLines: 1,
+                          minFontSize: 19,
+                          maxFontSize: 22,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 22,
                             fontFamily: 'Gameplay',
                           ),
                         ),
@@ -128,8 +132,9 @@ class _ExerciseWritingScreenState extends State<ExerciseWritingScreen> {
                       color: (didAnswerCorrect == null)
                           ? Colors.grey
                           : didAnswerCorrect
-                              ? Colors.green
-                              : Colors.red, //Colors.white, //Color(0xFFCA3034),
+                              ? HexColor.fromHex("64C195")
+                              : HexColor.fromHex(
+                                  "E97070"), //Colors.white, //Color(0xFFCA3034),
                       onPressed: () {
                         if (_state == ExerciseScreenState.DidAnswer) return;
                         setState(() {

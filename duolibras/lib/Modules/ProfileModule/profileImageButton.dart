@@ -26,16 +26,22 @@ class ProfileImageButton extends StatefulWidget {
 class _ProfileImageButtonState extends State<ProfileImageButton> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        alignment: Alignment.center,
-        child: (Stack(
-            clipBehavior: Clip.none,
-            alignment: AlignmentDirectional.bottomEnd,
-            fit: StackFit.loose,
-            children: [
-              profileImageBoxDecoration(),
-              Positioned(child: cameraButton(context), bottom: -15)
-            ])));
+    return LayoutBuilder(builder: (ctx, constraint) {
+      return Container(
+          alignment: Alignment.center,
+          child: (Stack(
+              clipBehavior: Clip.none,
+              alignment: AlignmentDirectional.bottomEnd,
+              fit: StackFit.loose,
+              children: [
+                profileImageBoxDecoration(
+                    Size(constraint.maxWidth, constraint.maxHeight)),
+                Positioned(
+                    child: cameraButton(context,
+                        Size(constraint.maxWidth, constraint.maxHeight)),
+                    bottom: -15)
+              ])));
+    });
   }
 
   Image _getProfileImage() {
@@ -47,7 +53,7 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
     return Image(image: AssetImage(Constants.imageAssets.profileEmptyPhoto));
   }
 
-  Widget profileImageBoxDecoration() {
+  Widget profileImageBoxDecoration(Size screenSize) {
     final kGradientBoxDecoration = BoxDecoration(
       // image: DecorationImage(image: _getProfileImage(), fit: BoxFit.cover),
       shape: BoxShape.circle,
@@ -56,8 +62,8 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
     );
 
     return Container(
-      height: 145,
-      width: 145,
+      height: screenSize.width * 0.38,
+      width: screenSize.width * 0.38,
       child: Padding(
         padding: const EdgeInsets.all(3.0),
         child: Container(
@@ -70,11 +76,11 @@ class _ProfileImageButtonState extends State<ProfileImageButton> {
     );
   }
 
-  Widget cameraButton(BuildContext context) {
+  Widget cameraButton(BuildContext context, Size screenSize) {
     return GestureDetector(
       child: Container(
-          height: 51,
-          width: 51,
+          height: screenSize.width * 0.13,
+          width: screenSize.width * 0.13,
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(

@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:duolibras/Commons/Components/exerciseAppBarWidget.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/exerciseViewModel.dart';
 import 'package:duolibras/Services/Models/exercise.dart';
@@ -52,7 +52,8 @@ class _ContentScreenState extends State<ContentScreen> {
               Container(
                 height: constraint.maxHeight * 0.92,
                 child: PageView.builder(
-                  physics: pages.length > 1 ? null : NeverScrollableScrollPhysics(),
+                  physics:
+                      pages.length > 1 ? null : NeverScrollableScrollPhysics(),
                   allowImplicitScrolling: true,
                   controller: controller,
                   itemBuilder: (_, index) {
@@ -60,9 +61,7 @@ class _ContentScreenState extends State<ContentScreen> {
                   },
                 ),
               ),
-              if(pages.length > 1)
-              _buildPageIndicator(),
-              SizedBox(height: 32.0),
+              if (pages.length > 1) _buildPageIndicator(),
             ],
           );
         }),
@@ -98,13 +97,14 @@ class _ContentScreenState extends State<ContentScreen> {
       return Container(
           width: constraint.maxWidth * 0.89,
           child: Center(
-            child: Text(
+            child: AutoSizeText(
               title?.replaceAll(new RegExp('_n'), '\n') ?? "",
+              minFontSize: 20,
+              maxFontSize: 24,
+              maxLines: 5,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 24,
-                  fontFamily: "Nunito",
-                  fontWeight: FontWeight.w700),
+              style:
+                  TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700),
             ),
           ));
     });
@@ -140,14 +140,13 @@ class _ContentScreenState extends State<ContentScreen> {
         width: containerSize.width * 0.62,
         height: containerSize.height * 0.14,
         child: Center(
-          child: Text(
+          child: AutoSizeText(
             description,
             maxLines: 2,
+            minFontSize: 20,
+            maxFontSize: 24,
             textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 24,
-                fontFamily: "Nunito",
-                fontWeight: FontWeight.w700),
+            style: TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w700),
           ),
         ),
       );

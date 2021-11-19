@@ -25,7 +25,7 @@ class Midiawidget extends StatelessWidget {
             clipBehavior: Clip.hardEdge,
             child: Image.network(
               midiaURL,
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
             ),
             decoration: BoxDecoration(
               color: Colors.grey,

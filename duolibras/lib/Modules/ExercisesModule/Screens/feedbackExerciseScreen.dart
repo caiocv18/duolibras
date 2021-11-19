@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:duolibras/Commons/Components/baseScreen.dart';
 import 'package:duolibras/Commons/Components/exerciseButton.dart';
 import 'package:duolibras/Commons/Extensions/color_extension.dart';
@@ -34,31 +35,30 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+        body: SafeArea(
             bottom: false,
             child: LayoutBuilder(builder: (ctx, constraint) {
               return Stack(
                 alignment: AlignmentDirectional.center,
-                children: 
-                [
+                children: [
                   Container(
-                      height: constraint.maxHeight,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(
-                              Constants.imageAssets.background_home),
-                          fit: BoxFit.cover,
-                        ),
+                    height: constraint.maxHeight,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image:
+                            AssetImage(Constants.imageAssets.background_home),
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  SingleChildScrollView(child: 
-                    _buildBody(Size(constraint.maxWidth, constraint.maxHeight), context)
-                  )
+                  ),
+                  SingleChildScrollView(
+                      child: _buildBody(
+                          Size(constraint.maxWidth, constraint.maxHeight),
+                          context))
                 ],
               );
-            })
-          ));
+            })));
   }
 
   Widget _createButtons(
@@ -74,12 +74,14 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
           width: containerSize.width * 0.85,
           child: ExerciseButton(
             child: Center(
-              child: Text(
+              child: AutoSizeText(
                 titleButton,
+                minFontSize: 19,
+                maxFontSize: 22,
+                maxLines: 1,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 22,
                   fontFamily: 'Gameplay',
                 ),
               ),
@@ -101,12 +103,14 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
         width: containerSize.width * 0.85,
         child: ExerciseButton(
           child: Center(
-            child: Text(
+            child: AutoSizeText(
               "Voltar",
+              minFontSize: 19,
+              maxFontSize: 22,
+              maxLines: 1,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 22,
                 fontFamily: 'Gameplay',
               ),
             ),
@@ -136,8 +140,9 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
         : "Oh não, vamos práticar um pouco?";
 
     final imageName = widget.status == FeedbackStatus.Success
-        ? Constants.imageAssets.happyFeedback : Constants.imageAssets.sadFace;
-        
+        ? Constants.imageAssets.happyFeedback
+        : Constants.imageAssets.sadFace;
+
     return BaseScreen<ExerciseViewModel>(
       parameters: Tuple2(widget.exercisesAndModule, widget.delegate),
       onModelReady: (model) {
@@ -147,8 +152,7 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
           });
         });
       },
-      builder: (_, viewModel, __) => 
-      Container(
+      builder: (_, viewModel, __) => Container(
         width: double.infinity,
         child: viewModel.state == ScreenState.Loading
             ? _createLoadingWidget()
@@ -162,8 +166,7 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
                   Container(
                       height: containerSize.height * 0.35,
                       width: containerSize.width * 0.54,
-                      child:
-                          Image.asset(imageName)),
+                      child: Image.asset(imageName)),
                   SizedBox(height: containerSize.height * 0.05),
                   _createButtons(viewModel, ctx, containerSize),
                   SizedBox(height: containerSize.height * 0.05),
@@ -172,5 +175,4 @@ class _FeedbackExerciseScreenState extends State<FeedbackExerciseScreen> {
       ),
     );
   }
-
 }

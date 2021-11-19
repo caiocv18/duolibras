@@ -110,8 +110,8 @@ class _ExerciseMultiChoiceScreenState extends State<ExerciseMultiChoiceScreen> {
             child: QuestionWidget(exercise.question ?? "")),
         SizedBox(height: containerSize.height * 0.05),
         Container(
-            height: containerSize.height * 0.35,
-            width: containerSize.width * 0.54,
+            height: containerSize.height * 0.3,
+            width: containerSize.width * 0.45,
             child: Midiawidget(exercise.mediaUrl)),
         SizedBox(height: containerSize.height * 0.05),
         Column(

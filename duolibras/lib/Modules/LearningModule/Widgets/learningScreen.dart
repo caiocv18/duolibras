@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:duolibras/Commons/Components/baseScreen.dart';
-import 'package:duolibras/Commons/Components/customAlert.dart';
 import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Commons/ViewModel/screenState.dart';
 import 'package:duolibras/Modules/LearningModule/ViewModel/learningViewModel.dart';
@@ -11,13 +10,8 @@ import 'package:duolibras/Modules/LearningModule/Widgets/moduleWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/sectionTitleWidget.dart';
 import 'package:duolibras/Modules/LearningModule/Widgets/trailPath.dart';
 import 'package:duolibras/Services/Models/Providers/userViewModel.dart';
-import 'package:duolibras/Services/Models/exercise.dart';
-import 'package:duolibras/Services/Models/exercisesCategory.dart';
 import 'package:duolibras/Services/Models/section.dart';
-import 'package:duolibras/Services/Models/user.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 abstract class LearningViewModelProtocol {
@@ -54,11 +48,11 @@ class _LearningScreenState extends State<LearningScreen>
   final mainPath = Path();
   var isLoadingPath = true;
   var isAnimating = true;
-  late var customPath = CustomPaint(
-      painter: TrailPath(
-          mainPath, animationController, widget._viewModel.colorForModules, 1),
-      size: new Size(
-          428, 212 * widget._viewModel.wrapperSectionPage.total.toDouble()));
+  // late var customPath = CustomPaint(
+  //     painter: TrailPath(mainPath, animationController,
+  //         widget._viewModel.colorForModules, 1, trailModulesSizeHeight),
+  //     size: new Size(
+  //         428, 212 * widget._viewModel.wrapperSectionPage.total.toDouble()));
   final scrollController = ScrollController();
 
   @override
@@ -93,7 +87,6 @@ class _LearningScreenState extends State<LearningScreen>
         isLoadingPath = false;
       });
     }
-
     super.initState();
   }
 
@@ -204,8 +197,12 @@ class _LearningScreenState extends State<LearningScreen>
         color: Colors.transparent,
         height: maxHeight,
         child: CustomPaint(
-            painter: TrailPath(mainPath, animationController,
-                widget._viewModel.colorForModules, currentSectionIndex),
+            painter: TrailPath(
+                mainPath,
+                animationController,
+                widget._viewModel.colorForModules,
+                currentSectionIndex,
+                MediaQuery.of(this.context).size.height * 0.22),
             size: new Size(428,
                 212 * widget._viewModel.wrapperSectionPage.total.toDouble())));
   }
@@ -219,7 +216,7 @@ class _LearningScreenState extends State<LearningScreen>
     return Column(
         children: List.generate(totalImages, (index) {
       return Container(
-          height: 600,
+          height: MediaQuery.of(this.context).size.height * 0.22 * 3,
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage(Constants.imageAssets.background_home),
@@ -265,7 +262,7 @@ class _LearningScreenState extends State<LearningScreen>
     final module = viewModel.wrapperSectionPage.moduleAtIndex(index);
 
     return Container(
-      height: 200,
+      height: MediaQuery.of(this.context).size.height * 0.22,
       width: double.infinity,
       child: ModuleWidget(
           module,

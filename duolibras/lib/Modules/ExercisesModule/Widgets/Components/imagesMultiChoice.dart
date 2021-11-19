@@ -1,3 +1,4 @@
+import 'package:duolibras/Commons/Extensions/color_extension.dart';
 import 'package:duolibras/Modules/ExercisesModule/ViewModel/multiChoiceState.dart';
 import 'package:duolibras/Modules/ExercisesModule/Widgets/Components/imageChoiceItem.dart';
 import 'package:flutter/material.dart';
@@ -26,12 +27,13 @@ class _ImagesMultiChoiceState extends State<ImagesMultiChoice> {
           shrinkWrap: true,
           primary: true,
           physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.all(25),
+          padding:
+              EdgeInsets.only(left: size.width * 0.1, right: size.width * 0.1),
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: size.width/2,
+              maxCrossAxisExtent: size.width * 0.36,
               childAspectRatio: 1.07,
-              crossAxisSpacing: 15,
-              mainAxisSpacing: 15),
+              crossAxisSpacing: size.width * 0.08,
+              mainAxisSpacing: size.height * 0.02),
           children: [
             ...widget._answersUrl.map((imageUrl) {
               return ImageChoiceItem(imageUrl, _getButtonColor(imageUrl),
@@ -49,14 +51,15 @@ class _ImagesMultiChoiceState extends State<ImagesMultiChoice> {
   }
 
   Color _getButtonColor(String title) {
-    if (state == ExerciseScreenState.NotAnswered) return Colors.blue;
+    if (state == ExerciseScreenState.NotAnswered)
+      return HexColor.fromHex("93CAFA");
 
     if (didPickCorrectChoice) {
     } else {
       if (selectedAnswer == title) {
-        return Colors.red;
+        return HexColor.fromHex("E97070");
       } else if (title == widget._correctAnswer) {
-        return Colors.green;
+        return HexColor.fromHex("64C195");
       } else {
         return Colors.grey;
       }
@@ -64,8 +67,8 @@ class _ImagesMultiChoiceState extends State<ImagesMultiChoice> {
 
     if (selectedAnswer == title) {
       return selectedAnswer != widget._correctAnswer
-          ? Colors.red
-          : Colors.green;
+          ? HexColor.fromHex("E97070")
+          : HexColor.fromHex("64C195");
     }
 
     return Colors.grey;
