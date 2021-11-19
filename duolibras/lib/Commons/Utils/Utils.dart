@@ -1,5 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:duolibras/Commons/Utils/Constants.dart';
+import 'package:duolibras/Commons/Utils/constants.dart';
 import 'package:duolibras/Services/Models/appError.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';

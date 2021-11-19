@@ -1,6 +1,3 @@
-import 'package:duolibras/Commons/Extensions/color_extension.dart';
-import 'package:flutter/material.dart';
-
 class Constants {
   static DatabaseConstants database = const DatabaseConstants();
   static FirebaseServiceConstants firebaseService =
