@@ -14,55 +14,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "306607468782-ijp8tt85mn4j7j2sp8okg59ikie4jedt.apps.googleusercontent.com",
+          "client_id": "306607468782-mcbhv99c6dq2kgd23qu0bt5j511idp4g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.br.bilibras",
-            "certificate_hash": "cdfb5f865a65f3e744c0b0a94c02c1780642ba1c"
+            "certificate_hash": "2442056d96d7f85308de43ac63b7c75e354cffb3"
           }
         },
         {
-          "client_id": "306607468782-l8ompfov2pcnlhddvpoe0a5k53ierq03.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyATsFIrjEzktqM6uU0ZalTkeU_dg7IUssI"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "306607468782-l8ompfov2pcnlhddvpoe0a5k53ierq03.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "306607468782-5nv4ggu34ot0fdpk3fhvr44fphveo8gq.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.br.bilibras"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:306607468782:android:fe194666eee9626fc743ff",
-        "android_client_info": {
-          "package_name": "com.br.bilibras"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "306607468782-gu2mbs0q365csuob8sie24r67uliqt1d.apps.googleusercontent.com",
+          "client_id": "306607468782-q4s5n1hcvo9jvmo1cm51rglipato758f.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.br.bilibras",
-            "certificate_hash": "b453d3f13ce7f5b0ae3a946afb6a1ec109e0385a"
+            "certificate_hash": "a67491774ec65c542677d7df4f320ffa3a1fa61d"
           }
         },
         {
