@@ -215,12 +215,15 @@ class _LearningScreenState extends State<LearningScreen>
     }
     return Column(
         children: List.generate(totalImages, (index) {
-      return Container(
-          height: MediaQuery.of(this.context).size.height * 0.22 * 3,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(Constants.imageAssets.background_home),
-                  fit: BoxFit.cover)));
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 15.0),
+        child: Container(
+            height: MediaQuery.of(this.context).size.height * 0.22 * 3,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage(Constants.imageAssets.background_home),
+                    fit: BoxFit.cover))),
+      );
     }));
   }
 
