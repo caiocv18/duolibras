@@ -45,7 +45,7 @@ class SignInPage extends StatelessWidget {
                       Container(
                           height: constraint.maxHeight * 0.10,
                           child: QuestionWidget(
-                              "Bem-vindo ao Bilibras! \bVamos começar? ")),
+                              "Bem-vindo ao ByLibras! \bVamos começar? ")),
                       SizedBox(height: constraint.maxHeight * 0.12),
                       Container(
                           child: FirebaseSignInWidget(viewModel),
